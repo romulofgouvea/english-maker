@@ -1,6 +1,8 @@
 import axios from "axios";
 import _ from "lodash";
 
+import { UArchive } from "~/utils";
+
 //begginer = 1
 const getFromAPIOxford = async (query, level = 1) => {
   try {
@@ -85,4 +87,20 @@ const getFromAPIOxford = async (query, level = 1) => {
   }
 };
 
-module.exports = { getFromAPIOxford };
+const getAudioFromUrl = async (url, source, nameFile) => {
+  try {
+    const res = await axios.get(url, {
+      responseType: "arraybuffer",
+      headers: {
+        "Content-Type": "audio/mpeg"
+      }
+    });
+    const buffer = Buffer.from(res.data, "base64");
+    await UArchive.writeFileMP3(source, nameFile, buffer);
+  } catch (error) {
+    console.log("Ops..");
+    console.log(error);
+  }
+};
+
+module.exports = { getFromAPIOxford, getAudioFromUrl };

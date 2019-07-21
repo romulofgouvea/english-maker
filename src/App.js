@@ -6,7 +6,7 @@ import { Oxford } from "~/services";
 
 dotenv.config();
 
-console.log('Init read file');
+console.log("Init read file");
 const arr = UArchive.loadFile("assets", "wordsNotUsed.txt");
 
 const getWords = arr => {
@@ -29,20 +29,27 @@ const getWords = arr => {
 
 const { arrWithoutUsed, arrWords } = getWords(arr);
 
-console.log('Rewrite arquive without words used');
+console.log("Rewrite arquive without words used");
 // UArchive.writeFile("assets/wordsNotUsed.txt", arrWithoutUsed);
 
-console.log('Save words used in file');
+console.log("Save words used in file");
 // UArchive.appendFile("assets", "wordsUsed.txt", arrWords);
 
 const App = async () => {
   try {
     var word = "wrong";
-    var results = await Oxford.getFromAPIOxford("/entries/en-us/" + word);
+    //var results = await Oxford.getFromAPIOxford("/api/v2/entries/en-us/" + word);
 
-    console.log(results);
+    //Download MP3
+    var urlDownload =
+      "http://audio.oxforddictionaries.com/en/mp3/wrong_us_1.mp3";
+    await Oxford.getAudioFromUrl(
+      urlDownload,
+      "/assets/download/words",
+      "wrong.mp3"
+    );
   } catch (error) {
-    console.log('Ops...');
+    console.log("Ops...");
     console.log(error);
   }
 };
