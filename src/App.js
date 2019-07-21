@@ -1,10 +1,13 @@
 global.__base = __dirname + "\\";
-import Utils from "~/utils";
 import dotenv from "dotenv";
+
+import { UArchive } from "~/utils";
+import { Oxford } from "~/services";
 
 dotenv.config();
 
-const arr = Utils.loadFile("assets", "wordsNotUsed.txt");
+console.log('Init read file');
+const arr = UArchive.loadFile("assets", "wordsNotUsed.txt");
 
 const getWords = arr => {
   var arrWordsTemp = [];
@@ -26,7 +29,22 @@ const getWords = arr => {
 
 const { arrWithoutUsed, arrWords } = getWords(arr);
 
-// Remove words used of the wordsNotUsed
-Utils.writeFile("assets/wordsNotUsed.txt", arrWithoutUsed);
-//save in new archive
-Utils.appendFile("assets", "wordsUsed.txt", arrWords);
+console.log('Rewrite arquive without words used');
+// UArchive.writeFile("assets/wordsNotUsed.txt", arrWithoutUsed);
+
+console.log('Save words used in file');
+// UArchive.appendFile("assets", "wordsUsed.txt", arrWords);
+
+const App = async () => {
+  try {
+    var word = "wrong";
+    var results = await Oxford.getFromAPIOxford("/entries/en-us/" + word);
+
+    console.log(results);
+  } catch (error) {
+    console.log('Ops...');
+    console.log(error);
+  }
+};
+
+App();
