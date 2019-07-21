@@ -65,7 +65,14 @@ const getFromAPIOxford = async (query, level = 1) => {
       temp.lexicalCategory = en.lexicalCategory.text;
 
       console.log("pronunciation");
-      temp.pronunciation = en.pronunciations[0].audioFile;
+      temp.pronunciation = en.pronunciations.map(p => {
+        if (p.phoneticNotation === "IPA") {
+          return {
+            audio: p.audioFile,
+            transcription: p.phoneticSpelling
+          };
+        }
+      })[1];
 
       MData.push(temp);
     });

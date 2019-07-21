@@ -38,7 +38,8 @@ console.log("Save words used in file");
 const App = async () => {
   try {
     var word = "wrong";
-    //var results = await Oxford.getFromAPIOxford("/api/v2/entries/en-us/" + word);
+    var results = await Oxford.getFromAPIOxford("/api/v2/entries/en-us/" + word);
+    console.log(JSON.stringify(results));
 
     //Download MP3
     var urlDownload =
