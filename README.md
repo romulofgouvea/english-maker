@@ -4,4 +4,6 @@ Criar um robo para selecionar 10 palavras por dia, buscar sua tradução, pronun
 
 # 1 Robo de texto
 
-Bucando inicialmente as palavras de um arquivo fisíco 
+    - API Utilizadas
+         - Oxford Dictionaries API
+         - Fraze.it API 

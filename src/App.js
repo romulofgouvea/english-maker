@@ -3,10 +3,11 @@ import dotenv from "dotenv";
 
 import { UArchive } from "~/utils";
 import { Oxford } from "~/services";
+import { Fraze } from "~/services";
 
 dotenv.config();
 
-console.log("Init read file");
+//console.log("Init read file");
 const arr = UArchive.loadFile("assets", "wordsNotUsed.txt");
 
 const getWords = arr => {
@@ -29,26 +30,30 @@ const getWords = arr => {
 
 const { arrWithoutUsed, arrWords } = getWords(arr);
 
-console.log("Rewrite arquive without words used");
+//console.log("Rewrite arquive without words used");
 // UArchive.writeFile("assets/wordsNotUsed.txt", arrWithoutUsed);
 
-console.log("Save words used in file");
+//console.log("Save words used in file");
 // UArchive.appendFile("assets", "wordsUsed.txt", arrWords);
 
 const App = async () => {
   try {
     var word = "wrong";
-    var results = await Oxford.getFromAPIOxford("/api/v2/entries/en-us/" + word);
-    console.log(JSON.stringify(results));
+    // var results = await Oxford.getFromAPIOxford("/api/v2/entries/en-us/" + word);
+    // console.log(JSON.stringify(results));
 
-    //Download MP3
-    var urlDownload =
-      "http://audio.oxforddictionaries.com/en/mp3/wrong_us_1.mp3";
-    await Oxford.getAudioFromUrl(
-      urlDownload,
-      "/assets/download/words",
-      "wrong.mp3"
-    );
+    // //Download MP3
+    // var urlDownload =
+    //   "http://audio.oxforddictionaries.com/en/mp3/wrong_us_1.mp3";
+    // await Oxford.getAudioFromUrl(
+    //   urlDownload,
+    //   "/assets/download/words",
+    //   "wrong.mp3"
+    // );
+
+    //https://fraze.it/api/phrase/power/en/1/no/b782d0fd-e45a-4ee9-8f83-4daff350483a
+    const results = await Fraze.getAPIFraze("phrase", word, "/en/1/no");
+    console.log(results);
   } catch (error) {
     console.log("Ops...");
     console.log(error);
