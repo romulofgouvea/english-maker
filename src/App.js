@@ -7,9 +7,6 @@ import { Fraze } from "~/services";
 
 dotenv.config();
 
-//console.log("Init read file");
-const arr = UArchive.loadFile("assets", "wordsNotUsed.txt");
-
 const getWords = arr => {
   var arrWordsTemp = [];
   var arrValuesTemp = [];
@@ -28,16 +25,19 @@ const getWords = arr => {
   };
 };
 
-const { arrWithoutUsed, arrWords } = getWords(arr);
-
-//console.log("Rewrite arquive without words used");
-// UArchive.writeFile("assets/wordsNotUsed.txt", arrWithoutUsed);
-
-//console.log("Save words used in file");
-// UArchive.appendFile("assets", "wordsUsed.txt", arrWords);
-
 const App = async () => {
   try {
+
+    //console.log("Init read file");
+    //const arr = UArchive.loadFile("assets", "wordsNotUsed.txt");
+    //const { arrWithoutUsed, arrWords } = getWords(arr);
+
+    //console.log("Rewrite arquive without words used");
+    // UArchive.writeFile("assets/wordsNotUsed.txt", arrWithoutUsed);
+
+    //console.log("Save words used in file");
+    // UArchive.appendFile("assets", "wordsUsed.txt", arrWords);
+
     var word = "wrong";
     // var results = await Oxford.getFromAPIOxford("/api/v2/entries/en-us/" + word);
     // console.log(JSON.stringify(results));
@@ -51,9 +51,9 @@ const App = async () => {
     //   "wrong.mp3"
     // );
 
-    //https://fraze.it/api/phrase/power/en/1/no/b782d0fd-e45a-4ee9-8f83-4daff350483a
-    const results = await Fraze.getAPIFraze("phrase", word, "/en/1/no");
-    console.log(results);
+    //console.log("Get phrases examples with word");
+    //const results = await Fraze.getAPIFraze("phrase", word, "/en/1/no");
+    //console.log(results);
   } catch (error) {
     console.log("Ops...");
     console.log(error);
