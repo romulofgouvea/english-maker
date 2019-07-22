@@ -86,9 +86,7 @@ const getKeyWords = async text => {
   const analyzeParams = {
     'text': text,
     'features': {
-      'keywords': {
-        'limit': 3
-      }
+      'keywords': {}
     }
   };
 
