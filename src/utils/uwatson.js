@@ -1,6 +1,7 @@
 import fs from 'fs'
 import TextToSpeechV1 from 'ibm-watson/text-to-speech/v1';
 import LanguageTranslatorV3 from 'ibm-watson/language-translator/v3';
+import NaturalLanguageUnderstandingV1 from 'ibm-watson/natural-language-understanding/v1.js';
 import dotenv from "dotenv";
 
 import UArchive from "./uarquives";
@@ -21,6 +22,12 @@ const languageTranslator = new LanguageTranslatorV3({
   version: '2019-04-02',
   iam_apikey: process.env.IBM_LT_API_KEY,
   url: process.env.IBM_LT_URL
+});
+
+const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
+  version: '2019-07-12',
+  iam_apikey: process.env.IBM_NLU_API_KEY,
+  url: process.env.IBM_NLU_URL
 });
 
 const getPronunciations = async text => {
@@ -75,8 +82,28 @@ const getTranslate = async text => {
     });
 }
 
+const getKeyWords = async text => {
+  const analyzeParams = {
+    'text': text,
+    'features': {
+      'keywords': {
+        'limit': 3
+      }
+    }
+  };
+
+  return await naturalLanguageUnderstanding.analyze(analyzeParams)
+    .then(analysisResults => {
+      return analysisResults.keywords.map(k => k.text)
+    })
+    .catch(err => {
+      console.log('error:', err);
+    });
+}
+
 module.exports = {
   getPronunciations,
   getAudio,
-  getTranslate
+  getTranslate,
+  getKeyWords
 }

@@ -59,7 +59,8 @@ const App = async () => {
     var pro = await UWatson.getPronunciations("locked");
     UWatson.getAudio("locked in a worsening political standoff with Western powers", 'locked.mp3');
     var translate = await UWatson.getTranslate("locked");
-    console.log(pro, translate);
+    var keywords = await UWatson.getKeyWords("locked in a worsening political standoff with Western powers");
+    console.log(keywords);
   } catch (error) {
     console.log("Ops...");
     console.log(error);
