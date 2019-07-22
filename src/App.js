@@ -4,7 +4,6 @@ import dotenv from "dotenv";
 import { UArchive } from "~/utils";
 import { Oxford } from "~/services";
 import { Fraze } from "~/services";
-
 import { UWatson } from "~/utils";
 
 dotenv.config();
@@ -57,9 +56,10 @@ const App = async () => {
     //const results = await Fraze.getAPIFraze("phrase", word, "/en/1/no");
     //console.log(results);
 
-    UWatson.getPronunciations("locked");
+    var pro = await UWatson.getPronunciations("locked");
     UWatson.getAudio("locked in a worsening political standoff with Western powers", 'locked.mp3');
-
+    var translate = await UWatson.getTranslate("locked");
+    console.log(pro, translate);
   } catch (error) {
     console.log("Ops...");
     console.log(error);
