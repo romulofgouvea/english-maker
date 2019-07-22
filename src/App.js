@@ -5,6 +5,8 @@ import { UArchive } from "~/utils";
 import { Oxford } from "~/services";
 import { Fraze } from "~/services";
 
+import { UWatson } from "~/utils";
+
 dotenv.config();
 
 const getWords = arr => {
@@ -54,6 +56,10 @@ const App = async () => {
     //console.log("Get phrases examples with word");
     //const results = await Fraze.getAPIFraze("phrase", word, "/en/1/no");
     //console.log(results);
+
+    UWatson.getPronunciations("locked");
+    UWatson.getAudio("locked in a worsening political standoff with Western powers", 'locked.mp3');
+
   } catch (error) {
     console.log("Ops...");
     console.log(error);

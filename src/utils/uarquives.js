@@ -65,7 +65,6 @@ const deleteArchive = nameFile => {
 const writeFileMP3 = async (source, nameFile, data) => {
   try {
     //await createFolder(absolutePath);
-
     const absolutePath = path.resolve(__base + source, nameFile);
     fs.writeFileSync(absolutePath, data, err => {
       if (err) throw err;
