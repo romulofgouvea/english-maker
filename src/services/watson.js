@@ -4,8 +4,6 @@ import LanguageTranslatorV3 from 'ibm-watson/language-translator/v3';
 import NaturalLanguageUnderstandingV1 from 'ibm-watson/natural-language-understanding/v1.js';
 import dotenv from "dotenv";
 
-import UArchive from "./uarquives";
-
 dotenv.config();
 
 const voice = {
