@@ -1,7 +1,7 @@
-import { RobotText } from './controller'
+import { RobotAudio } from './controller'
 
 const App = async () => {
-  RobotText
+  RobotAudio
 };
 
 App();
