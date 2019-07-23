@@ -1,16 +1,19 @@
-import fs from 'fs'
+import fs from "fs";
 import path from "path";
-import TextToSpeechV1 from 'ibm-watson/text-to-speech/v1';
-import LanguageTranslatorV3 from 'ibm-watson/language-translator/v3';
-import NaturalLanguageUnderstandingV1 from 'ibm-watson/natural-language-understanding/v1.js';
+import TextToSpeechV1 from "ibm-watson/text-to-speech/v1";
+import LanguageTranslatorV3 from "ibm-watson/language-translator/v3";
+import NaturalLanguageUnderstandingV1 from "ibm-watson/natural-language-understanding/v1.js";
 import dotenv from "dotenv";
 
+import { constants } from "../../config";
+
+const BASE_URL = constants.BASE_URL;
 dotenv.config();
 
 const voice = {
-  allison: 'en-US_AllisonV3Voice',
-  michael: 'en-US_MichaelV3Voice',
-}
+  allison: "en-US_AllisonV3Voice",
+  michael: "en-US_MichaelV3Voice"
+};
 
 const textToSpeech = new TextToSpeechV1({
   iam_apikey: process.env.IBM_TTS_API_KEY,
@@ -18,13 +21,13 @@ const textToSpeech = new TextToSpeechV1({
 });
 
 const languageTranslator = new LanguageTranslatorV3({
-  version: '2019-04-02',
+  version: "2019-04-02",
   iam_apikey: process.env.IBM_LT_API_KEY,
   url: process.env.IBM_LT_URL
 });
 
 const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
-  version: '2019-07-12',
+  version: "2019-07-12",
   iam_apikey: process.env.IBM_NLU_API_KEY,
   url: process.env.IBM_NLU_URL
 });
@@ -32,11 +35,12 @@ const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
 const getTranscription = async text => {
   const getPronunciationParams = {
     text: text,
-    format: 'ipa',
-    voice: voice.michael,
+    format: "ipa",
+    voice: voice.michael
   };
 
-  return await textToSpeech.getPronunciation(getPronunciationParams)
+  return await textToSpeech
+    .getPronunciation(getPronunciationParams)
     .then(pronunciation => {
       return pronunciation.pronunciation;
     })
@@ -44,19 +48,22 @@ const getTranscription = async text => {
       //console.log('error:', err);
       return "";
     });
-}
+};
 
 const getAudio = async (source, nameFile, text) => {
   const synthesizeParams = {
     text: text,
-    accept: 'audio/mp3',
-    voice: voice.allison,
+    accept: "audio/mp3",
+    voice: voice.allison
   };
+  var caminho = path.join(BASE_URL, source);
+  nameFile = nameFile.replace('\r','');
 
-  return await textToSpeech.synthesize(synthesizeParams)
+  return await textToSpeech
+    .synthesize(synthesizeParams)
     .then(audio => {
+      caminho = caminho + "\\" + nameFile;
       if (audio.statusCode === 200) {
-        var caminho = path.join(__base, source, nameFile);
         audio.pipe(fs.createWriteStream(caminho));
         return caminho;
       }
@@ -64,44 +71,46 @@ const getAudio = async (source, nameFile, text) => {
     .catch(err => {
       return "";
     });
-}
+};
 
 const getTranslate = async text => {
   const translateParams = {
     text: text,
-    model_id: 'en-pt',
+    model_id: "en-pt"
   };
 
-  return await languageTranslator.translate(translateParams)
+  return await languageTranslator
+    .translate(translateParams)
     .then(translationResult => {
-      return translationResult.translations.map(t => t.translation).join(' ');
+      return translationResult.translations.map(t => t.translation).join(" ");
     })
     .catch(err => {
       //console.log('error:', err);
       return "";
     });
-}
+};
 
 const getKeyWords = async text => {
   const analyzeParams = {
-    'text': text,
-    'features': {
-      'keywords': {}
+    text: text,
+    features: {
+      keywords: {}
     }
   };
 
-  return await naturalLanguageUnderstanding.analyze(analyzeParams)
+  return await naturalLanguageUnderstanding
+    .analyze(analyzeParams)
     .then(analysisResults => {
-      return analysisResults.keywords.map(k => k.text)
+      return analysisResults.keywords.map(k => k.text);
     })
     .catch(err => {
       //console.log('error:', err);
     });
-}
+};
 
 module.exports = {
   getTranscription,
   getAudio,
   getTranslate,
   getKeyWords
-}
+};

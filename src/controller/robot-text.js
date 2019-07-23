@@ -17,8 +17,9 @@ const getWords = async arr => {
     do {
       var value = Math.floor(Math.random() * length);
     } while (arrValuesTemp.includes(value));
-    arrValuesTemp.push(value);
     arrWordsTemp.push(arr[value]);
+    value = value.replace('\r','');
+    arrValuesTemp.push(value);
     arr.splice(value, 1);
   }
   return await {
@@ -29,7 +30,6 @@ const getWords = async arr => {
 
 const mountObjectData = async arrWords => {
   var MData = [];
-
 
   for (var word of arrWords) {
     var temp = {};
