@@ -12,33 +12,33 @@ const getAudios = async () => {
 
   for (var [key, value] of structureText.entries()) {
     var word = value.word.replace("\r", "");
-    
-    // value.definitions = _.shuffle(value.definitions).slice(0, 5);
-    // value.examples = _.shuffle(value.examples).slice(0, 5);
 
-    // console.log("Buscando transcrição das definições e baixando...");
+    value.definitions = _.shuffle(value.definitions).slice(0, 5);
+    value.examples = _.shuffle(value.examples).slice(0, 5);
+
+    console.log("Buscando transcrição das definições e baixando...");
     var tempSourceDefinitions = [];
-    // for (var [key, def] of value.definitions.entries()) {
-    //   tempSourceDefinitions.push(
-    //     await Watson.getAudio(
-    //       "/assets/download/phrases",
-    //       `phrase_${word}${key}_definitions.mp3`,
-    //       def
-    //     )
-    //   );
-    // }
+    for (var [key, def] of value.definitions.entries()) {
+      tempSourceDefinitions.push(
+        await Watson.getAudio(
+          "/assets/download/phrases",
+          `phrase_${word}${key}_definitions.mp3`,
+          def
+        )
+      );
+    }
 
     // console.log("Buscando transcrição dos exemplos e baixando...");
     var tempSourceExamples = [];
-    // for (var [key, def] of value.examples.entries()) {
-    //   tempSourceExamples.push(
-    //     await Watson.getAudio(
-    //       "/assets/download/phrases",
-    //       `phrase_${word}${key}_examples.mp3`,
-    //       def
-    //     )
-    //   );
-    // }
+    for (var [key, def] of value.examples.entries()) {
+      tempSourceExamples.push(
+        await Watson.getAudio(
+          "/assets/download/phrases",
+          `phrase_${word}${key}_examples.mp3`,
+          def
+        )
+      );
+    }
 
     value.audios = {
       word: await Oxford.getAudioFromUrl(
