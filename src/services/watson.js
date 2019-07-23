@@ -1,4 +1,5 @@
 import fs from 'fs'
+import path from "path";
 import TextToSpeechV1 from 'ibm-watson/text-to-speech/v1';
 import LanguageTranslatorV3 from 'ibm-watson/language-translator/v3';
 import NaturalLanguageUnderstandingV1 from 'ibm-watson/natural-language-understanding/v1.js';
@@ -45,7 +46,7 @@ const getTranscription = async text => {
     });
 }
 
-const getAudio = async (text, nameFile) => {
+const getAudio = async (source, nameFile, text) => {
   const synthesizeParams = {
     text: text,
     accept: 'audio/mp3',
@@ -54,8 +55,8 @@ const getAudio = async (text, nameFile) => {
 
   return await textToSpeech.synthesize(synthesizeParams)
     .then(audio => {
-      if (audio.statusCode == 200) {
-        var caminho = __base + "/assets/download/phrases/" + nameFile;
+      if (audio.statusCode === 200) {
+        var caminho = path.join(__base, source, nameFile);
         audio.pipe(fs.createWriteStream(caminho));
         return caminho;
       }
