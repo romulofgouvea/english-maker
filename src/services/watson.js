@@ -28,7 +28,7 @@ const naturalLanguageUnderstanding = new NaturalLanguageUnderstandingV1({
   url: process.env.IBM_NLU_URL
 });
 
-const getPronunciations = async text => {
+const getTranscription = async text => {
   const getPronunciationParams = {
     text: text,
     format: 'ipa',
@@ -40,7 +40,7 @@ const getPronunciations = async text => {
       return pronunciation.pronunciation;
     })
     .catch(err => {
-      console.log('error:', err);
+      //console.log('error:', err);
       return "";
     });
 }
@@ -56,11 +56,11 @@ const getAudio = async (text, nameFile) => {
     .then(audio => {
       if (audio.statusCode == 200) {
         audio.pipe(fs.createWriteStream(__base + "/assets/download/phrases/" + nameFile));
-        console.log(`Audio ${nameFile} baixado!`);
+        //console.log(`Audio ${nameFile} baixado!`);
       }
     })
     .catch(err => {
-      console.log('error:', err);
+      //console.log('error:', err);
     });
 }
 
@@ -75,7 +75,7 @@ const getTranslate = async text => {
       return translationResult.translations.map(t => t.translation).join(' ');
     })
     .catch(err => {
-      console.log('error:', err);
+      //console.log('error:', err);
       return "";
     });
 }
@@ -93,12 +93,12 @@ const getKeyWords = async text => {
       return analysisResults.keywords.map(k => k.text)
     })
     .catch(err => {
-      console.log('error:', err);
+      //console.log('error:', err);
     });
 }
 
 module.exports = {
-  getPronunciations,
+  getTranscription,
   getAudio,
   getTranslate,
   getKeyWords
