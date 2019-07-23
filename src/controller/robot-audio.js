@@ -1,4 +1,4 @@
-import {UArchive} from '~/utils';
+import { UArchive } from '~/utils';
 import Watson from '~/services';
 import Oxford from '~/services';
 
@@ -8,12 +8,11 @@ const getAudios = async () => {
 
 const RobotAudio = async () => {
     try {
-      console.log("RobotAudio: Load file");
-      getAudios()
+        console.log("RobotAudio: Load file");
+        getAudios()
     } catch (error) {
-      console.log("Ops...", error);
+        console.log("Ops...", error);
     }
-  };
-  
-  RobotAudio();
-  
+};
+
+RobotAudio();

@@ -66,14 +66,14 @@ const mountObjectData = async arrWords => {
 
 
     var tempTExamples = [];
-    if (!temp.examples){
+    if (!temp.examples) {
       var frazeDefinitions = await Fraze.getAPIFraze('/phrase', word, '/en/1/no')
       temp.definitions = frazeDefinitions.map(p => p.phrase)
     }
 
-      for (var phrase of temp.examples) {
-        tempTExamples.push(await Google.getTranslateGoogleAPI(phrase));
-      }
+    for (var phrase of temp.examples) {
+      tempTExamples.push(await Google.getTranslateGoogleAPI(phrase));
+    }
 
     temp.translate = {
       word: await Watson.getTranslate(word),
