@@ -13,6 +13,14 @@ const loadFile = (source, nameFile) => {
   }
 };
 
+const loadFileJson = (source, nameFile) => {
+  try {
+    return JSON.parse(fs.readFileSync(path.join(BASE_URL, source, nameFile), "utf8"));
+  } catch (error) {
+    return null;
+  }
+};
+
 const appendFile = (source, nameFile, data) => {
   try {
     fs.appendFile(path.join(BASE_URL, source, nameFile), data, err => {
@@ -49,6 +57,14 @@ const writeFileSync = (source, nameFile, data) => {
   }
 };
 
+const writeFileJson = (source, nameFile, data) => {
+  try {
+    return fs.writeFileSync(path.join(BASE_URL, source, nameFile), JSON.stringify(data));
+  } catch (error) {
+    return null;
+  }
+};
+
 const deleteArchive = (source, nameFile) => {
   try {
     fs.unlink(path.join(BASE_URL, source, nameFile), err => {
@@ -70,6 +86,15 @@ const writeFileMP3 = async (source, nameFile, data) => {
     });
   } catch (error) {
     //console.log("Deu erro! \n", error);
+    return null;
+  }
+};
+
+const writeFileStream = async (source, nameFile) => {
+  try {
+    var base = path.join(BASE_URL, source, nameFile);
+    fs.createWriteStream(base);
+  } catch (error) {
     return null;
   }
 };
@@ -100,5 +125,8 @@ module.exports = {
   renameFile,
   writeFileSync,
   deleteArchive,
-  writeFileMP3
+  writeFileMP3,
+  writeFileStream,
+  writeFileJson,
+  loadFileJson
 };

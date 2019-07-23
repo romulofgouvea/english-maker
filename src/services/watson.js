@@ -52,15 +52,16 @@ const getAudio = async (text, nameFile) => {
     voice: voice.allison,
   };
 
-  await textToSpeech.synthesize(synthesizeParams)
+  return await textToSpeech.synthesize(synthesizeParams)
     .then(audio => {
       if (audio.statusCode == 200) {
-        audio.pipe(fs.createWriteStream(__base + "/assets/download/phrases/" + nameFile));
-        //console.log(`Audio ${nameFile} baixado!`);
+        var caminho = __base + "/assets/download/phrases/" + nameFile;
+        audio.pipe(fs.createWriteStream(caminho));
+        return caminho;
       }
     })
     .catch(err => {
-      //console.log('error:', err);
+      return "";
     });
 }
 

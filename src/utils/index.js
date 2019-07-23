@@ -1,6 +1,6 @@
 import moment from "moment";
 
-import UArchive from './uarquives';
+import UArchive from './uarchives';
 
 function GetFormattedDate(separator = "/") {
   return moment().format(`DD${separator}MM${separator}YYYY`);

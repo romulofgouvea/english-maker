@@ -3,57 +3,58 @@ import _ from "lodash";
 
 import { UArchive } from "~/utils";
 import { Fraze } from "~/services";
-import { rejects } from "assert";
+import { Google } from "~/services";
 
-const populateData = async results => {
+import { constants } from '../../config';
+
+const BASE_URL = constants.BASE_URL;
+
+const populateData = async (word, results) => {
   var MData = [];
   return await new Promise((resolve, reject) => {
     results.map(async en => {
       var temp = {};
 
-      //console.log("Derivatives: ", en.derivatives ? en.derivatives.length : 0);
-      temp.derivatives =
-        en.derivatives && (await en.derivatives.map(d => d.text));
+      // console.log("Derivatives: ", en.derivatives ? en.derivatives.length : 0);
+      temp.derivatives = en.derivatives && (await en.derivatives.map(d => d.text));
 
-      //console.log("Entries: ", en.entries ? en.entries.length : 0);
-      const entries =
-        en.entries &&
-        (await en.entries.map(
-          entrie =>
-            entrie.senses.map(sense => {
-              if (sense.subsenses) {
-                sense.subsenses = sense.subsenses[0];
+      // console.log("Entries: ", en.entries ? en.entries.length : 0);
+      const entries = en.entries && (await en.entries.map(
+        entrie =>
+          entrie.senses.map(sense => {
+            var tempDefinitions = []
+            var tempExamples = []
+            var tempShortDefinitions = []
 
-                sense.shortDefinitions = _.concat(
-                  sense.shortDefinitions,
-                  sense.subsenses.shortDefinitions
-                );
+            sense.subsenses && sense.subsenses.map(sub => {
+              sub.examples = sub.examples || []
+              tempExamples.push(sub.examples.map(e => e.text));
+              tempDefinitions.push(sub.definitions);
+              tempShortDefinitions.push(sub.shortDefinitions);
+            })
+            sense.examples = sense.examples || [];
+            sense.definitions = _.concat(sense.definitions, _.flatten(tempDefinitions));
+            sense.examples = _.concat(sense.examples.map(e => e.text), _.flatten(tempExamples));
+            sense.definitions = _.xor(sense.definitions, _.flatten(tempShortDefinitions), _.isEqual);
 
-                sense.definitions = _.concat(
-                  sense.definitions,
-                  sense.subsenses.definitions,
-                  sense.shortDefinitions
-                );
+            delete sense.subsenses
+            delete sense.id
+            delete sense.constructions
+            delete sense.thesaurusLinks
+            delete sense.shortDefinitions;
+            return sense;
+          })
+      )[0]);
 
-                sense.examples =
-                  (sense.examples && sense.examples.map(e => e.text)) || [];
-                if (sense.subsenses.examples)
-                  sense.examples = _.concat(
-                    sense.examples,
-                    sense.subsenses.examples.map(e => e.text)
-                  );
-              }
+      var tempDefinitions = []
+      var tempExamples = []
+      entries.map(s => {
+        tempDefinitions = _.xor(tempDefinitions, s.definitions);
+        tempExamples = _.xor(tempExamples, s.examples);
+      })
 
-              delete sense.id;
-              delete sense.shortDefinitions;
-              delete sense.subsenses;
-              delete sense.thesaurusLinks;
-              return sense;
-            })[0]
-        )[0]);
-      const { definitions, examples } = entries;
-      temp.definitions = definitions || [];
-      temp.examples = examples || [];
+      temp.definitions = tempDefinitions || [];
+      temp.examples = tempExamples || [];
 
       //console.log("lexicalCategory");
       temp.lexicalCategory = en.lexicalCategory.text;
@@ -88,10 +89,10 @@ const getFromAPIOxford = async (query, level = 1) => {
         app_key: process.env.OXFORD_API_KEY
       }
     });
+    const word = response.data.results[0].id;
     const results = response.data.results[0].lexicalEntries;
 
-    var MData = await populateData(results);
-    //console.log("MData ", JSON.stringify(MData));
+    var MData = await populateData(word, results);
 
     var data = {
       status: response.status,
@@ -105,7 +106,7 @@ const getFromAPIOxford = async (query, level = 1) => {
         return data;
     }
   } catch (error) {
-    //console.log("Ops..", error);
+    // console.log("Ops..", error);
     return {
       status: error.response ? error.response.status : 0,
       data: null
@@ -122,12 +123,10 @@ const getAudioFromUrl = async (url, source, nameFile) => {
       }
     });
     const buffer = Buffer.from(res.data, "base64");
-    await UArchive.writeFileMP3(source, nameFile, buffer);
-    return true;
+    await UArchive.writeFileMP3(path.join(BASE_URL, source, nameFile), buffer);
+    return;
   } catch (error) {
-    //console.log("Ops..");
-    //console.log(error);
-    return false;
+    return "";
   }
 };
 
