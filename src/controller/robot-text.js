@@ -116,7 +116,7 @@ const RobotText = async () => {
 
     const MData = await mountObjectData(arrWords);
     console.log("MData ", JSON.stringify(MData));
-    UArchive.writeFileJson("/assets/state", "mdata.json", MData);
+    UArchive.writeFileJson("/assets/state", "text.json", MData);
 
     if (MData)
       await saveData(arrWithoutUsed, arrWords);
