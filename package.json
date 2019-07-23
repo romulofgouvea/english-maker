@@ -1,0 +1,27 @@
+{
+  "name": "robot-vocab-expand",
+  "version": "0.0.1",
+  "main": "index.js",
+  "repository": "git@github.com:romulofgouvea/video-maker.git",
+  "license": "MIT",
+  "scripts": {
+    "start": "babel-node src/index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build": "babel --presets es2015 -d lib/ src"
+  },
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-plugin-module-resolver": "^3.2.0",
+    "babel-plugin-root-import": "^6.4.1",
+    "babel-preset-es2015": "^6.24.1",
+    "eslint-import-resolver-babel-module": "^5.1.0",
+    "eslint-plugin-import": "^2.18.2"
+  },
+  "dependencies": {
+    "axios": "^0.19.0",
+    "dotenv": "^8.0.0",
+    "ibm-watson": "^4.2.5",
+    "lodash": "^4.17.15",
+    "moment": "^2.24.0"
+  }
+}
