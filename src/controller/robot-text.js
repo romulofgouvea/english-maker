@@ -17,8 +17,9 @@ const getWords = async arr => {
     do {
       var value = Math.floor(Math.random() * length);
     } while (arrValuesTemp.includes(value));
-    arrValuesTemp.push(value);
     arrWordsTemp.push(arr[value]);
+    value = value.replace('\r','');
+    arrValuesTemp.push(value);
     arr.splice(value, 1);
   }
   return await {
@@ -29,7 +30,6 @@ const getWords = async arr => {
 
 const mountObjectData = async arrWords => {
   var MData = [];
-
 
   for (var word of arrWords) {
     var temp = {};
@@ -66,14 +66,14 @@ const mountObjectData = async arrWords => {
 
 
     var tempTExamples = [];
-    if (!temp.examples){
+    if (!temp.examples) {
       var frazeDefinitions = await Fraze.getAPIFraze('/phrase', word, '/en/1/no')
       temp.definitions = frazeDefinitions.map(p => p.phrase)
     }
 
-      for (var phrase of temp.examples) {
-        tempTExamples.push(await Google.getTranslateGoogleAPI(phrase));
-      }
+    for (var phrase of temp.examples) {
+      tempTExamples.push(await Google.getTranslateGoogleAPI(phrase));
+    }
 
     temp.translate = {
       word: await Watson.getTranslate(word),
@@ -116,7 +116,7 @@ const RobotText = async () => {
 
     const MData = await mountObjectData(arrWords);
     console.log("MData ", JSON.stringify(MData));
-    UArchive.writeFileJson("/assets/state", "mdata.json", MData);
+    UArchive.writeFileJson("/assets/state", "text.json", MData);
 
     if (MData)
       await saveData(arrWithoutUsed, arrWords);
