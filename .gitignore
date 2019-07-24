@@ -1,5 +1,6 @@
 #folders
 src/assets/download/*
+src/assets/state/*
 src/assets/**.json
 src/assets/**.mp3
 

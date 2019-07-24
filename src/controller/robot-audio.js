@@ -28,7 +28,7 @@ const getAudios = async () => {
       );
     }
 
-    // console.log("Buscando transcrição dos exemplos e baixando...");
+    console.log("Buscando transcrição dos exemplos e baixando...");
     var tempSourceExamples = [];
     for (var [key, def] of value.examples.entries()) {
       tempSourceExamples.push(
@@ -49,9 +49,7 @@ const getAudios = async () => {
       definitions: tempSourceDefinitions,
       examples: tempSourceExamples
     };
-    console.log(value.audios);
   }
-
   return structureText;
 };
 
@@ -59,7 +57,7 @@ const RobotAudio = async () => {
   try {
     console.log("RobotAudio: Load file");
     const structureWithAudio = await getAudios();
-    console.log(structureWithAudio);
+
     console.log("Save data structure");
     UArchive.writeFileJson("/assets/state", "text.json", structureWithAudio);
   } catch (error) {
