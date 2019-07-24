@@ -5,7 +5,7 @@ import { UArchive } from "~/utils";
 import { Fraze } from "~/services";
 import { Google } from "~/services";
 
-import { constants } from '../../config';
+import { constants } from "../../config";
 
 const BASE_URL = constants.BASE_URL;
 
@@ -16,45 +16,58 @@ const populateData = async (word, results) => {
       var temp = {};
 
       // console.log("Derivatives: ", en.derivatives ? en.derivatives.length : 0);
-      temp.derivatives = en.derivatives && (await en.derivatives.map(d => d.text));
+      temp.derivatives =
+        en.derivatives && (await en.derivatives.map(d => d.text));
 
       // console.log("Entries: ", en.entries ? en.entries.length : 0);
-      const entries = en.entries && (await en.entries.map(
-        entrie =>
+      const entries =
+        en.entries &&
+        (await en.entries.map(entrie =>
           entrie.senses.map(sense => {
-            var tempDefinitions = []
-            var tempExamples = []
-            var tempShortDefinitions = []
+            var tempDefinitions = [];
+            var tempExamples = [];
+            var tempShortDefinitions = [];
 
-            sense.subsenses && sense.subsenses.map(sub => {
-              sub.examples = sub.examples || []
-              tempExamples.push(sub.examples.map(e => e.text));
-              tempDefinitions.push(sub.definitions);
-              tempShortDefinitions.push(sub.shortDefinitions);
-            })
+            sense.subsenses &&
+              sense.subsenses.map(sub => {
+                sub.examples = sub.examples || [];
+                tempExamples.push(sub.examples.map(e => e.text));
+                tempDefinitions.push(sub.definitions);
+                tempShortDefinitions.push(sub.shortDefinitions);
+              });
             sense.examples = sense.examples || [];
-            sense.definitions = _.concat(sense.definitions, _.flatten(tempDefinitions));
-            sense.examples = _.concat(sense.examples.map(e => e.text), _.flatten(tempExamples));
-            sense.definitions = _.xor(sense.definitions, _.flatten(tempShortDefinitions), _.isEqual);
+            sense.definitions = _.concat(
+              sense.definitions,
+              _.flatten(tempDefinitions)
+            );
+            sense.examples = _.concat(
+              sense.examples.map(e => e.text),
+              _.flatten(tempExamples)
+            );
+            sense.definitions = _.xor(
+              sense.definitions,
+              _.flatten(tempShortDefinitions),
+              _.isEqual
+            );
 
-            delete sense.subsenses
-            delete sense.id
-            delete sense.constructions
-            delete sense.thesaurusLinks
+            delete sense.subsenses;
+            delete sense.id;
+            delete sense.constructions;
+            delete sense.thesaurusLinks;
             delete sense.shortDefinitions;
             return sense;
           })
-      )[0]);
+        )[0]);
 
-      var tempDefinitions = []
-      var tempExamples = []
+      var tempDefinitions = [];
+      var tempExamples = [];
       entries.map(s => {
         tempDefinitions = _.xor(tempDefinitions, s.definitions);
         tempExamples = _.xor(tempExamples, s.examples);
-      })
+      });
 
-      temp.definitions = tempDefinitions || [];
-      temp.examples = tempExamples || [];
+      temp.definitions = tempDefinitions.filter(Boolean) || [];
+      temp.examples = tempExamples.filter(Boolean) || [];
 
       //console.log("lexicalCategory");
       temp.lexicalCategory = en.lexicalCategory.text;
@@ -119,12 +132,11 @@ const getAudioFromUrl = async (url, source, nameFile) => {
     const res = await axios.get(url, {
       responseType: "arraybuffer",
       headers: {
-        "Content-Type": "audio/mpeg"
+        "Content-Type": "audio/mp3"
       }
     });
     const buffer = Buffer.from(res.data, "base64");
-    await UArchive.writeFileMP3(path.join(BASE_URL, source, nameFile), buffer);
-    return;
+    return await UArchive.writeFileMP3(source, nameFile, buffer);
   } catch (error) {
     return "";
   }

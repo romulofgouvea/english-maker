@@ -1,6 +1,6 @@
 #folders
 src/assets/download/*
-src/assets/*.json
+src/assets/**.json
 src/assets/**.mp3
 
 # Logs
