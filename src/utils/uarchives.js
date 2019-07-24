@@ -52,13 +52,13 @@ const renameFile = (nameFile, newNameFile) => {
 
 const writeFileSync = (source, nameFile, data) => {
   try {
-    fs.writeFileSync(path.join(BASE_URL, source, nameFile), data, err => {
+    var localUrl = path.join(BASE_URL, source, nameFile);
+    return fs.writeFileSync(localUrl, data, err => {
       if (err) throw err;
-      //console.log("Arquivo escrito!");
+      return localUrl;
     });
   } catch (error) {
-    //console.log("Deu erro! \n", error);
-    return null;
+    return "";
   }
 };
 
