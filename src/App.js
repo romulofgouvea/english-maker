@@ -1,7 +1,9 @@
-import { RobotAudio } from './controller'
+import { RobotText, RobotAudio, RobotVideo } from '~/controller';
 
 const App = async () => {
-  RobotAudio
+  await RobotText.RobotText();
+  await RobotAudio.RobotAudio();
+  await RobotVideo.RobotVideo();
 };
 
 App();
