@@ -1,25 +1,14 @@
 import _ from "lodash";
-import { UArchive } from "~/utils";
 
-const saveScriptAfterEffects = async content => {
-  var scriptString = `var content = ${JSON.stringify(content)}`;
-  return await UArchive.writeFileSync(
-    "/assets/scripts",
-    "after-effects-script.js",
-    scriptString
-  );
-};
+import { UArchive } from "~/utils";
 
 const RobotVideo = async () => {
   try {
-    console.log("RobotVideo: Load file");
+    console.log("> [ROBOT VIDEO] Recover state aplication");
     const structureAudio = await UArchive.loadFileJson(
       "/assets/state",
       "text.json"
     );
-
-    console.log("Save Script for import in After Effects");
-    await saveScriptAfterEffects(structureAudio);
 
     console.log(structureAudio);
   } catch (error) {
@@ -27,4 +16,4 @@ const RobotVideo = async () => {
   }
 };
 
-RobotVideo();
+module.exports = { RobotVideo }

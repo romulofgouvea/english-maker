@@ -1,9 +1,9 @@
-// import RobotText from './robot-text.js';
-// import RobotAudio from './robot-audio.js';
+import RobotText from './robot-text';
+import RobotAudio from './robot-audio';
 import RobotVideo from './robot-video';
 
 export {
-    // RobotText,
-    // RobotAudio,
+    RobotText,
+    RobotAudio,
     RobotVideo
 }
