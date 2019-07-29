@@ -1,6 +1,8 @@
 #folders
 src/assets/download/*
 src/assets/state/*
+src/assets/images/*
+src/assets/template-video/*
 src/assets/scripts/*
 src/assets/**.json
 src/assets/**.mp3
