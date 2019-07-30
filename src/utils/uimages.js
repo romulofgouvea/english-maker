@@ -26,9 +26,7 @@ const generateImageTextCenter = (source, nameFile, text) => {
         if (error) {
           return reject(error);
         }
-
-        console.log(`created: ${outputFile}`);
-        resolve();
+        resolve(outputFile);
       });
   });
 };
