@@ -11,16 +11,20 @@ const generateImageTextCenter = (source, nameFile, text) => {
   return new Promise((resolve, reject) => {
     const outputFile = `${base}/${nameFile}`;
 
+    const width = 1920;
+    const height = 1080;
+
     imageMagick()
-      .out("-size", "1920x1080")
+      .out("-size", `${width}x${height}`)
       .out("-gravity", "center")
       .out("-fill", "white")
-      .fontSize("100")
-      // .font(font)
+      // .fontSize(100)
+      .font("Verdana", 100)
       .border(100, 100)
       .borderColor("transparent")
       .out("-background", "transparent")
-      .out("-kerning", "-1")
+      .out("-resize", `${width}x${height}`)
+      // .out("-kerning", "-1")
       .out(`caption:${text}`)
       .write(outputFile, error => {
         if (error) {
