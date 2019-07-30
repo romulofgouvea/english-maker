@@ -15,7 +15,7 @@ const generateImageFromText = async structureAudio => {
     };
     const word = words.word.replace(/\r/g, "");
 
-    console.log("> [ROBOT VIDEO] Generate image of the definitions");
+    console.log("> [ROBOT VIDEO] Generate image of the definitions of word: ", word);
     var tempArrDefinitions = [];
     words.images.coverDefinitions =
       "D:/workspace/video-maker/src/assets/template-video/definitions.png";
@@ -24,7 +24,7 @@ const generateImageFromText = async structureAudio => {
       tempArrDefinitions.push(
         await UImage.generateImageTextCenter(
           "/assets/images",
-          `${word}_definitions_${key}.jpg`,
+          `${word}_definitions_${key}.png`,
           text
         )
       );
@@ -36,12 +36,11 @@ const generateImageFromText = async structureAudio => {
     words.images.coverExamples =
       "D:/workspace/video-maker/src/assets/template-video/examples.png";
     for (var [key, exm] of words.examples.entries()) {
-      var text =
-        word.translate && exm.concat("\n\n", word.translate.examples[key]);
+      var text = exm.concat("\n\n", words.translate.examples[key]);
       tempArrExamples.push(
         await UImage.generateImageTextCenter(
           "/assets/images",
-          `${word}_examples_${key}.jpg`,
+          `${word}_examples_${key}.png`,
           text
         )
       );
@@ -98,11 +97,11 @@ const RobotVideo = async () => {
       "text.json"
     );
 
-    // console.log("> [ROBOT VIDEO] Generate images");
-    // const structureImage = await generateImageFromText(structureAudio);
+    console.log("> [ROBOT VIDEO] Generate images");
+    const structureImage = await generateImageFromText(structureAudio);
 
-    console.log("> [ROBOT VIDEO] Generate mini videos");
-    await generateMiniVideosFromAudio(structureAudio);
+    // console.log("> [ROBOT VIDEO] Generate mini videos");
+    // await generateMiniVideosFromAudio(structureAudio);
   } catch (error) {
     console.log("Ops...", error);
   }

@@ -7,8 +7,8 @@ const BASE_URL = constants.BASE_URL;
 let imageMagick = gm.subClass({ imageMagick: true });
 
 const generateImageTextCenter = (source, nameFile, text) => {
-  var base = path.join(BASE_URL, source);
   return new Promise((resolve, reject) => {
+    const base = path.join(BASE_URL, source);
     const outputFile = `${base}/${nameFile}`;
 
     const width = 1920;
@@ -24,7 +24,7 @@ const generateImageTextCenter = (source, nameFile, text) => {
       .borderColor("transparent")
       .out("-background", "transparent")
       .out("-resize", `${width}x${height}`)
-      // .out("-kerning", "-1")
+      .out("-kerning", "-1")
       .out(`caption:${text}`)
       .write(outputFile, error => {
         if (error) {
