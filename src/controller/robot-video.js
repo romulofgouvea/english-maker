@@ -1,11 +1,6 @@
-var ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
-var ffmpeg = require("fluent-ffmpeg");
 import _ from "lodash";
 
-import { UArchive, UImage } from "~/utils";
-
-ffmpeg.setFfmpegPath(ffmpegPath);
-var command = ffmpeg();
+import { UArchive, UImage, UVideo } from "~/utils";
 
 const generateImageFromText = async structureAudio => {
   for (var words of structureAudio) {
@@ -46,6 +41,16 @@ const generateImageFromText = async structureAudio => {
       );
     }
     words.images.examples = tempArrExamples;
+
+    console.log("> [ROBOT VIDEO] Generate video definitions from word");
+    for (var [key, imgDef] of words.images.definitions.entries()) {
+      await UVideo.generateVideo(imgDef, words.audios.definitions[key], `${word}_definitions_${key}.mp4`);
+    }
+
+    console.log("> [ROBOT VIDEO] Generate video examples from word");
+    for (var [key, imgExp] of words.images.examples.entries()) {
+      await UVideo.generateVideo(imgExp, words.audios.definitions[key], `${word}_examples_${key}.mp4`);
+    }
   }
 
   console.log("> [ROBOT VIDEO] Save state");
@@ -54,54 +59,51 @@ const generateImageFromText = async structureAudio => {
   return structureAudio;
 };
 
-function* generateMiniVideosFromAudio(structureImage) {
-  for (var words of structureImage) {
+const createVideos = async structureImages => {
+  var arrTempVideos = {
+    definitions: [],
+    examples: []
+  };
+  for (var words of structureImages) {
     const word = words.word.replace(/\r/g, "");
 
-    for (var [key, image] of words.images.definitions.entries()) {
-      yield command
-        .input(image)
-        .inputFPS(1 / 5)
-        .input(words.audios.definitions[key])
-        .output(
-          `D:/workspace/video-maker/src/assets/mini-videos/${word}_${key}.mp4`
-        )
-        .outputFPS(30)
-        .on("end", onEnd)
-        .on("progress", onProgress)
-        .on("error", onError)
-        .run();
+    console.log("> [ROBOT VIDEO] Generate video definitions from word");
+    var tempDef = [];
+    for (var [key, imgDef] of words.images.definitions.entries()) {
+      tempDef.push(await UVideo.generateVideo(imgDef, words.audios.definitions[key], '/assets/videos', `${word}_definitions_${key}.mp4`));
     }
+    arrTempVideos.definitions = tempDef;
+
+    console.log("> [ROBOT VIDEO] Generate video examples from word");
+    var tempExp = [];
+    for (var [key, imgExp] of words.images.examples.entries()) {
+      tempExp.push(await UVideo.generateVideo(imgExp, words.audios.definitions[key], '/assets/videos', `${word}_examples_${key}.mp4`));
+    }
+    arrTempVideos.examples = tempExp;
+
+    structureImages.videos = arrTempVideos;
   }
-}
 
-function onProgress(progress) {
-  console.log("Time mark: " + progress.timemark + "...");
-}
+  console.log("> [ROBOT VIDEO] Save state");
+  await UArchive.writeFileJson("/assets/state", "text.json", structureImages);
 
-function onError(err, stdout, stderr) {
-  console.log("Cannot process video: " + err.message);
-}
-
-function onEnd() {
-  console.log("Finished processing");
-}
-
-const joinMiniVideos = async () => {};
+  return structureImages;
+};
 
 const RobotVideo = async () => {
   try {
     console.log("> [ROBOT VIDEO] Recover state aplication");
-    const structureAudio = await UArchive.loadFileJson(
+    const state = await UArchive.loadFileJson(
       "/assets/state",
       "text.json"
     );
 
-    console.log("> [ROBOT VIDEO] Generate images");
-    const structureImage = await generateImageFromText(structureAudio);
+    // console.log("> [ROBOT VIDEO] Generate images");
+    // state = await generateImageFromText(structureAudio);
 
-    // console.log("> [ROBOT VIDEO] Generate mini videos");
-    // await generateMiniVideosFromAudio(structureAudio);
+    console.log("> [ROBOT VIDEO] Generate videos");
+    await createVideos(state);
+
   } catch (error) {
     console.log("Ops...", error);
   }

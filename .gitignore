@@ -3,10 +3,12 @@ src/assets/download/*
 src/assets/state/*
 src/assets/mini-videos/*
 src/assets/images/*
+src/assets/videos/*
 src/assets/template-video/*
 src/assets/scripts/*
 src/assets/**.json
 src/assets/**.mp3
+src/assets/**.mp4
 
 # Logs
 logs
