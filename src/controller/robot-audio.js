@@ -1,13 +1,12 @@
 import _ from "lodash";
 
 import { UArchive } from "~/utils";
-import { Watson } from "~/services";
-import { Oxford } from "~/services";
+import { Watson, Oxford, Google } from "~/services";
 
 const getAudios = async structureText => {
-
   for (var [key, value] of structureText.entries()) {
     var word = value.word.replace("\r", "");
+    console.log("> [ROBOT AUDIO] Word: ", word);
 
     value.definitions = _.shuffle(value.definitions).slice(0, 5);
     value.examples = _.shuffle(value.examples).slice(0, 5);
@@ -16,7 +15,7 @@ const getAudios = async structureText => {
     var tempSourceDefinitions = [];
     for (var [key, def] of value.definitions.entries()) {
       tempSourceDefinitions.push(
-        await Watson.getAudio(
+        await Google.getAudio(
           "/assets/download/phrases",
           `phrase_${word}${key}_definitions.mp3`,
           def
@@ -28,7 +27,7 @@ const getAudios = async structureText => {
     var tempSourceExamples = [];
     for (var [key, def] of value.examples.entries()) {
       tempSourceExamples.push(
-        await Watson.getAudio(
+        await Google.getAudio(
           "/assets/download/phrases",
           `phrase_${word}${key}_examples.mp3`,
           def
@@ -36,12 +35,20 @@ const getAudios = async structureText => {
       );
     }
 
+    var tempSourceWord = value.pronunciation && value.pronunciation.audio
+      ? await Oxford.getAudioFromUrl(
+          value.pronunciation.audio,
+          "/assets/download/words",
+          `word_${word}.mp3`
+        )
+      : await Google.getAudio(
+          "/assets/download/words",
+          `word_${word}.mp3`,
+          word
+        );
+
     value.audios = {
-      word: await Oxford.getAudioFromUrl(
-        value.pronunciation.audio,
-        "/assets/download/words",
-        `word_${word}.mp3`
-      ),
+      word: tempSourceWord,
       definitions: tempSourceDefinitions,
       examples: tempSourceExamples
     };
@@ -52,8 +59,11 @@ const getAudios = async structureText => {
 const RobotAudio = async () => {
   try {
     console.log("> [ROBOT AUDIO] Recover state aplication");
-    const structureText = await UArchive.loadFileJson("/assets/state", "text.json");
-    
+    const structureText = await UArchive.loadFileJson(
+      "/assets/state",
+      "text.json"
+    );
+
     console.log("> [ROBOT AUDIO] Get audios");
     const structureWithAudio = await getAudios(structureText);
 
@@ -64,4 +74,4 @@ const RobotAudio = async () => {
   }
 };
 
-module.exports = { RobotAudio }
+module.exports = { RobotAudio };

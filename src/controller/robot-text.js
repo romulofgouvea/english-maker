@@ -42,8 +42,7 @@ const mountObjectData = async arrWords => {
     var oxfordData = await Oxford.getFromAPIOxford(
       "/api/v2/entries/en-us/" + word
     );
-    if (!oxfordData)
-      return;
+    if (!oxfordData) return;
 
     temp =
       oxfordData.data &&
@@ -56,8 +55,8 @@ const mountObjectData = async arrWords => {
     console.log("> [ROBOT TEXT] Traduzindo definições");
     var tempTDefinitions = [];
     if (!temp.definitions) {
-      var frazeDefinitions = await Fraze.getAPIFraze('/dico', word, '/en')
-      temp.definitions = frazeDefinitions.map(p => p.phrase)
+      var frazeDefinitions = await Fraze.getAPIFraze("/dico", word, "/en");
+      temp.definitions = frazeDefinitions.map(p => p.phrase);
     }
 
     for (var phrase of temp.definitions) {
@@ -67,8 +66,12 @@ const mountObjectData = async arrWords => {
     console.log("> [ROBOT TEXT] Traduzindo exemplos");
     var tempTExamples = [];
     if (!temp.examples) {
-      var frazeDefinitions = await Fraze.getAPIFraze('/phrase', word, '/en/1/no')
-      temp.definitions = frazeDefinitions.map(p => p.phrase)
+      var frazeDefinitions = await Fraze.getAPIFraze(
+        "/phrase",
+        word,
+        "/en/1/no"
+      );
+      temp.definitions = frazeDefinitions.map(p => p.phrase);
     }
 
     for (var phrase of temp.examples) {
@@ -92,13 +95,16 @@ const mountObjectData = async arrWords => {
   return MData;
 };
 
-const saveData = async (arrWithoutUsed, arrWords) => {
+const saveData = async (arrWithoutUsed, arrWords, MData) => {
   console.log("> [ROBOT TEXT] Save state");
   await UArchive.writeFileJson("/assets/state", "text.json", MData);
 
   if (arrWithoutUsed) {
     console.log("> [ROBOT TEXT] rewrite database words without words used");
-    UArchive.writeFileSync("assets/wordsNotUsed.txt", arrWithoutUsed.join("\n"));
+    UArchive.writeFileSync(
+      "assets/wordsNotUsed.txt",
+      arrWithoutUsed.join("\n")
+    );
   }
 
   if (arrWords) {
@@ -115,12 +121,10 @@ const RobotText = async () => {
 
     const MData = await mountObjectData(arrWords);
 
-    if (MData)
-      await saveData(arrWithoutUsed, arrWords);
-
+    if (MData) await saveData(arrWithoutUsed, arrWords, MData);
   } catch (error) {
     console.log("Ops...", error);
   }
 };
 
-module.exports = { RobotText }
+module.exports = { RobotText };
