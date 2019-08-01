@@ -17,7 +17,7 @@ const getAudios = async structureText => {
       tempSourceDefinitions.push(
         await Google.getAudio(
           "/assets/download/phrases",
-          `phrase_${word}${key}_definitions.mp3`,
+          `phrase_${word}_definitions_${key}`,
           def
         )
       );
@@ -29,7 +29,7 @@ const getAudios = async structureText => {
       tempSourceExamples.push(
         await Google.getAudio(
           "/assets/download/phrases",
-          `phrase_${word}${key}_examples.mp3`,
+          `phrase_${word}_examples_${key}`,
           def
         )
       );
@@ -39,11 +39,11 @@ const getAudios = async structureText => {
       ? await Oxford.getAudioFromUrl(
           value.pronunciation.audio,
           "/assets/download/words",
-          `word_${word}.mp3`
+          `word_${word}`
         )
       : await Google.getAudio(
           "/assets/download/words",
-          `word_${word}.mp3`,
+          `word_${word}`,
           word
         );
 

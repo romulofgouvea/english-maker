@@ -12,8 +12,6 @@ const generateImageFromText = async structureAudio => {
 
     console.log("> [ROBOT VIDEO] Generate image of the definitions of word: ", word);
     var tempArrDefinitions = [];
-    words.images.coverDefinitions =
-      "D:/workspace/video-maker/src/assets/template-video/definitions.png";
     for (var [key, def] of words.definitions.entries()) {
       var text = def.concat("\n\n", words.translate.definitions[key]);
       tempArrDefinitions.push(
@@ -28,8 +26,6 @@ const generateImageFromText = async structureAudio => {
 
     console.log("> [ROBOT VIDEO] Generate image of the examples");
     var tempArrExamples = [];
-    words.images.coverExamples =
-      "D:/workspace/video-maker/src/assets/template-video/examples.png";
     for (var [key, exm] of words.examples.entries()) {
       var text = exm.concat("\n\n", words.translate.examples[key]);
       tempArrExamples.push(
@@ -50,35 +46,54 @@ const generateImageFromText = async structureAudio => {
 };
 
 const createVideos = async structureImages => {
-  var arrTempVideos = {
-    definitions: [],
-    examples: []
-  };
+
   for (var words of structureImages) {
     const word = words.word.replace(/\r/g, "");
 
     console.log("> [ROBOT VIDEO] Generate video definitions from: ", word);
     var tempDef = [];
     for (var [key, imgDef] of words.images.definitions.entries()) {
-      tempDef.push(await UVideo.generateVideo(imgDef, words.audios.definitions[key], '/assets/videos', `${word}_definitions_${key}.mp4`));
+      tempDef.push(await UVideo.generateVideo(imgDef, words.audios.definitions[key], '/assets/videos', `${word}_definitions_${key}`));
     }
-    arrTempVideos.definitions = tempDef;
 
     console.log("> [ROBOT VIDEO] Generate video examples");
     var tempExp = [];
     for (var [key, imgExp] of words.images.examples.entries()) {
-      tempExp.push(await UVideo.generateVideo(imgExp, words.audios.examples[key], '/assets/videos', `${word}_examples_${key}.mp4`));
+      tempExp.push(await UVideo.generateVideo(imgExp, words.audios.examples[key], '/assets/videos', `${word}_examples_${key}`));
     }
-    arrTempVideos.examples = tempExp;
 
-    structureImages.videos = arrTempVideos;
+    words.videos = {
+      definitions: tempDef,
+      examples: tempExp
+    };
   }
 
   console.log("> [ROBOT VIDEO] Save state");
-  // await UArchive.writeFileJson("/assets/state", "text.json", structureImages);
+  await UArchive.writeFileJson("/assets/state", "text.json", structureImages);
 
   return structureImages;
 };
+
+const unionVideos = async state => {
+
+  var tempArrFilesText = []
+  for (var words of state) {
+    const word = words.word.replace(/\r/g, "");
+
+    console.log("> [ROBOT VIDEO] Union video from: ", word);
+
+    var temp = _.concat(
+      'F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\definitions_transition.mp4',
+      words.videos.definitions,
+      'F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\examples_transition.mp4',
+      words.videos.examples
+    ).map(v => `file ${v}`).join('\n');
+
+    tempArrFilesText.push(await UArchive.writeFileSync('/assets/base-videos/temp-union', `${word}_render.txt`, temp));
+  }
+  console.log(tempArrFilesText);
+  //await UVideo.joinVideos('/assets/base-videos/temp-union', `${word}_render`, temp)
+}
 
 const RobotVideo = async () => {
   try {
@@ -91,8 +106,12 @@ const RobotVideo = async () => {
     // console.log("> [ROBOT VIDEO] Generate images");
     // state = await generateImageFromText(state);
 
-    console.log("> [ROBOT VIDEO] Generate videos");
-    await createVideos(state);
+
+    // console.log("> [ROBOT VIDEO] Generate videos");
+    // await createVideos(state);
+
+    console.log("> [ROBOT VIDEO] Union videos");
+    await unionVideos(state);
 
   } catch (error) {
     console.log("Ops...", error);

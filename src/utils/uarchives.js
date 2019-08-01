@@ -52,7 +52,7 @@ const renameFile = (nameFile, newNameFile) => {
 
 const writeFileSync = (source, nameFile, data) => {
   try {
-    var localUrl = path.join(BASE_URL, source, nameFile);
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
     return fs.writeFileSync(localUrl, data, err => {
       if (err) throw err;
       return localUrl;
