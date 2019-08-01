@@ -74,25 +74,43 @@ const createVideos = async structureImages => {
   return structureImages;
 };
 
+const generateArquiveFilesFromWords = async state => {
+  try {
+    console.log("> [ROBOT VIDEO] Generate files to concat videos");
+    var tempArrFilesText = []
+    for (var words of state) {
+      const word = words.word.replace(/\r/g, "");
+
+      if (await UArchive.fileExists('/assets/base-videos/temp-union', `${word}_render.txt`))
+        continue;
+
+      console.log("> [ROBOT VIDEO] Union video from: ", word);
+      var temp = _.concat(
+        'F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\definitions_transition.mp4',
+        words.videos.definitions,
+        'F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\examples_transition.mp4',
+        words.videos.examples
+      ).map(v => `file '${v}'`).join('\n');
+
+      tempArrFilesText.push(await UArchive.writeFileSync('/assets/base-videos/temp-union', `${word}_render.txt`, temp));
+    }
+
+    return tempArrFilesText
+  } catch (error) {
+    console.log(error);
+  }
+}
+
 const unionVideos = async state => {
 
-  var tempArrFilesText = []
-  for (var words of state) {
-    const word = words.word.replace(/\r/g, "");
+  var arrArquives = await generateArquiveFilesFromWords(state);
 
-    console.log("> [ROBOT VIDEO] Union video from: ", word);
-
-    var temp = _.concat(
-      'F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\definitions_transition.mp4',
-      words.videos.definitions,
-      'F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\examples_transition.mp4',
-      words.videos.examples
-    ).map(v => `file ${v}`).join('\n');
-
-    tempArrFilesText.push(await UArchive.writeFileSync('/assets/base-videos/temp-union', `${word}_render.txt`, temp));
+  for (var archive of arrArquives) {
+    var name = archive.replace(/.+\\|\..+/, '');
+    console.log(name);
+    await UVideo.joinVideos('/assets/base-videos/temp-union', name, archive)
   }
-  console.log(tempArrFilesText);
-  //await UVideo.joinVideos('/assets/base-videos/temp-union', `${word}_render`, temp)
+
 }
 
 const RobotVideo = async () => {

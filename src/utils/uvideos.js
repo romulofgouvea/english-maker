@@ -77,8 +77,9 @@ const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
   ];
 
   return await new Promise((resolve, reject) => {
-    spawn("ffmpeg", arg);
-    resolve(outputFile);
+    var ffmpeg = spawn("ffmpeg", arg);
+
+    ffmpeg.on('exit', () => resolve(outputFile));
   });
 };
 
@@ -102,6 +103,14 @@ function resizeVideo(source, nameFile, quality) {
 const joinVideos = async (source, nameFile, textVideos) => {
   const base = path.join(BASE_URL, source);
   const outputFile = `${base}\\${nameFile}.mp4`;
+
+  var arg = ['-f', 'concat', '-safe', 0, '-i', textVideos, '-c', 'copy', outputFile];
+
+  return await new Promise((resolve, reject) => {
+    var ffmpeg = spawn("ffmpeg", arg);
+
+    ffmpeg.on('exit', () => resolve(outputFile));
+  });
 
 };
 
