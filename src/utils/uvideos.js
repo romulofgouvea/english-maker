@@ -1,43 +1,52 @@
-var ffmpegPath = require("@ffmpeg-installer/ffmpeg").path;
-var ffmpeg = require("fluent-ffmpeg");
 import path from "path";
+import { spawn } from "child_process";
 
 import { constants } from "../../config";
 
-ffmpeg.setFfmpegPath(ffmpegPath);
-const command = ffmpeg();
 const BASE_URL = constants.BASE_URL;
 
 const generateVideo = async (inputURLImage, inputURLMp3, source, nameFile) => {
-    const base = path.join(BASE_URL, source);
-    const outputFile = `${base}/${nameFile}`;
+  const base = path.join(BASE_URL, source);
+  const outputFile = `${base}/${nameFile}`;
 
-    return await new Promise((resolve, reject) => {
-        command
-            .input(inputURLImage)
-            .inputFPS(1 / 5)
-            .input(inputURLMp3)
-            .output(outputFile)
-            .outputFPS(30)
-            .on("end", () => {
-                console.log('Finish process video');
-                resolve(outputFile)
-            })
-            .on("progress", onProgress)
-            .on("error", (err, stdout, stderr) => {
-                console.log("Cannot process video: " + err.message);
-                reject("")
-            })
-            .run();
-    })
-}
+  var arg = [
+    "-y",
+    "-loop",
+    1,
+    "-framerate",
+    1,
+    "-i",
+    inputURLImage,
+    "-i",
+    inputURLMp3,
+    "-vcodec",
+    "libx264",
+    "-acodec",
+    "aac",
+    "-strict",
+    "experimental",
+    "-b:a",
+    "192k",
+    "-vf",
+    "scale='min(1280,iw)':-2,format=yuv420p",
+    "-preset",
+    "medium",
+    "-profile:v",
+    "main",
+    "-movflags",
+    "+faststart",
+    "-shortest",
+    outputFile
+  ];
 
-const joinMiniVideos = async () => { };
+  return await new Promise((resolve, reject) => {
+    spawn("ffmpeg", arg);
+    resolve(outputFile);
+  });
+};
 
-function onProgress(progress) {
-    console.log("Time mark: " + progress.timemark);
-}
+const joinMiniVideos = async () => {};
 
 module.exports = {
-    generateVideo
-}
+  generateVideo
+};

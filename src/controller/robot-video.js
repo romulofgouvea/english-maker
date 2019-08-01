@@ -57,17 +57,17 @@ const createVideos = async structureImages => {
   for (var words of structureImages) {
     const word = words.word.replace(/\r/g, "");
 
-    console.log("> [ROBOT VIDEO] Generate video definitions from word");
+    console.log("> [ROBOT VIDEO] Generate video definitions from: ", word);
     var tempDef = [];
     for (var [key, imgDef] of words.images.definitions.entries()) {
       tempDef.push(await UVideo.generateVideo(imgDef, words.audios.definitions[key], '/assets/videos', `${word}_definitions_${key}.mp4`));
     }
     arrTempVideos.definitions = tempDef;
 
-    console.log("> [ROBOT VIDEO] Generate video examples from word");
+    console.log("> [ROBOT VIDEO] Generate video examples");
     var tempExp = [];
     for (var [key, imgExp] of words.images.examples.entries()) {
-      tempExp.push(await UVideo.generateVideo(imgExp, words.audios.definitions[key], '/assets/videos', `${word}_examples_${key}.mp4`));
+      tempExp.push(await UVideo.generateVideo(imgExp, words.audios.examples[key], '/assets/videos', `${word}_examples_${key}.mp4`));
     }
     arrTempVideos.examples = tempExp;
 
@@ -75,7 +75,7 @@ const createVideos = async structureImages => {
   }
 
   console.log("> [ROBOT VIDEO] Save state");
-  await UArchive.writeFileJson("/assets/state", "text.json", structureImages);
+  // await UArchive.writeFileJson("/assets/state", "text.json", structureImages);
 
   return structureImages;
 };
