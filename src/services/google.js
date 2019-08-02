@@ -1,13 +1,28 @@
 import axios from "axios";
+import { google } from 'googleapis';
+
 
 import { UArchive } from "~/utils";
+import { WebServer } from "~/services";
+
+const youtube = google.youtube('v3');
+const OAuth2 = google.auth.OAuth2
+
+const authenticateWithOAuth = async () => {
+  const webServer = await WebServer.startWebServer();
+
+  await WebServer.stopWebServer(webServer);
+}
+const uploadVideo = async () => { }
+
+const uploadThumbnail = async () => { }
 
 const getTranslateGoogleAPI = async text => {
   try {
     const translations = await axios
       .get(
         `${process.env.GOOGLE_T_URL}/v2?q=${text}&target=pt&key=${
-          process.env.GOOGLE_T_API_KEY
+        process.env.GOOGLE_T_API_KEY
         }`
       )
       .then(d => d.data.data.translations);
@@ -35,9 +50,9 @@ const getAudio = async (source, nameFile, text) => {
     var audioBase64 = await axios
       .post(
         `${
-          process.env.GOOGLE_TTS_URL
+        process.env.GOOGLE_TTS_URL
         }/v1/text:synthesize?fields=audioContent&key=${
-          process.env.GOOGLE_TTS_API_KEY
+        process.env.GOOGLE_TTS_API_KEY
         }`,
         synthesizeParams
       )
@@ -53,5 +68,8 @@ const getAudio = async (source, nameFile, text) => {
 
 module.exports = {
   getTranslateGoogleAPI,
-  getAudio
+  getAudio,
+  authenticateWithOAuth,
+  uploadVideo,
+  uploadThumbnail
 };

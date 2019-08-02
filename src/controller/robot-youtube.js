@@ -1,16 +1,16 @@
 import _ from "lodash";
-import { UArchive } from "~/utils";
 
-const uploadVideo = state => {
-
-}
+import { Google } from "~/services";
 
 const RobotYouTube = async () => {
   try {
-    console.log("> [ROBOT YOUTUBE] Recover state aplication");
-    var state = await UArchive.loadFileJson("/assets/state", "text.json");
+    // console.log("> [ROBOT YOUTUBE] Recover state aplication");
+    // var renderFinal = await UArchive.loadFileJson("/assets/state", "render.json");
 
-    console.log(state.length);
+    await Google.authenticateWithOAuth()
+    // const videoInformation = await Google.uploadVideo(renderFinal)
+    // await Google.uploadThumbnail(videoInformation)
+
   } catch (error) {
     console.log("Ops...", error);
   }
