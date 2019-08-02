@@ -59,13 +59,13 @@ const getAudios = async state => {
 const RobotAudio = async () => {
   try {
     console.log("> [ROBOT AUDIO] Recover state aplication");
-    const state = await UArchive.loadFileJson(
+    var state = await UArchive.loadFileJson(
       "/assets/state",
       "text.json"
     );
 
     console.log("> [ROBOT AUDIO] Get audios");
-    const state = await getAudios(state);
+    state = await getAudios(state);
 
     console.log("> [ROBOT AUDIO] Save state");
     UArchive.writeFileJson("/assets/state", "text.json", state);
