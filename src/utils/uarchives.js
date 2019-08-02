@@ -57,7 +57,7 @@ const writeFileSync = (source, nameFile, data) => {
     fs.writeFileSync(localUrl, data, err => {
       if (err) throw err;
     });
-    return localUrl;
+    return fileExists(source, nameFile);
   } catch (error) {
     return "";
   }
@@ -72,15 +72,14 @@ const writeFileJson = (source, nameFile, data) => {
   }
 };
 
-const deleteArchive = (source, nameFile) => {
+const deleteArchive = (source, nameFile = "", absolutePath = false) => {
   try {
-    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    var localUrl = absolutePath && !nameFile ? source : `${path.join(BASE_URL, source)}\\${nameFile}`;
     fs.unlink(localUrl, err => {
       if (err) throw err;
-      //console.log("File deleted!");
     });
+    return fileExists(source, nameFile);
   } catch (error) {
-    //console.log("Deu erro! \n", error);
     return null;
   }
 };

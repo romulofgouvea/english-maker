@@ -95,9 +95,9 @@ const unionVideos = async state => {
     const word = words.word.replace(/\r/g, "");
     console.log("> [ROBOT VIDEO] Union video from: ", word);
     var temp = _.concat(
-      "D:\\workspace\\video-maker\\src\\assets\\base-videos\\definitions_render.mp4",
+      "F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\definitions_render.mp4",
       words.videos.definitions,
-      "D:\\workspace\\video-maker\\src\\assets\\base-videos\\examples_render.mp4",
+      "F:\\GitHub Examples\\video-maker\\src\\assets\\base-videos\\examples_render.mp4",
       words.videos.examples
     );
 
