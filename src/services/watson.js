@@ -69,6 +69,7 @@ const getAudio = async (source, nameFile, text) => {
       }
     })
     .catch(err => {
+      console.log(err.code, err.name);
       return "";
     });
 };

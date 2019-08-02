@@ -6,8 +6,9 @@ const BASE_URL = constants.BASE_URL;
 
 const loadFile = (source, nameFile) => {
   try {
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
     return fs
-      .readFileSync(path.join(BASE_URL, source, nameFile), "utf8")
+      .readFileSync(localUrl, "utf8")
       .toString()
       .split("\n");
   } catch (error) {
@@ -18,9 +19,8 @@ const loadFile = (source, nameFile) => {
 
 const loadFileJson = (source, nameFile) => {
   try {
-    return JSON.parse(
-      fs.readFileSync(path.join(BASE_URL, source, nameFile), "utf8")
-    );
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    return JSON.parse(fs.readFileSync(localUrl, "utf8"));
   } catch (error) {
     return null;
   }
@@ -28,7 +28,8 @@ const loadFileJson = (source, nameFile) => {
 
 const appendFile = (source, nameFile, data) => {
   try {
-    fs.appendFile(path.join(BASE_URL, source, nameFile), data, err => {
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    fs.appendFile(localUrl, data, err => {
       if (err) throw err;
       //console.log("Updated!");
     });
@@ -52,43 +53,45 @@ const renameFile = (nameFile, newNameFile) => {
 
 const writeFileSync = (source, nameFile, data) => {
   try {
-    fs.writeFileSync(path.join(BASE_URL, source, nameFile), data, err => {
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    fs.writeFileSync(localUrl, data, err => {
       if (err) throw err;
-      //console.log("Arquivo escrito!");
     });
+    return fileExists(source, nameFile);
   } catch (error) {
-    //console.log("Deu erro! \n", error);
-    return null;
+    return "";
   }
 };
 
 const writeFileJson = (source, nameFile, data) => {
   try {
-    return fs.writeFileSync(
-      path.join(BASE_URL, source, nameFile),
-      JSON.stringify(data)
-    );
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    return fs.writeFileSync(localUrl, JSON.stringify(data));
   } catch (error) {
     return null;
   }
 };
 
-const deleteArchive = (source, nameFile) => {
+const deleteArchive = (source, nameFile = "") => {
   try {
-    fs.unlink(path.join(BASE_URL, source, nameFile), err => {
-      if (err) throw err;
-      //console.log("File deleted!");
-    });
+    var localUrl = !nameFile ? source : `${path.join(BASE_URL, source)}\\${nameFile}`;
+    var exists = fileExists(localUrl)
+    if (exists) {
+      fs.unlink(localUrl, err => {
+        if (err) throw err;
+      });
+      return exists
+    }
+    return "";
   } catch (error) {
-    //console.log("Deu erro! \n", error);
     return null;
   }
 };
 
 const writeFileMP3 = async (source, nameFile, data) => {
   try {
-    var localURL = path.join(BASE_URL, source, nameFile);
-    fs.writeFileSync(localURL, data);
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    fs.writeFileSync(localUrl, data);
     return localURL;
   } catch (error) {
     return null;
@@ -97,8 +100,8 @@ const writeFileMP3 = async (source, nameFile, data) => {
 
 const writeFileStream = async (source, nameFile) => {
   try {
-    var base = path.join(BASE_URL, source, nameFile);
-    fs.createWriteStream(base);
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    fs.createWriteStream(localUrl);
   } catch (error) {
     return null;
   }
@@ -124,6 +127,12 @@ const createFolder = source => {
   }
 };
 
+const fileExists = (source, nameFile = "") => {
+  var localUrl = !nameFile ? source : `${path.join(BASE_URL, source)}\\${nameFile}`;
+  if (fs.existsSync(localUrl)) return localUrl;
+  return "";
+};
+
 module.exports = {
   loadFile,
   appendFile,
@@ -133,5 +142,6 @@ module.exports = {
   writeFileMP3,
   writeFileStream,
   writeFileJson,
-  loadFileJson
+  loadFileJson,
+  fileExists
 };

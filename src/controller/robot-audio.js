@@ -1,68 +1,77 @@
 import _ from "lodash";
 
 import { UArchive } from "~/utils";
-import { Watson } from "~/services";
-import { Oxford } from "~/services";
+import { Watson, Oxford, Google } from "~/services";
 
-const getAudios = async () => {
-  const structureText = await UArchive.loadFileJson(
-    "/assets/state",
-    "text.json"
-  );
-
-  for (var [key, value] of structureText.entries()) {
+const getAudios = async state => {
+  for (var [key, value] of state.entries()) {
     var word = value.word.replace("\r", "");
+    console.log("> [ROBOT AUDIO] Word: ", word);
 
     value.definitions = _.shuffle(value.definitions).slice(0, 5);
     value.examples = _.shuffle(value.examples).slice(0, 5);
 
-    console.log("Buscando transcrição das definições e baixando...");
+    console.log("> [ROBOT AUDIO] Get transcript definitions");
     var tempSourceDefinitions = [];
     for (var [key, def] of value.definitions.entries()) {
       tempSourceDefinitions.push(
-        await Watson.getAudio(
+        await Google.getAudio(
           "/assets/download/phrases",
-          `phrase_${word}${key}_definitions.mp3`,
+          `phrase_${word}_definitions_${key}`,
           def
         )
       );
     }
 
-    console.log("Buscando transcrição dos exemplos e baixando...");
+    console.log("> [ROBOT AUDIO] Get transcript examples");
     var tempSourceExamples = [];
     for (var [key, def] of value.examples.entries()) {
       tempSourceExamples.push(
-        await Watson.getAudio(
+        await Google.getAudio(
           "/assets/download/phrases",
-          `phrase_${word}${key}_examples.mp3`,
+          `phrase_${word}_examples_${key}`,
           def
         )
       );
     }
 
+    var tempSourceWord = value.pronunciation && value.pronunciation.audio
+      ? await Oxford.getAudioFromUrl(
+          value.pronunciation.audio,
+          "/assets/download/words",
+          `word_${word}`
+        )
+      : await Google.getAudio(
+          "/assets/download/words",
+          `word_${word}`,
+          word
+        );
+
     value.audios = {
-      word: await Oxford.getAudioFromUrl(
-        value.pronunciation.audio,
-        "/assets/download/words",
-        `word_${word}.mp3`
-      ),
+      word: tempSourceWord,
       definitions: tempSourceDefinitions,
       examples: tempSourceExamples
     };
   }
-  return structureText;
+  return state;
 };
 
 const RobotAudio = async () => {
   try {
-    console.log("RobotAudio: Load file");
-    const structureWithAudio = await getAudios();
+    console.log("> [ROBOT AUDIO] Recover state aplication");
+    const state = await UArchive.loadFileJson(
+      "/assets/state",
+      "text.json"
+    );
 
-    console.log("Save data structure");
-    UArchive.writeFileJson("/assets/state", "text.json", structureWithAudio);
+    console.log("> [ROBOT AUDIO] Get audios");
+    const state = await getAudios(state);
+
+    console.log("> [ROBOT AUDIO] Save state");
+    UArchive.writeFileJson("/assets/state", "text.json", state);
   } catch (error) {
     console.log("Ops...", error);
   }
 };
 
-RobotAudio();
+module.exports = { RobotAudio };

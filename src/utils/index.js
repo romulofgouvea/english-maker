@@ -1,12 +1,9 @@
-import moment from "moment";
-
 import UArchive from './uarchives';
-
-function GetFormattedDate(separator = "/") {
-  return moment().format(`DD${separator}MM${separator}YYYY`);
-}
+import UImage from './uimages';
+import UVideo from './uvideos';
 
 module.exports = {
   UArchive,
-  GetFormattedDate
+  UImage,
+  UVideo,
 };

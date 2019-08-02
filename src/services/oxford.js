@@ -136,7 +136,7 @@ const getAudioFromUrl = async (url, source, nameFile) => {
       }
     });
     const buffer = Buffer.from(res.data, "base64");
-    return await UArchive.writeFileMP3(source, nameFile, buffer);
+    return await UArchive.writeFileMP3(source, `${nameFile}.mp3`, buffer);
   } catch (error) {
     return "";
   }

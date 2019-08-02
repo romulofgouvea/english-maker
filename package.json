@@ -1,5 +1,5 @@
 {
-  "name": "robot-vocab-expand",
+  "name": "english-every-day",
   "version": "0.0.1",
   "main": "index.js",
   "repository": "git@github.com:romulofgouvea/video-maker.git",
@@ -18,10 +18,12 @@
     "eslint-plugin-import": "^2.18.2"
   },
   "dependencies": {
+    "@ffmpeg-installer/ffmpeg": "^1.0.19",
     "axios": "^0.19.0",
     "dotenv": "^8.0.0",
+    "fluent-ffmpeg": "^2.1.2",
+    "gm": "^1.23.1",
     "ibm-watson": "^4.2.5",
-    "lodash": "^4.17.15",
-    "moment": "^2.24.0"
+    "lodash": "^4.17.15"
   }
 }

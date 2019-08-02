@@ -10,6 +10,7 @@ import { Fraze } from "~/services";
 dotenv.config();
 
 const getWords = async arr => {
+  console.log("> [ROBOT TEXT] Get words");
   var arrWordsTemp = [];
   var arrValuesTemp = [];
   var length = arr.length;
@@ -18,7 +19,7 @@ const getWords = async arr => {
       var value = Math.floor(Math.random() * length);
     } while (arrValuesTemp.includes(value));
     arrWordsTemp.push(arr[value]);
-    value = value.replace('\r','');
+    value = _.replace(value, /\r/g, "");
     arrValuesTemp.push(value);
     arr.splice(value, 1);
   }
@@ -34,15 +35,14 @@ const mountObjectData = async arrWords => {
   for (var word of arrWords) {
     var temp = {};
     temp.word = word;
-    console.log("Buscando Transcrição");
+    console.log("> [ROBOT TEXT] Search transcript");
     temp.transcript = await Watson.getTranscription(word);
 
-    console.log("Buscando no dicionário de Oxford");
+    console.log("> [ROBOT TEXT] Search in the dictionary of the Oxford");
     var oxfordData = await Oxford.getFromAPIOxford(
       "/api/v2/entries/en-us/" + word
     );
-    if (!oxfordData)
-      return;
+    if (!oxfordData) return;
 
     temp =
       oxfordData.data &&
@@ -52,23 +52,26 @@ const mountObjectData = async arrWords => {
         oxfordData[_.random(0, oxfordData.data.length)] || oxfordData.data[0]
       );
 
-    console.log("Traduzindo definições, exemplos");
-
+    console.log("> [ROBOT TEXT] Translate definitions");
     var tempTDefinitions = [];
     if (!temp.definitions) {
-      var frazeDefinitions = await Fraze.getAPIFraze('/dico', word, '/en')
-      temp.definitions = frazeDefinitions.map(p => p.phrase)
+      var frazeDefinitions = await Fraze.getAPIFraze("/dico", word, "/en");
+      temp.definitions = frazeDefinitions.map(p => p.phrase);
     }
 
     for (var phrase of temp.definitions) {
       tempTDefinitions.push(await Google.getTranslateGoogleAPI(phrase));
     }
 
-
+    console.log("> [ROBOT TEXT] Translate examples");
     var tempTExamples = [];
     if (!temp.examples) {
-      var frazeDefinitions = await Fraze.getAPIFraze('/phrase', word, '/en/1/no')
-      temp.definitions = frazeDefinitions.map(p => p.phrase)
+      var frazeDefinitions = await Fraze.getAPIFraze(
+        "/phrase",
+        word,
+        "/en/1/no"
+      );
+      temp.definitions = frazeDefinitions.map(p => p.phrase);
     }
 
     for (var phrase of temp.examples) {
@@ -82,47 +85,46 @@ const mountObjectData = async arrWords => {
       examples: tempTExamples
     };
 
-    console.log("Buscando as keywords");
+    console.log("> [ROBOT TEXT] Get keywords");
     MData.keywords = Object.assign(
       {},
       await Watson.getKeyWords(temp.definitions.join(", "))
     );
-
-    console.log(temp);
     MData.push(temp);
   }
-
   return MData;
 };
 
-const saveData = async (arrWithoutUsed, arrWords) => {
-  console.log("Save Data");
+const saveData = async (arrWithoutUsed, arrWords, MData) => {
+  console.log("> [ROBOT TEXT] Save state");
+  await UArchive.writeFileJson("/assets/state", "text.json", MData);
+
   if (arrWithoutUsed) {
-    //console.log("Rewrite arquive without words used");
-    UArchive.writeFile("assets/wordsNotUsed.txt", arrWithoutUsed.join("\n"));
+    console.log("> [ROBOT TEXT] rewrite database words without words used");
+    UArchive.writeFileSync(
+      "assets/wordsNotUsed.txt",
+      arrWithoutUsed.join("\n")
+    );
   }
 
   if (arrWords) {
-    //console.log("Save words used in file");
+    console.log("> [ROBOT TEXT] Save words used");
     UArchive.appendFile("/assets", "wordsUsed.txt", arrWords.join("\n"));
   }
 };
 
 const RobotText = async () => {
   try {
-    console.log("Load file");
+    console.log("> [ROBOT TEXT] Load words");
     const arr = UArchive.loadFile("/assets", "wordsNotUsed.txt");
     const { arrWithoutUsed, arrWords } = await getWords(arr);
 
     const MData = await mountObjectData(arrWords);
-    console.log("MData ", JSON.stringify(MData));
-    UArchive.writeFileJson("/assets/state", "text.json", MData);
 
-    if (MData)
-      await saveData(arrWithoutUsed, arrWords);
+    if (MData) await saveData(arrWithoutUsed, arrWords, MData);
   } catch (error) {
     console.log("Ops...", error);
   }
 };
 
-RobotText();
+module.exports = { RobotText };
