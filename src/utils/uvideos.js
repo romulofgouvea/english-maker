@@ -1,7 +1,9 @@
 import path from "path";
 import { spawn } from "child_process";
 
-import UArchive from './uarchives';
+const concat = require('ffmpeg-concat')
+
+import UArchive from "./uarchives";
 import { constants } from "../../config";
 
 const BASE_URL = constants.BASE_URL;
@@ -13,8 +15,6 @@ const generateVideo = async (inputURLImage, inputURLMp3, source, nameFile) => {
   var arg = [
     "-y",
     "-loop",
-    1,
-    "-framerate",
     1,
     "-i",
     inputURLImage,
@@ -28,10 +28,12 @@ const generateVideo = async (inputURLImage, inputURLMp3, source, nameFile) => {
     "experimental",
     "-b:a",
     "192k",
+    "-s",
+    "hd1080",
     "-vf",
     "scale='min(1280,iw)':-2,format=yuv420p",
     "-preset",
-    "medium",
+    "veryslow",
     "-profile:v",
     "main",
     "-movflags",
@@ -43,7 +45,7 @@ const generateVideo = async (inputURLImage, inputURLMp3, source, nameFile) => {
   return await new Promise((resolve, reject) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
-    ffmpeg.on('exit', () => resolve(outputFile));
+    ffmpeg.on("exit", () => resolve(outputFile));
   });
 };
 
@@ -55,19 +57,20 @@ const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
     "-y",
     "-loop",
     1,
-    "-framerate",
-    1,
-    '-t', '00:00:03',
+    "-t",
+    "00:00:03",
     "-i",
     inputURLImage,
     "-vcodec",
     "libx264",
     "-strict",
     "experimental",
+    "-s",
+    "hd1080",
     "-vf",
-    "scale=-2:1920,format=yuv420p",
+    "scale='min(1280,iw)':-2,format=yuv420p",
     "-preset",
-    "medium",
+    "slow",
     "-profile:v",
     "main",
     "-movflags",
@@ -79,7 +82,7 @@ const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
   return await new Promise((resolve, reject) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
-    ffmpeg.on('exit', () => resolve(outputFile));
+    ffmpeg.on("exit", () => resolve(outputFile));
   });
 };
 
@@ -89,35 +92,83 @@ function resizeVideo(source, nameFile, quality) {
   const outputFile = `${base}\\${nameFile}_${quality}.mp4`;
 
   const p = new Promise((resolve, reject) => {
-    const ffmpeg = spawn('ffmpeg', ['-i', inputFile, '-codec:v', 'libx264', '-profile:v', 'main', '-preset', 'slow', '-b:v', '400k', '-maxrate', '400k', '-bufsize', '800k', '-vf', `scale=-2:${quality}`, '-threads', '0', '-b:a', '128k', outputFile]);
-    ffmpeg.stderr.on('data', (data) => {
+    const ffmpeg = spawn("ffmpeg", [
+      "-i",
+      inputFile,
+      "-codec:v",
+      "libx264",
+      "-profile:v",
+      "main",
+      "-preset",
+      "slow",
+      "-b:v",
+      "400k",
+      "-maxrate",
+      "400k",
+      "-bufsize",
+      "800k",
+      "-vf",
+      `scale=-2:${quality}`,
+      "-threads",
+      "0",
+      "-b:a",
+      "128k",
+      outputFile
+    ]);
+    ffmpeg.stderr.on("data", data => {
       console.log(`${data}`);
     });
-    ffmpeg.on('close', (code) => {
+    ffmpeg.on("close", code => {
       resolve();
     });
   });
   return p;
 }
 
-const joinVideos = async (source, nameFile, textVideos) => {
-  const base = path.join(BASE_URL, source);
-  const outputFile = `${base}\\${nameFile}.mp4`;
+const generateTempVideo = async (base, nameFile, temp) => {
+  // ffmpeg -i input2.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts intermediate2.ts
 
-  var arg = ['-f', 'concat', '-safe', 0, '-i', textVideos, '-c', 'copy', outputFile];
+  var arrIntermediate = [];
+  for (var [key, file] of temp.entries()) {
+    let outputFile = `${base}\\${nameFile}_tmp_${key}.ts`;
+    outputFile = outputFile.replace(/\\/g, "/");
+    var arg = [
+      "-y",
+      "-i",
+      file,
+      "-c",
+      "copy",
+      "-bsf:v",
+      "h264_mp4toannexb",
+      "-f",
+      "mpegts",
+      outputFile
+    ];
 
-  return await new Promise((resolve, reject) => {
-    var ffmpeg = spawn("ffmpeg", arg);
+    var out = await new Promise((resolve, reject) => {
+      var ffmpeg = spawn("ffmpeg", arg);
 
-    ffmpeg.on('exit', () => resolve(outputFile));
-  });
+      ffmpeg.on("exit", () => resolve(outputFile));
+    });
 
+    arrIntermediate.push(out);
+  }
+  return arrIntermediate;
 };
 
+const joinVideos = async (source, nameFile, textVideos) => {
+  const base = path.join(BASE_URL, source);
+  let outputFile = `${base}\\${nameFile}.mp4`;
+
+  await concat({
+    output: outputFile,
+    videos: textVideos
+  });
+};
 
 module.exports = {
   generateVideo,
   generateVideoTimeFixed,
   resizeVideo,
-  joinVideos,
+  joinVideos
 };

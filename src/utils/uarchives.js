@@ -20,9 +20,7 @@ const loadFile = (source, nameFile) => {
 const loadFileJson = (source, nameFile) => {
   try {
     var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
-    return JSON.parse(
-      fs.readFileSync(localUrl, "utf8")
-    );
+    return JSON.parse(fs.readFileSync(localUrl, "utf8"));
   } catch (error) {
     return null;
   }
@@ -56,7 +54,9 @@ const renameFile = (nameFile, newNameFile) => {
 const writeFileSync = (source, nameFile, data) => {
   try {
     var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
-    fs.writeFileSync(localUrl, data, err => { if (err) throw err });
+    fs.writeFileSync(localUrl, data, err => {
+      if (err) throw err;
+    });
     return localUrl;
   } catch (error) {
     return "";
@@ -65,10 +65,8 @@ const writeFileSync = (source, nameFile, data) => {
 
 const writeFileJson = (source, nameFile, data) => {
   try {
-    return writeFileSync(
-      path.join(BASE_URL, source, nameFile),
-      JSON.stringify(data)
-    );
+    var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+    return fs.writeFileSync(localUrl, JSON.stringify(data));
   } catch (error) {
     return null;
   }
@@ -90,7 +88,7 @@ const deleteArchive = (source, nameFile) => {
 const writeFileMP3 = async (source, nameFile, data) => {
   try {
     var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
-    writeFileSync(localUrl, data);
+    fs.writeFileSync(localUrl, data);
     return localURL;
   } catch (error) {
     return null;
@@ -128,10 +126,9 @@ const createFolder = source => {
 
 const fileExists = (source, nameFile) => {
   var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
-  if (fs.existsSync(localUrl))
-    return true;
-  return false;
-}
+  if (fs.existsSync(localUrl)) return localUrl;
+  return "";
+};
 
 module.exports = {
   loadFile,
