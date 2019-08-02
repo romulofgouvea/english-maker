@@ -35,10 +35,10 @@ const mountObjectData = async arrWords => {
   for (var word of arrWords) {
     var temp = {};
     temp.word = word;
-    console.log("> [ROBOT TEXT] Buscando Transcrição");
+    console.log("> [ROBOT TEXT] Search transcript");
     temp.transcript = await Watson.getTranscription(word);
 
-    console.log("> [ROBOT TEXT] Buscando no dicionário de Oxford");
+    console.log("> [ROBOT TEXT] Search in the dictionary of the Oxford");
     var oxfordData = await Oxford.getFromAPIOxford(
       "/api/v2/entries/en-us/" + word
     );
@@ -52,7 +52,7 @@ const mountObjectData = async arrWords => {
         oxfordData[_.random(0, oxfordData.data.length)] || oxfordData.data[0]
       );
 
-    console.log("> [ROBOT TEXT] Traduzindo definições");
+    console.log("> [ROBOT TEXT] Translate definitions");
     var tempTDefinitions = [];
     if (!temp.definitions) {
       var frazeDefinitions = await Fraze.getAPIFraze("/dico", word, "/en");
@@ -63,7 +63,7 @@ const mountObjectData = async arrWords => {
       tempTDefinitions.push(await Google.getTranslateGoogleAPI(phrase));
     }
 
-    console.log("> [ROBOT TEXT] Traduzindo exemplos");
+    console.log("> [ROBOT TEXT] Translate examples");
     var tempTExamples = [];
     if (!temp.examples) {
       var frazeDefinitions = await Fraze.getAPIFraze(
@@ -85,7 +85,7 @@ const mountObjectData = async arrWords => {
       examples: tempTExamples
     };
 
-    console.log("> [ROBOT TEXT] Buscando as keywords");
+    console.log("> [ROBOT TEXT] Get keywords");
     MData.keywords = Object.assign(
       {},
       await Watson.getKeyWords(temp.definitions.join(", "))

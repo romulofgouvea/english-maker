@@ -3,8 +3,8 @@ import _ from "lodash";
 import { UArchive } from "~/utils";
 import { Watson, Oxford, Google } from "~/services";
 
-const getAudios = async structureText => {
-  for (var [key, value] of structureText.entries()) {
+const getAudios = async state => {
+  for (var [key, value] of state.entries()) {
     var word = value.word.replace("\r", "");
     console.log("> [ROBOT AUDIO] Word: ", word);
 
@@ -53,22 +53,22 @@ const getAudios = async structureText => {
       examples: tempSourceExamples
     };
   }
-  return structureText;
+  return state;
 };
 
 const RobotAudio = async () => {
   try {
     console.log("> [ROBOT AUDIO] Recover state aplication");
-    const structureText = await UArchive.loadFileJson(
+    const state = await UArchive.loadFileJson(
       "/assets/state",
       "text.json"
     );
 
     console.log("> [ROBOT AUDIO] Get audios");
-    const structureWithAudio = await getAudios(structureText);
+    const state = await getAudios(state);
 
-    console.log("> [ROBOT AUDIO] Save data structure");
-    UArchive.writeFileJson("/assets/state", "text.json", structureWithAudio);
+    console.log("> [ROBOT AUDIO] Save state");
+    UArchive.writeFileJson("/assets/state", "text.json", state);
   } catch (error) {
     console.log("Ops...", error);
   }

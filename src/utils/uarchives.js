@@ -72,13 +72,17 @@ const writeFileJson = (source, nameFile, data) => {
   }
 };
 
-const deleteArchive = (source, nameFile = "", absolutePath = false) => {
+const deleteArchive = (source, nameFile = "") => {
   try {
-    var localUrl = absolutePath && !nameFile ? source : `${path.join(BASE_URL, source)}\\${nameFile}`;
-    fs.unlink(localUrl, err => {
-      if (err) throw err;
-    });
-    return fileExists(source, nameFile);
+    var localUrl = !nameFile ? source : `${path.join(BASE_URL, source)}\\${nameFile}`;
+    var exists = fileExists(localUrl)
+    if (exists) {
+      fs.unlink(localUrl, err => {
+        if (err) throw err;
+      });
+      return exists
+    }
+    return "";
   } catch (error) {
     return null;
   }
@@ -123,8 +127,8 @@ const createFolder = source => {
   }
 };
 
-const fileExists = (source, nameFile) => {
-  var localUrl = `${path.join(BASE_URL, source)}\\${nameFile}`;
+const fileExists = (source, nameFile = "") => {
+  var localUrl = !nameFile ? source : `${path.join(BASE_URL, source)}\\${nameFile}`;
   if (fs.existsSync(localUrl)) return localUrl;
   return "";
 };

@@ -186,7 +186,7 @@ const joinVideos = async (source, nameFile, arrFiles) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      // removeTmpFiles(arr)
+      removeTmpFiles(arr)
       resolve(outputFile)
     });
   })
@@ -194,11 +194,7 @@ const joinVideos = async (source, nameFile, arrFiles) => {
 
 const removeTmpFiles = async files => {
   for (var file of files) {
-    try {
-      await UArchive.deleteArchive(file, "", true)
-    } catch (error) {
-      console.log(error);
-    }
+    await UArchive.deleteArchive(file)
   }
 }
 
