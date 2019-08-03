@@ -9,7 +9,7 @@ let imageMagick = gm.subClass({ imageMagick: true });
 const generateImageTextCenter = (source, nameFile, text) => {
   return new Promise((resolve, reject) => {
     const base = path.join(BASE_URL, source);
-    const outputFile = `${base}\\${nameFile}`;
+    const outputFile = `${base}\\${nameFile}.png`;
 
     const width = 1920;
     const height = 1080;
@@ -18,7 +18,6 @@ const generateImageTextCenter = (source, nameFile, text) => {
       .out("-size", `${width}x${height}`)
       .out("-gravity", "center")
       .out("-fill", "white")
-      // .fontSize(100)
       .font("Verdana", text.length > 100 ? 80 : 100)
       .border(100, 100)
       .borderColor("transparent")
@@ -28,7 +27,7 @@ const generateImageTextCenter = (source, nameFile, text) => {
       .out(`caption:${text}`)
       .write(outputFile, error => {
         if (error) {
-          return reject(error);
+          reject(error);
         }
         resolve(outputFile);
       });

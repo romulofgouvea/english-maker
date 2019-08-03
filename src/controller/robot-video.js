@@ -22,7 +22,7 @@ const generateImageFromText = async state => {
       tempArrDefinitions.push(
         await UImage.generateImageTextCenter(
           "/assets/images",
-          `${word}_definitions_${key}.png`,
+          `${word}_definitions_${key}`,
           text
         )
       );
@@ -36,7 +36,7 @@ const generateImageFromText = async state => {
       tempArrExamples.push(
         await UImage.generateImageTextCenter(
           "/assets/images",
-          `${word}_examples_${key}.png`,
+          `${word}_examples_${key}`,
           text
         )
       );
@@ -170,7 +170,7 @@ const RobotVideo = async () => {
 
     // await unionVideosDefinitionsExamples(state);
 
-    await finalRenderVideos(state);
+    // await finalRenderVideos(state);
   } catch (error) {
     console.log("Ops...", error);
   }
