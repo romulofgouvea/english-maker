@@ -89,35 +89,38 @@ const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
   });
 };
 
-function resizeVideo(source, nameFile, quality) {
+function transformVideo(source, nameFile, inputFile) {
   const base = path.join(BASE_URL, source);
-  const inputFile = `${base}\\${nameFile}.mp4`;
-  const outputFile = `${base}\\${nameFile}_${quality}.mp4`;
+  const outputFile = `${base}\\${nameFile}.mp4`;
+
+  var arg = [
+    "-y",
+    "-i",
+    inputFile,
+    "-vcodec",
+    "libx264",
+    "-acodec",
+    "aac",
+    "-strict",
+    "experimental",
+    "-b:a",
+    "192k",
+    "-s",
+    "hd1080",
+    "-vf",
+    "scale='min(1280,iw)':-2,format=yuv420p",
+    "-preset",
+    "slow",
+    "-profile:v",
+    "main",
+    "-movflags",
+    "+faststart",
+    "-shortest",
+    outputFile
+  ];
 
   const p = new Promise((resolve, reject) => {
-    const ffmpeg = spawn("ffmpeg", [
-      "-i",
-      inputFile,
-      "-codec:v",
-      "libx264",
-      "-profile:v",
-      "main",
-      "-preset",
-      "slow",
-      "-b:v",
-      "400k",
-      "-maxrate",
-      "400k",
-      "-bufsize",
-      "800k",
-      "-vf",
-      `scale=-2:${quality}`,
-      "-threads",
-      "0",
-      "-b:a",
-      "128k",
-      outputFile
-    ]);
+    const ffmpeg = spawn("ffmpeg", arg);
     ffmpeg.stderr.on("data", data => {
       console.log(`${data}`);
     });
@@ -209,6 +212,6 @@ const removeTmpFiles = async files => {
 module.exports = {
   generateVideo,
   generateVideoTimeFixed,
-  resizeVideo,
+  transformVideo,
   joinVideos
 };

@@ -7,7 +7,7 @@ src/assets/**.txt
 src/assets/audios/*
 src/assets/images/*
 src/assets/state/*
-src/assets/videos/*
+src/assets/videos/render/*
 
 # Logs
 logs
