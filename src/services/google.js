@@ -134,7 +134,21 @@ const uploadVideo = async state => {
   }
 };
 
-const uploadThumbnail = async () => {};
+const uploadThumbnail = async videoInformation => {
+  const videoId = videoInformation.id;
+  const videoThumbnailFilePath = "D:/workspace/video-maker/src/assets/videos/static/capa.jpg";
+
+  const requestParameters = {
+    videoId: videoId,
+    media: {
+      mimeType: "image/jpeg",
+      body: fs.createReadStream(videoThumbnailFilePath)
+    }
+  };
+
+  await youtube.thumbnails.set(requestParameters);
+  console.log(`> [ROBOT YOUTUBE] Thumbnail uploaded!`);
+};
 
 const getTranslateGoogleAPI = async text => {
   try {
