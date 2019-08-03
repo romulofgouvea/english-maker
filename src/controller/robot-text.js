@@ -2,10 +2,7 @@ import dotenv from "dotenv";
 import _ from "lodash";
 
 import { UArchive } from "~/utils";
-import { Oxford } from "~/services";
-import { Watson } from "~/services";
-import { Google } from "~/services";
-import { Fraze } from "~/services";
+import { Oxford, Watson, Google, Fraze } from "~/services";
 
 dotenv.config();
 
