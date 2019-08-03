@@ -94,26 +94,30 @@ const mountObjectData = async arrWords => {
 
 const saveData = async (arrWithoutUsed, arrWords, MData) => {
   console.log("> [ROBOT TEXT] Save state");
-  await UArchive.writeFileJson("/assets/state", "text.json", MData);
+  await UArchive.writeFileJson("/assets/state", "state.json", MData);
 
   if (arrWithoutUsed) {
     console.log("> [ROBOT TEXT] rewrite database words without words used");
-    UArchive.writeFileSync(
-      "assets/wordsNotUsed.txt",
+    await UArchive.writeFileSync(
+      "assets/wordsDatabase.txt",
       arrWithoutUsed.join("\n")
     );
   }
 
   if (arrWords) {
     console.log("> [ROBOT TEXT] Save words used");
-    UArchive.appendFile("/assets", "wordsUsed.txt", arrWords.join("\n"));
+    await UArchive.appendFile(
+      "/assets/text",
+      "wordsUsed.txt",
+      arrWords.join("\n")
+    );
   }
 };
 
 const RobotText = async () => {
   try {
     console.log("> [ROBOT TEXT] Load words");
-    const arr = UArchive.loadFile("/assets", "wordsNotUsed.txt");
+    const arr = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
     const { arrWithoutUsed, arrWords } = await getWords(arr);
 
     const MData = await mountObjectData(arrWords);
