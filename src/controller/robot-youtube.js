@@ -10,7 +10,8 @@ const RobotYouTube = async () => {
 
     await Google.authenticateWithOAuth();
     const videoInformation = await Google.uploadVideo(state);
-    await Google.uploadThumbnail(videoInformation);
+    var filePath = ""
+    await Google.uploadThumbnail(filePath,videoInformation);
   } catch (error) {
     console.log("Ops...", error);
   }

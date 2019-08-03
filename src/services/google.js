@@ -134,9 +134,9 @@ const uploadVideo = async state => {
   }
 };
 
-const uploadThumbnail = async videoInformation => {
+const uploadThumbnail = async (source, videoInformation) => {
   const videoId = videoInformation.id;
-  const videoThumbnailFilePath = "D:/workspace/video-maker/src/assets/videos/static/capa.jpg";
+  const videoThumbnailFilePath = source;
 
   const requestParameters = {
     videoId: videoId,
