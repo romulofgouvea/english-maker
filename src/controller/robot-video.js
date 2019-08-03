@@ -159,6 +159,30 @@ const finalRenderVideos = async state => {
   }
 };
 
+const imageVideoFromText = async (text, saveImage = false) => {
+  var nameFile = text.toLowerCase().replace(" ", "_");
+  var outputImage = await UImage.generateImageTextCenter(
+    "/assets/videos/render/temp/images",
+    nameFile,
+    text
+  );
+
+  if (UArchive.fileExists(outputImage)) {
+    await UVideo.generateVideoTimeFixed(
+      "/assets/videos",
+      nameFile,
+      outputImage
+    );
+
+    !saveImage
+      ? await UArchive.deleteArchive(outputImage)
+      : await UArchive.moveFile(
+          "/assets/videos/render/temp/images",
+          "/assets/videos/render/images"
+        );
+  }
+};
+
 const RobotVideo = async () => {
   try {
     console.log("> [ROBOT VIDEO] Recover state aplication");
