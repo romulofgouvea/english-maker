@@ -1,7 +1,7 @@
 import path from "path";
 import { spawn } from "child_process";
 
-import UArchive from './uarchives';
+import UArchive from "./uarchives";
 import { constants } from "../../config";
 
 const BASE_URL = constants.BASE_URL;
@@ -43,7 +43,12 @@ const generateVideo = async (inputURLImage, inputURLMp3, source, nameFile) => {
   return await new Promise((resolve, reject) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
-    ffmpeg.on("exit", () => resolve(outputFile));
+    ffmpeg.on("exit", () => {
+      if (UArchive.fileExists(outputFile)) {
+        resolve(outputFile);
+      }
+      reject("");
+    });
   });
 };
 
@@ -138,9 +143,12 @@ const generateTempVideo = async (base, nameFile, temp) => {
       "copy",
       "-bsf:v",
       "h264_mp4toannexb",
-      '-ac', 1,
-      '-ar', 48000,
-      '-b:a', '192k',
+      "-ac",
+      1,
+      "-ar",
+      48000,
+      "-b:a",
+      "192k",
       "-preset",
       "slow",
       "-f",
@@ -166,7 +174,7 @@ const joinVideos = async (source, nameFile, arrFiles) => {
   var arr = await generateTempVideo(base, nameFile, arrFiles);
 
   return await new Promise((resolve, reject) => {
-    let inputNamesFormatted = 'concat:' + arr.join('|');
+    let inputNamesFormatted = "concat:" + arr.join("|");
 
     var arg = [
       "-y",
@@ -186,17 +194,17 @@ const joinVideos = async (source, nameFile, arrFiles) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      removeTmpFiles(arr)
-      resolve(outputFile)
+      removeTmpFiles(arr);
+      resolve(outputFile);
     });
-  })
+  });
 };
 
 const removeTmpFiles = async files => {
   for (var file of files) {
-    await UArchive.deleteArchive(file)
+    await UArchive.deleteArchive(file);
   }
-}
+};
 
 module.exports = {
   generateVideo,
