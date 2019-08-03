@@ -1,6 +1,7 @@
 import fs from "fs";
 import path, { resolve } from "path";
 import { constants } from "../../config";
+import _ from "lodash";
 
 const BASE_URL = constants.BASE_URL;
 
@@ -12,10 +13,12 @@ const getBaseUrl = source => {
 const loadFile = (source, nameFile) => {
   try {
     var localUrl = `${getBaseUrl(source)}/${nameFile}`;
-    return fs
+    var arch = fs
       .readFileSync(localUrl, "utf8")
       .toString()
+      .replace(/\r/g, "")
       .split("\n");
+    return _.compact(arch);
   } catch (error) {
     return "";
   }

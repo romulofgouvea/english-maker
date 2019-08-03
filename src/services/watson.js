@@ -57,7 +57,7 @@ const getAudio = async (source, nameFile, text) => {
     voice: voice.allison
   };
   var caminho = path.join(BASE_URL, source);
-  nameFile = nameFile.replace('\r','');
+  nameFile = nameFile.replace("\r", "");
 
   return await textToSpeech
     .synthesize(synthesizeParams)
@@ -95,7 +95,9 @@ const getKeyWords = async text => {
   const analyzeParams = {
     text: text,
     features: {
-      keywords: {}
+      keywords: {
+        limit: 5
+      }
     }
   };
 
