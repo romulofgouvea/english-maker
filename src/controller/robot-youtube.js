@@ -1,15 +1,16 @@
 import _ from "lodash";
 
 import { Google } from "~/services";
+import { UArchive } from "~/utils";
 
 const RobotYouTube = async () => {
   try {
-    // console.log("> [ROBOT YOUTUBE] Recover state aplication");
-    // var renderFinal = await UArchive.loadFileJson("/assets/state", "render.json");
+    console.log("> [ROBOT YOUTUBE] Recover state aplication");
+    var state = await UArchive.loadFileJson("/assets/state", "state.json");
 
     await Google.authenticateWithOAuth()
-    // const videoInformation = await Google.uploadVideo(renderFinal)
-    // await Google.uploadThumbnail(videoInformation)
+    const videoInformation = await Google.uploadVideo(state)
+    await Google.uploadThumbnail(videoInformation)
 
   } catch (error) {
     console.log("Ops...", error);
