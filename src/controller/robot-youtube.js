@@ -8,10 +8,10 @@ const RobotYouTube = async () => {
     console.log("> [ROBOT YOUTUBE] Recover state aplication");
     var state = await UArchive.loadFileJson("/assets/state", "state.json");
 
-    await Google.authenticateWithOAuth()
-    const videoInformation = await Google.uploadVideo(state)
-    await Google.uploadThumbnail(videoInformation)
-
+    await Google.authenticateWithOAuth();
+    const videoInformation = await Google.uploadVideo(state);
+    var filePath = ""
+    await Google.uploadThumbnail(filePath,videoInformation);
   } catch (error) {
     console.log("Ops...", error);
   }
