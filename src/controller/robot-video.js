@@ -72,26 +72,24 @@ const createVideos = async state => {
 };
 
 const imageVideoFromText = async (text, saveImage = false) => {
-  var nameFile = text.toLowerCase().replace(" ", "_");
+  var nameFile = text.toLowerCase().replace(/\s/g, "_");
   var outputImage = await UImage.generateImageTextCenter(
-    "/assets/videos/render/temp/images",
+    "/assets/videos/render/images",
     nameFile,
     text
   );
 
   if (UArchive.fileExists(outputImage)) {
     var outputVideo = await UVideo.generateVideoTimeFixed(
-      "/assets/videos",
+      "/assets/videos/render/temp",
       nameFile,
       outputImage
     );
 
-    !saveImage
-      ? await UArchive.deleteArchive(outputImage)
-      : await UArchive.moveFile(
-          "/assets/videos/render/temp/images",
-          "/assets/videos/render/images"
-        );
+    if (!saveImage) {
+      await UArchive.deleteArchive(outputImage);
+    }
+
     return outputVideo;
   }
   return "";
@@ -145,19 +143,27 @@ const unionVideosDefinitionsExamples = async state => {
       audio: words.word_audio
     };
 
-    words.order = EStatic.coverWordStatic()[key];
+    words.word_order = EStatic.coverWordStatic[key];
     var cover = await coverWord(text);
     words.cover_image = cover.image;
     words.cover_video = cover.video;
 
+    words.cover_definition = await imageVideoFromText(
+      `Definitions of the ${word}`,
+      true
+    );
+    words.cover_examples = await imageVideoFromText(
+      `Examples of the ${word}`,
+      true
+    );
+
     var temp = _.concat(
-      words.order,
+      words.word_order,
       words.cover_video,
-      await imageVideoFromText(`Definitions of the ${word}`, true),
-      "/assets/videos/static/definitions_render.mp4",
+      words.cover_video,
+      words.cover_definition,
       definitions,
-      await imageVideoFromText(`Definitions of the ${word}`, true),
-      "/assets/videos/static/examples_render.mp4",
+      words.cover_examples,
       examples
     );
 
@@ -167,7 +173,10 @@ const unionVideosDefinitionsExamples = async state => {
       `${word}_render`,
       temp
     );
-    arrFiles.push(await UArchive.fileExists(output));
+
+    console.log(output, temp);
+
+    arrFiles.push(UArchive.fileExists(output));
   }
 
   arrFiles = _.compact(arrFiles);
@@ -215,16 +224,7 @@ const RobotVideo = async () => {
 
     //state = await createVideos(state);
 
-    var text = {
-      word: "edition",
-      transcript: ".ɨ.ˈdɪ.ʃɨn",
-      translate: "edição",
-      derivatives: [],
-      audio: "/assets/audios/words/word_edition.mp3"
-    };
-    await coverWord(text);
-
-    //await unionVideosDefinitionsExamples(state);
+    await unionVideosDefinitionsExamples(state);
 
     // await finalRenderVideos(state);
   } catch (error) {

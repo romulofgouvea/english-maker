@@ -51,7 +51,7 @@ const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
     ffmpeg.on("exit", () => {
       const exists = UArchive.fileExists(`${source}/${nameFile}.mp4`);
       if (exists) {
-        resolve(`${source}/${nameFile}.mp4`);
+        resolve(exists);
       }
       resolve("");
     });
@@ -60,8 +60,9 @@ const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
   return out;
 };
 
-const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
+const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
   const base = path.join(BASE_URL, source);
+  const image = path.join(BASE_URL, sourceImage);
   const outputFile = `${base}\\${nameFile}.mp4`;
 
   var arg = [
@@ -71,7 +72,7 @@ const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
     "-t",
     "00:00:03",
     "-i",
-    inputURLImage,
+    image,
     "-vcodec",
     "libx264",
     "-strict",
@@ -93,7 +94,13 @@ const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
   return await new Promise((resolve, reject) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
-    ffmpeg.on("exit", () => resolve(outputFile));
+    ffmpeg.on("exit", () => {
+      const exists = UArchive.fileExists(`${source}/${nameFile}.mp4`);
+      if (exists) {
+        resolve(exists);
+      }
+      resolve("");
+    });
   });
 };
 
@@ -139,13 +146,12 @@ function transformVideo(source, nameFile, inputFile) {
   return p;
 }
 
-const generateTempVideo = async (base, nameFile, temp) => {
+const generateTempVideo = async (source, nameFile, temp) => {
   // ffmpeg -i input2.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts intermediate2.ts
-
   var arrIntermediate = [];
   for (var [key, file] of temp.entries()) {
-    let outputFile = `${base}\\${nameFile}_tmp_${key}.ts`;
-    outputFile = outputFile.replace(/\\/g, "/");
+    let outputFile = `${source}\\${nameFile}_tmp_${key}.ts`;
+
     var arg = [
       "-y",
       "-i",
@@ -170,7 +176,13 @@ const generateTempVideo = async (base, nameFile, temp) => {
     var out = await new Promise((resolve, reject) => {
       var ffmpeg = spawn("ffmpeg", arg);
 
-      ffmpeg.on("exit", () => resolve(outputFile));
+      ffmpeg.on("exit", () => {
+        const exists = UArchive.fileExists(`${source}/${nameFile}.ts`);
+        if (exists) {
+          resolve(exists);
+        }
+        resolve("");
+      });
     });
 
     arrIntermediate.push(out);
@@ -206,7 +218,11 @@ const joinVideos = async (source, nameFile, arrFiles) => {
 
     ffmpeg.on("exit", () => {
       removeTmpFiles(arr);
-      resolve(outputFile);
+      const exists = UArchive.fileExists(`${source}/${nameFile}.mp4`);
+      if (exists) {
+        resolve(exists);
+      }
+      resolve("");
     });
   });
 };

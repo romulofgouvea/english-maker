@@ -54,7 +54,7 @@ const renameFile = (nameFile, newNameFile) => {
   }
 };
 
-const moveFile = (source, newSource) => {
+const moveFile = (source, newSource, callback) => {
   var localUrl = getBaseUrl(source);
   var newLocalUrl = getBaseUrl(newSource);
 
