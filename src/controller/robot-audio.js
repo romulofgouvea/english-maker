@@ -1,57 +1,65 @@
 import _ from "lodash";
 
 import { UArchive } from "~/utils";
-import { Watson, Oxford, Google } from "~/services";
+import { Oxford, Google, State } from "~/services";
+
+const metrics = {
+  oxford: 0,
+  google: {
+    lt: { req: 0, char: 0 },
+    tts: { req: 0, char: 0 }
+  }
+};
 
 const getAudios = async state => {
   for (var [key, value] of state.entries()) {
-    var word = value.word.replace("\r", "");
+    var word = value.word;
     console.log("> [ROBOT AUDIO] Word: ", word);
-
-    value.definitions = _.shuffle(value.definitions).slice(0, 5);
-    value.examples = _.shuffle(value.examples).slice(0, 5);
-
-    console.log("> [ROBOT AUDIO] Get transcript definitions");
-    var tempSourceDefinitions = [];
-    for (var [key, def] of value.definitions.entries()) {
-      tempSourceDefinitions.push(
-        await Google.getAudio(
-          "/assets/audios/phrases",
-          `phrase_${word}_definitions_${key}`,
-          def
-        )
-      );
-    }
-
-    console.log("> [ROBOT AUDIO] Get transcript examples");
-    var tempSourceExamples = [];
-    for (var [key, def] of value.examples.entries()) {
-      tempSourceExamples.push(
-        await Google.getAudio(
-          "/assets/audios/phrases",
-          `phrase_${word}_examples_${key}`,
-          def
-        )
-      );
-    }
-
-    var tempSourceWord = value.pronunciation && value.pronunciation.audio
-      ? await Oxford.getAudioFromUrl(
+    do {
+      if (value.pronunciation && value.pronunciation.audio) {
+        metrics.oxford++;
+        value.word_audio = await Oxford.getAudioFromUrl(
           value.pronunciation.audio,
           "/assets/audios/words",
           `word_${word}`
-        )
-      : await Google.getAudio(
+        );
+      } else {
+        metrics.google.tts.req++;
+        metrics.google.tts.char += word.length;
+        value.word_audio = await Google.getAudio(
           "/assets/audios/words",
           `word_${word}`,
           word
         );
+      }
+    } while (!value.word_audio);
 
-    value.audios = {
-      word: tempSourceWord,
-      definitions: _.compact(tempSourceDefinitions),
-      examples: _.compact(tempSourceExamples)
-    };
+    console.log("> [ROBOT AUDIO] Get transcript definitions");
+
+    for (var [key, def] of value.definitions.entries()) {
+      do {
+        metrics.google.tts.req++;
+        metrics.google.tts.char += word.length;
+        def.audio = await Google.getAudio(
+          "/assets/audios/phrases",
+          `phrase_${word}_definitions_${key}`,
+          def.phrase
+        );
+      } while (!def.audio);
+    }
+
+    console.log("> [ROBOT AUDIO] Get transcript examples");
+    for (var [key, exp] of value.examples.entries()) {
+      do {
+        metrics.google.tts.req++;
+        metrics.google.tts.char += word.length;
+        exp.audio = await Google.getAudio(
+          "/assets/audios/phrases",
+          `phrase_${word}_examples_${key}`,
+          exp.phrase
+        );
+      } while (!exp.audio);
+    }
   }
   return state;
 };
@@ -59,16 +67,14 @@ const getAudios = async state => {
 const RobotAudio = async () => {
   try {
     console.log("> [ROBOT AUDIO] Recover state aplication");
-    var state = await UArchive.loadFileJson(
-      "/assets/state",
-      "state.json"
-    );
+    var state = await State.getState();
 
     console.log("> [ROBOT AUDIO] Get audios");
     state = await getAudios(state);
 
     console.log("> [ROBOT AUDIO] Save state");
-    UArchive.writeFileJson("/assets/state", "state.json", state);
+    await State.setState("state", state);
+    await State.setState("metrics_audio", metrics);
   } catch (error) {
     console.log("Ops...", error);
   }

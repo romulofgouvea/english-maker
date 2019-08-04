@@ -114,7 +114,7 @@ const writeFileMP3 = async (source, nameFile, data) => {
   try {
     var localUrl = `${getBaseUrl(source)}/${nameFile}`;
     fs.writeFileSync(localUrl, data);
-    return source;
+    return fileExists(source, nameFile);
   } catch (error) {
     return "";
   }
@@ -132,7 +132,7 @@ const writeFileStream = async (source, nameFile) => {
 
 const fileExists = (source, nameFile = "") => {
   var localUrl = !nameFile ? source : `${getBaseUrl(source)}/${nameFile}`;
-  if (fs.existsSync(localUrl)) return source;
+  if (fs.existsSync(localUrl)) return `${source}/${nameFile}`;
   return "";
 };
 

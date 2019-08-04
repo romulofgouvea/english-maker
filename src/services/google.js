@@ -194,7 +194,7 @@ const getAudio = async (source, nameFile, text) => {
     const buffer = Buffer.from(audioBase64, "base64");
     return await UArchive.writeFileMP3(source, `${nameFile}.mp3`, buffer);
   } catch (error) {
-    console.log("Ops..", error);
+    console.log("Ops.. error get " + nameFile);
     return "";
   }
 };
