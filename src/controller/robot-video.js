@@ -45,27 +45,23 @@ const createVideos = async state => {
     console.log(`\n> [ROBOT AUDIO] Word: ${word}`);
 
     console.log("> [ROBOT VIDEO] Generate video definitions");
-    var arrTemp = [];
     for (var [key, definition] of words.definitions.entries()) {
-      const urlAudio = await UVideo.generateVideo(
+      definition.video = await UVideo.generateVideo(
         "/assets/videos/render/temp",
         `${word}_definitions_${key}`,
         definition.image,
         definition.audio
       );
-      arrTemp.push(urlAudio);
     }
 
     console.log("> [ROBOT VIDEO] Generate video examples");
-    var arrTemp = [];
     for (var [key, example] of words.examples.entries()) {
-      const urlAudio = await UVideo.generateVideo(
+      example.video = await UVideo.generateVideo(
         "/assets/videos/render/temp",
-        `${word}_definitions_${key}`,
+        `${word}_examples_${key}`,
         example.image,
         example.audio
       );
-      arrTemp.push(urlAudio);
     }
   }
 
@@ -163,7 +159,7 @@ const RobotVideo = async () => {
 
     state = await createVideos(state);
 
-    // await unionVideosDefinitionsExamples(state);
+    //await unionVideosDefinitionsExamples(state);
 
     // await finalRenderVideos(state);
   } catch (error) {
