@@ -6,7 +6,6 @@ import { Oxford, Google, State } from "~/services";
 const metrics = {
   oxford: 0,
   google: {
-    lt: { req: 0, char: 0 },
     tts: { req: 0, char: 0 }
   }
 };
@@ -14,7 +13,7 @@ const metrics = {
 const getAudios = async state => {
   for (var [key, value] of state.entries()) {
     var word = value.word;
-    console.log("> [ROBOT AUDIO] Word: ", word);
+    console.log(`\n> [ROBOT AUDIO] Word: ${word}`);
     do {
       if (value.pronunciation && value.pronunciation.audio) {
         metrics.oxford++;
@@ -72,7 +71,7 @@ const RobotAudio = async () => {
     console.log("> [ROBOT AUDIO] Get audios");
     state = await getAudios(state);
 
-    console.log("> [ROBOT AUDIO] Save state");
+    console.log("\n> [ROBOT AUDIO] Save state");
     await State.setState("state", state);
     await State.setState("metrics_audio", metrics);
   } catch (error) {

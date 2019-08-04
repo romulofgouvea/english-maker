@@ -6,46 +6,32 @@ const generateImageFromText = async state => {
   console.log("> [ROBOT VIDEO] Generate images");
 
   for (var words of state) {
-    words.images = {
-      definitions: [],
-      examples: []
-    };
-    const word = words.word.replace(/\r/g, "");
+    const word = words.word;
+    console.log(`\n> [ROBOT VIDEO] Word: ${word}`);
 
-    console.log(
-      "> [ROBOT VIDEO] Generate image of the definitions of word: ",
-      word
-    );
-    var tempArrDefinitions = [];
+    console.log("> [ROBOT VIDEO] Generate image definitions");
     for (var [key, def] of words.definitions.entries()) {
-      var text = def.concat("\n\n", words.translate.definitions[key]);
-      tempArrDefinitions.push(
-        await UImage.generateImageTextCenter(
-          "/assets/images",
-          `${word}_definitions_${key}`,
-          text
-        )
+      var text = def.phrase.concat("\n\n", def.translate);
+      def.image = await UImage.generateImageTextCenter(
+        "/assets/images",
+        `${word}_definitions_${key}`,
+        text
       );
     }
-    words.images.definitions = tempArrDefinitions;
 
     console.log("> [ROBOT VIDEO] Generate image of the examples");
-    var tempArrExamples = [];
-    for (var [key, exm] of words.examples.entries()) {
-      var text = exm.concat("\n\n", words.translate.examples[key]);
-      tempArrExamples.push(
-        await UImage.generateImageTextCenter(
-          "/assets/images",
-          `${word}_examples_${key}`,
-          text
-        )
+    for (var [key, exp] of words.examples.entries()) {
+      var text = exp.phrase.concat("\n\n", exp.translate);
+      exp.image = await UImage.generateImageTextCenter(
+        "/assets/images",
+        `${word}_examples_${key}`,
+        text
       );
     }
-    words.images.examples = tempArrExamples;
   }
 
-  console.log("> [ROBOT VIDEO] Save state");
-  await UArchive.writeFileJson("/assets/state", "state.json", state);
+  console.log("\n> [ROBOT VIDEO] Save state");
+  await State.setState("state", state);
 
   return state;
 };
@@ -188,7 +174,7 @@ const RobotVideo = async () => {
     console.log("> [ROBOT VIDEO] Recover state aplication");
     var state = await UArchive.loadFileJson("/assets/state", "state.json");
 
-    // state = await generateImageFromText(state);
+    state = await generateImageFromText(state);
 
     // state = await createVideos(state);
 

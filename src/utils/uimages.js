@@ -6,8 +6,8 @@ import { constants } from "../../config";
 const BASE_URL = constants.BASE_URL;
 let imageMagick = gm.subClass({ imageMagick: true });
 
-const generateImageTextCenter = (source, nameFile, text) => {
-  return new Promise((resolve, reject) => {
+const generateImageTextCenter = async (source, nameFile, text) => {
+  return await new Promise((resolve, reject) => {
     const base = path.join(BASE_URL, source);
     const outputFile = `${base}\\${nameFile}.png`;
 
@@ -29,7 +29,7 @@ const generateImageTextCenter = (source, nameFile, text) => {
         if (error) {
           reject(error);
         }
-        resolve(outputFile);
+        resolve(`${source}/${nameFile}.png`);
       });
   });
 };
