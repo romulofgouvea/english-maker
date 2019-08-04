@@ -1,57 +1,45 @@
 import _ from "lodash";
 
 import { UArchive } from "~/utils";
-import { Watson, Oxford, Google } from "~/services";
+import { Oxford, Google } from "~/services";
 
 const getAudios = async state => {
   for (var [key, value] of state.entries()) {
-    var word = value.word.replace("\r", "");
+    var word = value.word;
     console.log("> [ROBOT AUDIO] Word: ", word);
-
-    value.definitions = _.shuffle(value.definitions).slice(0, 5);
-    value.examples = _.shuffle(value.examples).slice(0, 5);
+    do {
+      value.word_audio =
+        value.pronunciation && value.pronunciation.audio
+          ? await Oxford.getAudioFromUrl(
+              value.pronunciation.audio,
+              "/assets/audios/words",
+              `word_${word}`
+            )
+          : await Google.getAudio("/assets/audios/words", `word_${word}`, word);
+    } while (!value.word_audio);
 
     console.log("> [ROBOT AUDIO] Get transcript definitions");
-    var tempSourceDefinitions = [];
+
     for (var [key, def] of value.definitions.entries()) {
-      tempSourceDefinitions.push(
-        await Google.getAudio(
+      do {
+        def.audio = await Google.getAudio(
           "/assets/audios/phrases",
           `phrase_${word}_definitions_${key}`,
-          def
-        )
-      );
+          def.phrase
+        );
+      } while (!def.audio);
     }
 
     console.log("> [ROBOT AUDIO] Get transcript examples");
-    var tempSourceExamples = [];
-    for (var [key, def] of value.examples.entries()) {
-      tempSourceExamples.push(
-        await Google.getAudio(
+    for (var [key, exp] of value.examples.entries()) {
+      do {
+        exp.audio = await Google.getAudio(
           "/assets/audios/phrases",
           `phrase_${word}_examples_${key}`,
-          def
-        )
-      );
-    }
-
-    var tempSourceWord = value.pronunciation && value.pronunciation.audio
-      ? await Oxford.getAudioFromUrl(
-          value.pronunciation.audio,
-          "/assets/audios/words",
-          `word_${word}`
-        )
-      : await Google.getAudio(
-          "/assets/audios/words",
-          `word_${word}`,
-          word
+          exp.phrase
         );
-
-    value.audios = {
-      word: tempSourceWord,
-      definitions: _.compact(tempSourceDefinitions),
-      examples: _.compact(tempSourceExamples)
-    };
+      } while (!exp.audio);
+    }
   }
   return state;
 };
@@ -59,10 +47,7 @@ const getAudios = async state => {
 const RobotAudio = async () => {
   try {
     console.log("> [ROBOT AUDIO] Recover state aplication");
-    var state = await UArchive.loadFileJson(
-      "/assets/state",
-      "state.json"
-    );
+    var state = await UArchive.loadFileJson("/assets/state", "state.json");
 
     console.log("> [ROBOT AUDIO] Get audios");
     state = await getAudios(state);
