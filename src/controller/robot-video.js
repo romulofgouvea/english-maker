@@ -1,6 +1,7 @@
 import _ from "lodash";
 
 import { UArchive, UImage, UVideo } from "~/utils";
+import { State } from "~/services";
 
 const generateImageFromText = async state => {
   console.log("> [ROBOT VIDEO] Generate images");
@@ -40,52 +41,36 @@ const createVideos = async state => {
   console.log("> [ROBOT VIDEO] Generate videos");
 
   for (var words of state) {
-    const word = words.word.replace(/\r/g, "");
+    const word = words.word;
+    console.log(`\n> [ROBOT AUDIO] Word: ${word}`);
 
-    console.log("> [ROBOT VIDEO] Generate video definitions from: ", word);
-    var tempDef = [];
-    for (var [key, imgDef] of words.images.definitions.entries()) {
-      var existImg = await UArchive.fileExists(imgDef);
-      var existAudio = words.audios.definitions[key]
-        ? await UArchive.fileExists(words.audios.definitions[key])
-        : false;
-      if (existImg && existAudio)
-        tempDef.push(
-          await UVideo.generateVideo(
-            imgDef,
-            words.audios.definitions[key],
-            "/assets/videos/render/temp",
-            `${word}_definitions_${key}`
-          )
-        );
+    console.log("> [ROBOT VIDEO] Generate video definitions");
+    var arrTemp = [];
+    for (var [key, definition] of words.definitions.entries()) {
+      const urlAudio = await UVideo.generateVideo(
+        "/assets/videos/render/temp",
+        `${word}_definitions_${key}`,
+        definition.image,
+        definition.audio
+      );
+      arrTemp.push(urlAudio);
     }
 
     console.log("> [ROBOT VIDEO] Generate video examples");
-    var tempExp = [];
-    for (var [key, imgExp] of words.images.examples.entries()) {
-      existImg = await UArchive.fileExists(imgExp);
-      existAudio = words.audios.examples[key]
-        ? await UArchive.fileExists(words.audios.examples[key])
-        : false;
-      if (existImg && existAudio)
-        tempExp.push(
-          await UVideo.generateVideo(
-            imgExp,
-            words.audios.examples[key],
-            "/assets/videos/render/temp",
-            `${word}_examples_${key}`
-          )
-        );
+    var arrTemp = [];
+    for (var [key, example] of words.examples.entries()) {
+      const urlAudio = await UVideo.generateVideo(
+        "/assets/videos/render/temp",
+        `${word}_definitions_${key}`,
+        example.image,
+        example.audio
+      );
+      arrTemp.push(urlAudio);
     }
-
-    words.videos = {
-      definitions: _.compact(tempDef),
-      examples: _.compact(tempExp)
-    };
   }
 
   console.log("> [ROBOT VIDEO] Save state");
-  await UArchive.writeFileJson("/assets/state", "state.json", state);
+  await State.setState("state", state);
 
   return state;
 };
@@ -172,11 +157,11 @@ const imageVideoFromText = async (text, saveImage = false) => {
 const RobotVideo = async () => {
   try {
     console.log("> [ROBOT VIDEO] Recover state aplication");
-    var state = await UArchive.loadFileJson("/assets/state", "state.json");
+    var state = await State.getState();
 
-    state = await generateImageFromText(state);
+    //state = await generateImageFromText(state);
 
-    // state = await createVideos(state);
+    state = await createVideos(state);
 
     // await unionVideosDefinitionsExamples(state);
 

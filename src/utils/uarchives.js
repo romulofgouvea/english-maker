@@ -131,7 +131,19 @@ const writeFileStream = async (source, nameFile) => {
 };
 
 const fileExists = (source, nameFile = "") => {
-  var localUrl = !nameFile ? source : `${getBaseUrl(source)}/${nameFile}`;
+  var localUrl = "";
+  if (!nameFile) {
+    localUrl = getBaseUrl(source);
+    var tmpSource = source
+      .replace(/.*src/g, "")
+      .replace(/\\\\|\\|\/|\/\//g, "/");
+    source = tmpSource
+      .replace(/.*src/g, "")
+      .replace(/.[^/|//|\\|\\\\]+(?=\/$|$)/g, "");
+    nameFile = tmpSource.replace(/.+[/|//|\\|\\\\]/g, "");
+  } else {
+    localUrl = `${getBaseUrl(source)}/${nameFile}`;
+  }
   if (fs.existsSync(localUrl)) return `${source}/${nameFile}`;
   return "";
 };

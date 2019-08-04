@@ -6,18 +6,23 @@ import { constants } from "../../config";
 
 const BASE_URL = constants.BASE_URL;
 
-const generateVideo = async (inputURLImage, inputURLMp3, source, nameFile) => {
+const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
   const base = path.join(BASE_URL, source);
+  const image = path.join(BASE_URL, sourceImage);
+  const mp3 = path.join(BASE_URL, sourceMp3);
   const outputFile = `${base}\\${nameFile}.mp4`;
+
+  if (!UArchive.fileExists(image)) throw "Images not exists";
+  if (!UArchive.fileExists(mp3)) throw "Audio not exists";
 
   var arg = [
     "-y",
     "-loop",
     1,
     "-i",
-    inputURLImage,
+    image,
     "-i",
-    inputURLMp3,
+    mp3,
     "-vcodec",
     "libx264",
     "-acodec",
@@ -40,16 +45,19 @@ const generateVideo = async (inputURLImage, inputURLMp3, source, nameFile) => {
     outputFile
   ];
 
-  return await new Promise((resolve, reject) => {
+  const out = await new Promise((resolve, reject) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      if (UArchive.fileExists(outputFile)) {
-        resolve(outputFile);
+      const exists = UArchive.fileExists(`${source}/${nameFile}.mp4`);
+      if (exists) {
+        resolve(`${source}/${nameFile}.mp4`);
       }
-      reject("");
+      resolve("");
     });
   });
+  if (!out) throw "Video not created!";
+  return out;
 };
 
 const generateVideoTimeFixed = async (source, nameFile, inputURLImage) => {
