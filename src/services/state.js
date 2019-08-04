@@ -1,7 +1,10 @@
 import { UArchive } from "~/utils";
 
-const getState = async () => {
-  return await UArchive.loadFileJson("/assets/state", "state.json");
+const getState = async nameFile => {
+  return await UArchive.loadFileJson(
+    "/assets/state",
+    !nameFile && "state.json"
+  );
 };
 
 const setState = async (nameFile, data) => {

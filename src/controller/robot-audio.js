@@ -1,7 +1,7 @@
 import _ from "lodash";
 
 import { UArchive } from "~/utils";
-import { Oxford, Google } from "~/services";
+import { Oxford, Google, State } from "~/services";
 
 const getAudios = async state => {
   for (var [key, value] of state.entries()) {
@@ -47,7 +47,7 @@ const getAudios = async state => {
 const RobotAudio = async () => {
   try {
     console.log("> [ROBOT AUDIO] Recover state aplication");
-    var state = await UArchive.loadFileJson("/assets/state", "state.json");
+    var state = await State.getState();
 
     console.log("> [ROBOT AUDIO] Get audios");
     state = await getAudios(state);
