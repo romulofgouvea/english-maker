@@ -34,11 +34,9 @@ const getWords = async arr => {
 
 const mountDataOxford = async word => {
   metrics.oxford++;
-  var oxfordData = await Oxford.getFromAPIOxford(
-    `/api/v2/entries/en-us/${word}`
-  );
+  var oxfordData = await Oxford.getFromAPIOxford(word);
   if (!oxfordData) return null;
-  return oxfordData[_.random(0, oxfordData.data.length)] || oxfordData.data[0];
+  return oxfordData.data;
 };
 
 const mountDefinitions = async definitions => {
@@ -109,7 +107,7 @@ const generateKeyWords = async () => {
     var def = words.definitions && words.definitions.map(d => d.phrase);
     var exp = words.examples && words.examples.map(d => d.phrase);
     words.keywords = def && (await mountKeyWords(_.concat(def, exp)));
-    console.log(words.keywords,def);
+    console.log(words.keywords, def);
   }
   await State.setState("state", state);
 };
@@ -130,6 +128,7 @@ const mountObjectData = async arrWords => {
     var oxfordData = await mountDataOxford(word);
     temp = oxfordData && Object.assign({}, temp, oxfordData);
 
+    console.log(JSON.stringify(oxfordData));
     console.log("> [ROBOT TEXT] Search transcript");
     metrics.watson.tts.req++;
     metrics.watson.tts.char += word.length;

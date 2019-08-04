@@ -2,124 +2,116 @@ import axios from "axios";
 import _ from "lodash";
 
 import { UArchive } from "~/utils";
-import { Fraze } from "~/services";
-import { Google } from "~/services";
 
-import { constants } from "../../config";
+const getDefinitionsAndExamplesByEntries = lexical => {
+  var entries =
+    lexical.entries &&
+    lexical.entries.map(entrie =>
+      entrie.senses.map(sense => {
+        var tempDefinitions = [];
+        var tempExamples = [];
 
-const BASE_URL = constants.BASE_URL;
+        sense.subsenses &&
+          sense.subsenses.map(sub => {
+            sub.examples = sub.examples || [];
+            tempExamples.push(sub.examples.map(e => e.text));
+            tempDefinitions.push(sub.definitions);
+          });
+        sense.examples = sense.examples || [];
 
-const populateData = async (word, results) => {
-  var MData = [];
-  return await new Promise((resolve, reject) => {
-    results.map(async en => {
-      var temp = {};
+        sense.definitions = _.concat(
+          sense.definitions,
+          _.flatten(tempDefinitions)
+        );
+        sense.examples = _.concat(
+          sense.examples.map(e => e.text),
+          _.flatten(tempExamples)
+        );
 
-      // console.log("Derivatives: ", en.derivatives ? en.derivatives.length : 0);
-      temp.derivatives =
-        en.derivatives && (await en.derivatives.map(d => d.text));
+        return {
+          definitions: sense.definitions,
+          examples: sense.examples
+        };
+      })
+    );
 
-      // console.log("Entries: ", en.entries ? en.entries.length : 0);
-      const entries =
-        en.entries &&
-        (await en.entries.map(entrie =>
-          entrie.senses.map(sense => {
-            var tempDefinitions = [];
-            var tempExamples = [];
-            var tempShortDefinitions = [];
+  entries = _.flatten(entries);
 
-            sense.subsenses &&
-              sense.subsenses.map(sub => {
-                sub.examples = sub.examples || [];
-                tempExamples.push(sub.examples.map(e => e.text));
-                tempDefinitions.push(sub.definitions);
-                tempShortDefinitions.push(sub.shortDefinitions);
-              });
-            sense.examples = sense.examples || [];
-            sense.definitions = _.concat(
-              sense.definitions,
-              _.flatten(tempDefinitions)
-            );
-            sense.examples = _.concat(
-              sense.examples.map(e => e.text),
-              _.flatten(tempExamples)
-            );
-            sense.definitions = _.xor(
-              sense.definitions,
-              _.flatten(tempShortDefinitions),
-              _.isEqual
-            );
-
-            delete sense.subsenses;
-            delete sense.id;
-            delete sense.constructions;
-            delete sense.thesaurusLinks;
-            delete sense.shortDefinitions;
-            return sense;
-          })
-        )[0]);
-
-      var tempDefinitions = [];
-      var tempExamples = [];
-      entries.map(s => {
-        tempDefinitions = _.xor(tempDefinitions, s.definitions);
-        tempExamples = _.xor(tempExamples, s.examples);
-      });
-
-      temp.definitions = tempDefinitions.filter(Boolean) || [];
-      temp.examples = tempExamples.filter(Boolean) || [];
-
-      //console.log("lexicalCategory");
-      temp.lexicalCategory = en.lexicalCategory.text;
-
-      //console.log(
-      //   "Pronunciation: ",
-      //   en.pronunciations ? en.pronunciations.length : 0
-      // );
-      temp.pronunciation =
-        en.pronunciations &&
-        (await en.pronunciations.map(p => {
-          if (p.phoneticNotation === "IPA") {
-            return {
-              audio: p.audioFile,
-              transcription: p.phoneticSpelling
-            };
-          }
-        })[1]);
-
-      MData.push(temp);
-    });
-    resolve(MData);
+  var tempDefinitions = [];
+  var tempExamples = [];
+  entries.map(s => {
+    tempDefinitions = _.xor(tempDefinitions, s.definitions);
+    tempExamples = _.xor(tempExamples, s.examples);
   });
+
+  return {
+    definitions: tempDefinitions.filter(Boolean) || [],
+    examples: tempExamples.filter(Boolean) || []
+  };
 };
 
-const getFromAPIOxford = async (query, level = 1) => {
+const prettierData = async result => {
+  var temp = {};
+  const lexical = await getEntrieVerb(result.lexicalEntries);
+
+  temp.word = lexical.text;
+  temp.language = lexical.language;
+  temp.derivatives = temp.derivatives && lexical.derivatives.map(d => d.text);
+  temp.lexicalCategory = lexical.lexicalCategory.text;
+  temp.pronunciation =
+    temp.pronunciation &&
+    _.compact(
+      lexical.pronunciations.map(p => {
+        if (p.phoneticNotation === "IPA")
+          return {
+            audio: p.audioFile,
+            transcription: p.phoneticSpelling
+          };
+      })
+    )[0];
+
+  var entrie = await getDefinitionsAndExamplesByEntries(lexical);
+
+  temp.definitions = entrie.definitions;
+  temp.examples = entrie.examples;
+
+  return temp;
+};
+
+const getEntrieVerb = results => {
+  var objTemp =
+    results &&
+    _.compact(results.map(r => r.lexicalCategory.id === "verb" && r))[0];
+
+  if (objTemp) return objTemp;
+  return results[_.random(0, results.length)];
+};
+
+const getFromAPIOxford = async (word, level = 1) => {
   try {
-    const response = await axios.get(process.env.OXFORD_BASE_URL + query, {
-      headers: {
-        Accept: "application/json",
-        app_id: process.env.OXFORD_APP_ID,
-        app_key: process.env.OXFORD_API_KEY
-      }
-    });
-    const word = response.data.results[0].id;
-    const results = response.data.results[0].lexicalEntries;
+    const result = await axios
+      .get(`${process.env.OXFORD_BASE_URL}/api/v2/entries/en-us/${word}`, {
+        headers: {
+          Accept: "application/json",
+          app_id: process.env.OXFORD_APP_ID,
+          app_key: process.env.OXFORD_API_KEY
+        }
+      })
+      .then(response => response.data.results[0]);
 
-    var MData = await populateData(word, results);
-
-    var data = {
-      status: response.status,
-      data: MData
-    };
+    if (!result) throw "Not get result Oxford";
 
     switch (level) {
       case 1:
-        return data;
+        return {
+          status: 200,
+          data: await prettierData(result)
+        };
       default:
         return data;
     }
   } catch (error) {
-    // console.log("Ops..", error);
+    console.log("Ops..", error);
     return {
       status: error.response ? error.response.status : 0,
       data: null
