@@ -1,6 +1,6 @@
 import _ from "lodash";
 
-import { UArchive, UImage, UVideo } from "~/utils";
+import { UArchive, UImage, UVideo, EStatic } from "~/utils";
 import { State } from "~/services";
 
 const generateImageFromText = async state => {
@@ -75,17 +75,33 @@ const unionVideosDefinitionsExamples = async state => {
   console.log("> [ROBOT VIDEO] Union definitions and examples in video");
 
   var arrFiles = [];
-  for (var words of state) {
-    const word = words.word.replace(/\r/g, "");
-    console.log("> [ROBOT VIDEO] Generate temp union video from: ", word);
+  for (var [key, words] of state.entries()) {
+    const word = words.word;
+    console.log(`\n> [ROBOT AUDIO] Word: ${word}`);
+
+    var definitions = words.definitions.map(d => d.video);
+    var examples = words.examples.map(d => d.video);
+
+    var text = {
+      word,
+      transcript: `/${words.transcript}/`,
+      translate: words.word_translate,
+      derivatives: words.derivatives || [],
+      audio: words.word_audio
+    };
 
     var temp = _.concat(
-      "D:\\workspace\\video-maker\\src\\assets\\videos\\static\\definitions_render.mp4",
-      words.videos.definitions,
-      "D:\\workspace\\video-maker\\src\\assets\\videos\\static\\examples_render.mp4",
-      words.videos.examples
+      EStatic.coverWordStatic()[key],
+      await coverWord(text),
+      await imageVideoFromText(`Definitions of the ${word}`, true),
+      "/assets/videos/static/definitions_render.mp4",
+      definitions,
+      await imageVideoFromText(`Definitions of the ${word}`, true),
+      "/assets/videos/static/examples_render.mp4",
+      examples
     );
 
+    console.log("> [ROBOT VIDEO] Join videos in temp file");
     var output = await UVideo.joinVideos(
       "/assets/videos/render/temp",
       `${word}_render`,
@@ -135,7 +151,7 @@ const imageVideoFromText = async (text, saveImage = false) => {
   );
 
   if (UArchive.fileExists(outputImage)) {
-    await UVideo.generateVideoTimeFixed(
+    var outputVideo = await UVideo.generateVideoTimeFixed(
       "/assets/videos",
       nameFile,
       outputImage
@@ -147,7 +163,31 @@ const imageVideoFromText = async (text, saveImage = false) => {
           "/assets/videos/render/temp/images",
           "/assets/videos/render/images"
         );
+    return outputVideo;
   }
+  return "";
+};
+
+const coverWord = async text => {
+  var audioWord = text.audio;
+  delete text.audio;
+
+  var outputImage = await UImage.coverImageWord(
+    "/assets/videos/render/images",
+    `${text.word}_word_cover`,
+    text
+  );
+
+  if (UArchive.fileExists(outputImage)) {
+    var outputVideo = await UVideo.generateVideo(
+      "/assets/videos/render/temp",
+      `${text.word}_word_render`,
+      outputImage,
+      audioWord
+    );
+  }
+  console.log(outputVideo);
+  return UArchive.fileExists(outputVideo);
 };
 
 const RobotVideo = async () => {
@@ -157,7 +197,16 @@ const RobotVideo = async () => {
 
     //state = await generateImageFromText(state);
 
-    state = await createVideos(state);
+    //state = await createVideos(state);
+
+    var text = {
+      word: "edition",
+      transcript: ".ɨ.ˈdɪ.ʃɨn",
+      translate: "edição",
+      derivatives: [],
+      audio: "/assets/audios/words/word_edition.mp3"
+    };
+    await coverWord(text);
 
     //await unionVideosDefinitionsExamples(state);
 

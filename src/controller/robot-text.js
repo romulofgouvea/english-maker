@@ -1,7 +1,7 @@
 import dotenv from "dotenv";
 import _ from "lodash";
 
-import { UArchive } from "~/utils";
+import { UArchive, UString } from "~/utils";
 import { Oxford, Watson, Google, Fraze, State } from "~/services";
 
 dotenv.config();
@@ -117,7 +117,7 @@ const mountObjectData = async arrWords => {
 
   for (var word of arrWords) {
     var temp = {};
-    temp.word = word;
+    temp.word = UString.captalize(word);
     console.log(`\n> [ROBOT TEXT] Word: ${word}`);
 
     metrics.watson.lt.req++;
