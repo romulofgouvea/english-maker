@@ -128,7 +128,6 @@ const mountObjectData = async arrWords => {
     var oxfordData = await mountDataOxford(word);
     temp = oxfordData && Object.assign({}, temp, oxfordData);
 
-    console.log(JSON.stringify(oxfordData));
     console.log("> [ROBOT TEXT] Search transcript");
     metrics.watson.tts.req++;
     metrics.watson.tts.char += word.length;
@@ -179,20 +178,16 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
 const RobotText = async () => {
   try {
     console.log("> [ROBOT TEXT] Load words");
-    // const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
+    const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
+    const { arrWithoutUsed, arrWords } = await getWords(base);
 
-    const t = UArchive.deleteArchive("/assets/images/teste1.txt");
-    console.log("ok: ", t);
+    const objectMounted = await mountObjectData(arrWords);
 
-    // const { arrWithoutUsed, arrWords } = await getWords(base);
-
-    // const objectMounted = await mountObjectData(arrWords);
-
-    // if (objectMounted) {
-    //   await saveData(arrWithoutUsed, arrWords, objectMounted);
-    // } else {
-    //   console.log("Object not Mounted");
-    // }
+    if (objectMounted) {
+      await saveData(arrWithoutUsed, arrWords, objectMounted);
+    } else {
+      console.log("Object not Mounted");
+    }
   } catch (error) {
     console.log("Ops...", error);
   }

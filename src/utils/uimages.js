@@ -93,7 +93,7 @@ const coverImageWord = async (source, nameFile, objText) => {
     im.fontSize(fontWord)
       .draw([`text 200,${drawText} '${objText.word}'`])
       .fontSize(150)
-      .draw([`text 200,${drawTranscript} '/${objText.transcript}/'`])
+      .draw([`text 200,${drawTranscript} '${objText.transcript}'`])
       .fontSize(150)
       .draw([`text 200,${drawTranslate} '${objText.translate}'`]);
 
