@@ -49,11 +49,11 @@ const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      const exists = UArchive.fileExists(`${source}/${nameFile}.mp4`);
+      const exists = UArchive.fileExists(outputFile);
       if (exists) {
         resolve(exists);
       }
-      resolve("");
+      reject("");
     });
   });
   if (!out) throw "Video not created!";
@@ -95,11 +95,11 @@ const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      const exists = UArchive.fileExists(`${source}/${nameFile}.mp4`);
+      const exists = UArchive.fileExists(outputFile);
       if (exists) {
         resolve(exists);
       }
-      resolve("");
+      reject("");
     });
   });
 };
@@ -136,11 +136,13 @@ function transformVideo(source, nameFile, inputFile) {
 
   const p = new Promise((resolve, reject) => {
     const ffmpeg = spawn("ffmpeg", arg);
-    ffmpeg.stderr.on("data", data => {
-      console.log(`${data}`);
-    });
-    ffmpeg.on("close", code => {
-      resolve();
+
+    ffmpeg.on("exit", () => {
+      const exists = UArchive.fileExists(outputFile);
+      if (exists) {
+        resolve(exists);
+      }
+      reject("");
     });
   });
   return p;
@@ -177,11 +179,11 @@ const generateTempVideo = async (source, nameFile, temp) => {
       var ffmpeg = spawn("ffmpeg", arg);
 
       ffmpeg.on("exit", () => {
-        const exists = UArchive.fileExists(`${source}/${nameFile}.ts`);
+        const exists = UArchive.fileExists(outputFile);
         if (exists) {
           resolve(exists);
         }
-        resolve("");
+        reject("");
       });
     });
 
@@ -217,12 +219,12 @@ const joinVideos = async (source, nameFile, arrFiles) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      removeTmpFiles(arr);
-      const exists = UArchive.fileExists(`${source}/${nameFile}.mp4`);
+      const exists = UArchive.fileExists(outputFile);
       if (exists) {
+        removeTmpFiles(arrFiles)
         resolve(exists);
       }
-      resolve("");
+      reject("");
     });
   });
 };

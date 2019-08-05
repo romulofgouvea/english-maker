@@ -161,7 +161,7 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
   if (arrWithoutUsed) {
     console.log("> [ROBOT TEXT] rewrite database words without words used");
     await UArchive.writeFileSync(
-      "assets/wordsDatabase.txt",
+      "/assets/text/wordsDatabase.txt",
       arrWithoutUsed.join("\n")
     );
   }

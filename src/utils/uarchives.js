@@ -12,6 +12,8 @@ const getBaseUrl = source => {
 
 const loadFile = (source, nameFile) => {
   try {
+    if (!fileExists(source, nameFile)) throw "File not exists";
+
     var localUrl = `${getBaseUrl(source)}/${nameFile}`;
     var arch = fs
       .readFileSync(localUrl, "utf8")
@@ -26,6 +28,8 @@ const loadFile = (source, nameFile) => {
 
 const loadFileJson = (source, nameFile) => {
   try {
+    if (!fileExists(source, nameFile)) throw "File not exists";
+
     var localUrl = `${getBaseUrl(source)}/${nameFile}`;
     return JSON.parse(fs.readFileSync(localUrl, "utf8"));
   } catch (error) {
@@ -35,6 +39,8 @@ const loadFileJson = (source, nameFile) => {
 
 const appendFile = (source, nameFile, data) => {
   try {
+    if (!fileExists(source, nameFile)) throw "File not exists";
+
     var localUrl = `${getBaseUrl(source)}/${nameFile}`;
     fs.appendFile(localUrl, data, err => {
       if (err) throw err;
@@ -44,9 +50,11 @@ const appendFile = (source, nameFile, data) => {
   }
 };
 
-const renameFile = (nameFile, newNameFile) => {
+const renameFile = (source, newSource) => {
   try {
-    fs.rename(nameFile, newNameFile, err => {
+    if (!fileExists(source) && !fileExists(newSource)) throw "File not exists";
+
+    fs.rename(source, newSource, err => {
       if (err) throw err;
     });
   } catch (error) {
@@ -55,6 +63,8 @@ const renameFile = (nameFile, newNameFile) => {
 };
 
 const moveFile = (source, newSource, callback) => {
+  if (!fileExists(source) && !fileExists(newSource)) throw "File not exists";
+
   var localUrl = getBaseUrl(source);
   var newLocalUrl = getBaseUrl(newSource);
 
@@ -64,7 +74,7 @@ const moveFile = (source, newSource, callback) => {
   readStream.on("error", callback);
   writeStream.on("error", callback);
 
-  readStream.on("close", function() {
+  readStream.on("close", function () {
     fs.unlink(localUrl, callback);
   });
 
@@ -94,22 +104,6 @@ const writeFileJson = (source, nameFile, data) => {
   }
 };
 
-const deleteArchive = (source, nameFile = "") => {
-  try {
-    var localUrl = !nameFile ? source : `${getBaseUrl(source)}/${nameFile}`;
-    var exists = fileExists(localUrl);
-    if (exists) {
-      fs.unlink(localUrl, err => {
-        if (err) throw err;
-      });
-      return exists;
-    }
-    return "";
-  } catch (error) {
-    return "";
-  }
-};
-
 const writeFileMP3 = async (source, nameFile, data) => {
   try {
     var localUrl = `${getBaseUrl(source)}/${nameFile}`;
@@ -125,6 +119,24 @@ const writeFileStream = async (source, nameFile) => {
     var localUrl = `${getBaseUrl(source)}/${nameFile}`;
     fs.createWriteStream(localUrl);
     return fileExists(source, nameFile);
+  } catch (error) {
+    return "";
+  }
+};
+
+const deleteArchive = (source, nameFile = "") => {
+  try {
+    if (!fileExists(source, nameFile)) throw "File not exists";
+
+    var localUrl = !nameFile ? source : `${getBaseUrl(source)}/${nameFile}`;
+    var exists = fileExists(localUrl);
+    if (exists) {
+      fs.unlink(localUrl, err => {
+        if (err) throw err;
+      });
+      return exists;
+    }
+    return "";
   } catch (error) {
     return "";
   }
