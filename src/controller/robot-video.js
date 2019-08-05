@@ -3,6 +3,94 @@ import _ from "lodash";
 import { UArchive, UImage, UVideo, EStatic } from "~/utils";
 import { State } from "~/services";
 
+const imageVideoFromText = async (text, saveImage = false) => {
+  var nameFile = text.toLowerCase().replace(/\s/g, "_");
+  var outputImage = await UImage.generateImageTextCenter(
+    "/assets/temp",
+    nameFile,
+    text
+  );
+
+  if (outputImage) {
+    var outputVideo = await UVideo.generateVideoTimeFixed(
+      "/assets/temp",
+      nameFile,
+      outputImage
+    );
+
+    if (!saveImage) {
+      nameFile = outputImage.replace(/.+[/|//|\\|\\\\]/g, "");
+      await UArchive.renameFile(outputImage, `/assets/images/${nameFile}`)
+    }
+
+    return outputVideo;
+  }
+  return "";
+};
+
+const coverWord = async text => {
+  var word = text.word.toLowerCase();
+  var audioWord = text.audio;
+  delete text.audio;
+
+  var outputImage = await UImage.coverImageWord(
+    "/assets/temp",
+    `${word}_word_cover`,
+    text
+  );
+
+  if (outputImage) {
+    var outputVideo = await UVideo.generateVideo(
+      "/assets/temp",
+      `${word}_word_render`,
+      outputImage,
+      audioWord
+    );
+
+    if (outputVideo) {
+      var nameFile = outputImage.replace(/.+[/|//|\\|\\\\]/g, "");
+      await UArchive.renameFile(outputImage, `/assets/images/${nameFile}`)
+
+      nameFile = audioWord.replace(/.+[/|//|\\|\\\\]/g, "");
+      await UArchive.renameFile(audioWord, `/assets/audios/${nameFile}`)
+      return {
+        image: outputImage,
+        video: outputVideo
+      };
+    }
+  }
+  return {
+    image: "",
+    video: ""
+  };
+};
+
+const generateCovers = async words => {
+  var word = words.word.toLowerCase();
+
+  console.log("> [ROBOT VIDEO] Generate cover word definitions");
+  var cover_definition = await imageVideoFromText(`Definitions of the ${word}`);
+  console.log("> [ROBOT VIDEO] Generate cover word examples");
+  var cover_examples = await imageVideoFromText(`Examples of the ${word}`);
+
+  var text = {
+    word,
+    transcript: `${words.transcript}`,
+    translate: words.word_translate,
+    derivatives: words.derivatives || [],
+    audio: words.word_audio
+  };
+  console.log("> [ROBOT VIDEO] Generate word image,video,definitions, examples");
+  var cover = await coverWord(text);
+
+  return {
+    image: cover.image,
+    video: cover.video,
+    definition: cover_definition,
+    example: cover_examples
+  }
+}
+
 const generateImageFromText = async state => {
   console.log("> [ROBOT VIDEO] Generate images");
 
@@ -48,6 +136,7 @@ const createVideos = async state => {
   console.log("> [ROBOT VIDEO] Generate videos");
 
   for (var words of state) {
+    var nameFile = "";
     const word = words.word;
     console.log(`\n> [ROBOT VIDEO] Word: ${word}`);
 
@@ -59,6 +148,18 @@ const createVideos = async state => {
         definition.image,
         definition.audio
       );
+      if (definition.video) {
+        var urlImage = UArchive.getBaseUrl(definition.image);
+        nameFile = urlImage.replace(/.+[/|//|\\|\\\\]/g, "");
+        UArchive.renameFile(urlImage, `/assets/images/${nameFile}`)
+
+        var urlAudio = UArchive.getBaseUrl(definition.audio);
+        nameFile = urlAudio.replace(/.+[/|//|\\|\\\\]/g, "");
+        UArchive.renameFile(urlAudio, `/assets/audios/${nameFile}`)
+
+        delete definition.image;
+        delete definition.audio;
+      }
     }
 
     console.log("> [ROBOT VIDEO] Generate video examples");
@@ -69,6 +170,19 @@ const createVideos = async state => {
         example.image,
         example.audio
       );
+
+      if (example.video) {
+        urlImage = UArchive.getBaseUrl(example.image);
+        nameFile = urlImage.replace(/.+[/|//|\\|\\\\]/g, "");
+        UArchive.renameFile(urlImage, `/assets/images/${nameFile}`)
+
+        urlAudio = UArchive.getBaseUrl(example.audio);
+        nameFile = urlAudio.replace(/.+[/|//|\\|\\\\]/g, "");
+        UArchive.renameFile(urlAudio, `/assets/audios/${nameFile}`)
+
+        delete example.image;
+        delete example.audio;
+      }
     }
   }
 
@@ -77,94 +191,6 @@ const createVideos = async state => {
 
   return state;
 };
-
-const imageVideoFromText = async (text, saveImage = false) => {
-  var nameFile = text.toLowerCase().replace(/\s/g, "_");
-  var outputImage = await UImage.generateImageTextCenter(
-    "/assets/temp",
-    nameFile,
-    text
-  );
-
-  if (outputImage) {
-    var outputVideo = await UVideo.generateVideoTimeFixed(
-      "/assets/temp",
-      nameFile,
-      outputImage
-    );
-
-    if (!saveImage) {
-      await UArchive.deleteArchive(outputImage);
-    }
-
-    return outputVideo;
-  }
-  return "";
-};
-
-const coverWord = async text => {
-  var word = text.word.toLowerCase();
-  var audioWord = text.audio;
-  delete text.audio;
-
-  var outputImage = await UImage.coverImageWord(
-    "/assets/images",
-    `${word}_word_cover`,
-    text
-  );
-
-  if (outputImage) {
-    var outputVideo = await UVideo.generateVideo(
-      "/assets/temp",
-      `${word}_word_render`,
-      outputImage,
-      audioWord
-    );
-
-    if (outputVideo) {
-      return {
-        image: outputImage,
-        video: outputVideo
-      };
-    }
-  }
-  return {
-    image: "",
-    video: ""
-  };
-};
-
-const generateCovers = async words => {
-  var word = words.word.toLowerCase();
-
-  console.log("> [ROBOT VIDEO] Generate cover word definitions");
-  var cover_definition = await imageVideoFromText(
-    `Definitions of the ${word}`,
-    true
-  );
-  console.log("> [ROBOT VIDEO] Generate cover word examples");
-  var cover_examples = await imageVideoFromText(
-    `Examples of the ${word}`,
-    true
-  );
-
-  var text = {
-    word,
-    transcript: `/${words.transcript}/`,
-    translate: words.word_translate,
-    derivatives: words.derivatives || [],
-    audio: words.word_audio
-  };
-  console.log("> [ROBOT VIDEO] Generate word image,video,definitions, examples");
-  var cover = await coverWord(text);
-
-  return {
-    image: cover.image,
-    video: cover.video,
-    definition: cover_definition,
-    example: cover_examples
-  }
-}
 
 const unionVideosDefinitionsExamples = async state => {
   console.log("> [ROBOT VIDEO] Union definitions and examples in video");
@@ -196,8 +222,28 @@ const unionVideosDefinitionsExamples = async state => {
       temp
     );
 
-    if (output)
+    if (output) {
+
+      delete words.word_order
+      delete words.cover_video
+      delete words.cover_video
+      delete words.cover_definition
+      delete words.cover_examples
+
+      words.definitions.map(d => {
+        delete d.video
+      });
+      words.examples.map(d => {
+        delete d.video
+      });
+
+      temp.map(t => {
+        var nameFile = t.replace(/.+[/|//|\\|\\\\]/g, "");
+        UArchive.renameFile(t, `/assets/videos/${nameFile}`)
+      })
+
       arrFiles.push(output);
+    }
   }
 
   arrFiles = _.compact(arrFiles);
@@ -216,21 +262,21 @@ const finalRenderVideos = async state => {
   console.log("> [ROBOT VIDEO] Final render");
 
   var arrFilesUnion = await UArchive.loadFile(
-    "/assets/videos",
+    "/assets/videos/final_render",
     "file_render_words.txt"
   );
 
   const output = await UVideo.joinVideos(
-    "/assets/videos",
+    "/assets/videos/final_render",
     `final_render`,
     arrFilesUnion
   );
 
   if (output) {
-    arrFilesUnion.map(a => UArchive.deleteArchive('/assets/videos', UArchive.getBaseUrl(a)))
+    arrFilesUnion.map(a => UArchive.deleteArchive(a))
 
     await UArchive.deleteArchive(
-      "/assets/videos",
+      "/assets/videos/final_render",
       "file_render_words.txt"
     );
   }
@@ -243,7 +289,7 @@ const RobotVideo = async () => {
 
     //state = await generateImageFromText(state);
 
-    // state = await createVideos(state);
+    //state = await createVideos(state);
 
     await unionVideosDefinitionsExamples(state);
 

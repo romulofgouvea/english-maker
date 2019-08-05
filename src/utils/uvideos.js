@@ -199,6 +199,7 @@ const joinVideos = async (source, nameFile, arrFiles) => {
 
   var arr = await generateTempVideo(base, nameFile, arrFiles);
 
+  console.log(arr);
   return await new Promise((resolve, reject) => {
     let inputNamesFormatted = "concat:" + arr.join("|");
 

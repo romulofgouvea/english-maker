@@ -83,7 +83,8 @@ function renameFile(source, newSource) {
 
     const existsFile = this.existsFile(newSource);
     if (existsFile) {
-      return "File renamed: " + existsFile
+      console.log("File renamed: " + existsFile);
+      return existsFile;
     }
   } catch (error) {
     throw error;
