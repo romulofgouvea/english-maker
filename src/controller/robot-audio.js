@@ -19,14 +19,14 @@ const getAudios = async state => {
         metrics.oxford++;
         value.word_audio = await Oxford.getAudioFromUrl(
           value.pronunciation.audio,
-          "/assets/audios/words",
+          "/assets/temp",
           `word_${word}`
         );
       } else {
         metrics.google.tts.req++;
         metrics.google.tts.char += word.length;
         value.word_audio = await Google.getAudio(
-          "/assets/audios/words",
+          "/assets/temp",
           `word_${word}`,
           word
         );
@@ -40,7 +40,7 @@ const getAudios = async state => {
         metrics.google.tts.req++;
         metrics.google.tts.char += word.length;
         def.audio = await Google.getAudio(
-          "/assets/audios/phrases",
+          "/assets/temp",
           `phrase_${word}_definitions_${key}`,
           def.phrase
         );
@@ -53,7 +53,7 @@ const getAudios = async state => {
         metrics.google.tts.req++;
         metrics.google.tts.char += word.length;
         exp.audio = await Google.getAudio(
-          "/assets/audios/phrases",
+          "/assets/temp",
           `phrase_${word}_examples_${key}`,
           exp.phrase
         );

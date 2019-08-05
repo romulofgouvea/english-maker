@@ -39,13 +39,14 @@ const mountDataOxford = async word => {
   return oxfordData.data;
 };
 
-const mountDefinitions = async definitions => {
+const mountDefinitions = async (word, definitions) => {
   var limit = process.env.LIMIT_DEFINITIONS || 5;
-  if (definitions && definitions > limit) {
+  if (definitions && definitions.length > limit) {
     definitions = _.sampleSize(definitions, process.env.LIMIT_DEFINITIONS || 5);
   } else {
     metrics.fraze++;
-    var frazeDefinitions = await Fraze.getAPIFraze("/dico", word, "/en");
+    var defs = await Fraze.getAPIFraze("/dico", word, "/en");
+    var frazeDefinitions = defs.data || [];
     var frazeDefs = frazeDefinitions.map(p => p.phrase);
     frazeDefs = _.sampleSize(frazeDefs, Math.abs(limit - definitions.length));
     definitions = _.concat(definitions, frazeDefs);
@@ -66,16 +67,17 @@ const mountDefinitions = async definitions => {
   return arrTranslate;
 };
 
-const mountExamples = async examples => {
+const mountExamples = async (word, examples) => {
   var limit = process.env.LIMIT_EXAMPLES || 5;
-  if (examples && examples > limit) {
+  if (examples && examples.length > limit) {
     examples = _.sampleSize(examples, process.env.LIMIT_EXAMPLES || 5);
   } else {
     metrics.fraze++;
-    var frazeExamples = await Fraze.getAPIFraze("/phrase", word, "/en/1/no");
-    var frazeDefs = frazeExamples.map(p => p.phrase);
-    frazeDefs = _.sampleSize(frazeDefs, Math.abs(limit - definitions.length));
-    definitions = _.concat(definitions, frazeDefs);
+    var exp = await Fraze.getAPIFraze("/phrase", word, "/en/1/no");
+    var frazeExamples = exp.data || [];
+    var frazeExp = frazeExamples.map(p => p.phrase);
+    frazeExp = _.sampleSize(frazeExp, Math.abs(limit - examples.length));
+    examples = _.concat(examples, frazeExp);
   }
 
   var translate = "";
@@ -128,19 +130,17 @@ const mountObjectData = async arrWords => {
     var oxfordData = await mountDataOxford(word);
     temp = oxfordData && Object.assign({}, temp, oxfordData);
 
-    console.log(JSON.stringify(oxfordData));
     console.log("> [ROBOT TEXT] Search transcript");
     metrics.watson.tts.req++;
     metrics.watson.tts.char += word.length;
-    temp.transcript =
-      (await Watson.getTranscription(word)) ||
-      `/${temp.pronunciation.transcription}/`;
+    temp.transcript = temp && "";
+    temp.transcript = `/${(await Watson.getTranscription(word))}/` || `/${temp.pronunciation.transcription}/`;
 
     console.log("> [ROBOT TEXT] Translate definitions");
-    var definitions = await mountDefinitions(oxfordData.definitions);
+    var definitions = await mountDefinitions(word, oxfordData.definitions);
 
     console.log("> [ROBOT TEXT] Translate examples");
-    var examples = await mountExamples(oxfordData.examples);
+    var examples = await mountExamples(word, oxfordData.examples);
 
     temp.definitions = definitions;
     temp.examples = examples;
@@ -161,7 +161,8 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
   if (arrWithoutUsed) {
     console.log("> [ROBOT TEXT] rewrite database words without words used");
     await UArchive.writeFileSync(
-      "assets/wordsDatabase.txt",
+      "/assets/text",
+      "wordsDatabase.txt",
       arrWithoutUsed.join("\n")
     );
   }

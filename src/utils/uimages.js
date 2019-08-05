@@ -2,6 +2,7 @@ import gm from "gm";
 import path from "path";
 
 import UString from "./ustring";
+import UArchive from './uarchives'
 import { constants } from "../../config";
 
 const BASE_URL = constants.BASE_URL;
@@ -27,10 +28,11 @@ const generateImageTextCenter = async (source, nameFile, text) => {
       .out("-kerning", "-1")
       .out(`caption:${text}`)
       .write(outputFile, error => {
-        if (error) {
+        const fileExists = UArchive.fileExists(outputFile);
+        if (error || !fileExists) {
           reject(error);
         }
-        resolve(`${source}/${nameFile}.png`);
+        resolve(fileExists);
       });
   });
 };
@@ -91,20 +93,21 @@ const coverImageWord = async (source, nameFile, objText) => {
     im.fontSize(fontWord)
       .draw([`text 200,${drawText} '${objText.word}'`])
       .fontSize(150)
-      .draw([`text 200,${drawTranscript} '/${objText.transcript}/'`])
+      .draw([`text 200,${drawTranscript} '${objText.transcript}'`])
       .fontSize(150)
       .draw([`text 200,${drawTranslate} '${objText.translate}'`]);
 
     im.write(outputFile, error => {
-      if (error) {
+      const fileExists = UArchive.fileExists(outputFile);
+      if (error || !fileExists) {
         reject(error);
       }
-      resolve(`${source}/${nameFile}.png`);
+      resolve(fileExists);
     });
   });
 };
 
-String.prototype.splice = function(idx, rem, str) {
+String.prototype.splice = function (idx, rem, str) {
   return this.slice(0, idx) + str + this.slice(idx + Math.abs(rem));
 };
 

@@ -14,7 +14,7 @@ const generateImageFromText = async state => {
     for (var [key, def] of words.definitions.entries()) {
       var text = def.phrase.concat("\n\n", def.translate);
       def.image = await UImage.generateImageTextCenter(
-        "/assets/images",
+        "/assets/temp",
         `${word}_definitions_${key}`,
         text
       );
@@ -24,7 +24,7 @@ const generateImageFromText = async state => {
     for (var [key, exp] of words.examples.entries()) {
       var text = exp.phrase.concat("\n\n", exp.translate);
       exp.image = await UImage.generateImageTextCenter(
-        "/assets/images",
+        "/assets/temp",
         `${word}_examples_${key}`,
         text
       );
@@ -47,7 +47,7 @@ const createVideos = async state => {
     console.log("> [ROBOT VIDEO] Generate video definitions");
     for (var [key, definition] of words.definitions.entries()) {
       definition.video = await UVideo.generateVideo(
-        "/assets/videos/render/temp",
+        "/assets/temp",
         `${word}_definitions_${key}`,
         definition.image,
         definition.audio
@@ -57,7 +57,7 @@ const createVideos = async state => {
     console.log("> [ROBOT VIDEO] Generate video examples");
     for (var [key, example] of words.examples.entries()) {
       example.video = await UVideo.generateVideo(
-        "/assets/videos/render/temp",
+        "/assets/temp",
         `${word}_examples_${key}`,
         example.image,
         example.audio
@@ -74,14 +74,14 @@ const createVideos = async state => {
 const imageVideoFromText = async (text, saveImage = false) => {
   var nameFile = text.toLowerCase().replace(/\s/g, "_");
   var outputImage = await UImage.generateImageTextCenter(
-    "/assets/videos/render/images",
+    "/assets/temp",
     nameFile,
     text
   );
 
-  if (UArchive.fileExists(outputImage)) {
+  if (outputImage) {
     var outputVideo = await UVideo.generateVideoTimeFixed(
-      "/assets/videos/render/temp",
+      "/assets/temp",
       nameFile,
       outputImage
     );
@@ -100,23 +100,25 @@ const coverWord = async text => {
   delete text.audio;
 
   var outputImage = await UImage.coverImageWord(
-    "/assets/videos/render/images",
+    "/assets/images",
     `${text.word}_word_cover`,
     text
   );
 
-  if (UArchive.fileExists(outputImage)) {
+  if (outputImage) {
     var outputVideo = await UVideo.generateVideo(
-      "/assets/videos/render/temp",
+      "/assets/temp",
       `${text.word}_word_render`,
       outputImage,
       audioWord
     );
 
-    return {
-      image: outputImage,
-      video: UArchive.fileExists(outputVideo)
-    };
+    if (outputVideo) {
+      return {
+        image: outputImage,
+        video: outputVideo
+      };
+    }
   }
   return {
     image: "",
@@ -169,14 +171,13 @@ const unionVideosDefinitionsExamples = async state => {
 
     console.log("> [ROBOT VIDEO] Join videos in temp file");
     var output = await UVideo.joinVideos(
-      "/assets/videos/render/temp",
+      "/assets/temp",
       `${word}_render`,
       temp
     );
 
-    console.log(output, temp);
-
-    arrFiles.push(UArchive.fileExists(output));
+    if (output)
+      arrFiles.push(output);
   }
 
   arrFiles = _.compact(arrFiles);
@@ -185,7 +186,7 @@ const unionVideosDefinitionsExamples = async state => {
   await State.setState("state", state);
 
   await UArchive.writeFileSync(
-    "/assets/videos/render/final",
+    "/assets/videos",
     "file_render_words.txt",
     arrFiles.join("\n")
   );
@@ -197,19 +198,19 @@ const finalRenderVideos = async state => {
   console.log("> [ROBOT VIDEO] Final render");
 
   var arrFilesUnion = await UArchive.loadFile(
-    "/assets/videos/render/final",
+    "/assets/videos",
     "file_render_words.txt"
   );
 
-  await UVideo.joinVideos(
-    "/assets/videos/render/final",
+  const output = await UVideo.joinVideos(
+    "/assets/videos",
     `final_render`,
     arrFilesUnion
   );
 
-  if (UArchive.fileExists("/assets/videos/render/final", "final_render.mp4")) {
+  if (output) {
     await UArchive.deleteArchive(
-      "/assets/videos/render/final",
+      "/assets/videos",
       "file_render_words.txt"
     );
   }
