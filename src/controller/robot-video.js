@@ -15,7 +15,7 @@ const generateImageFromText = async state => {
       var text = def.phrase.concat("\n\n", def.translate);
       def.image = await UImage.generateImageTextCenter(
         "/assets/temp",
-        `${word}_definitions_${key}`,
+        `${word}_image_definitions_${key}`,
         text
       );
     }
@@ -25,13 +25,20 @@ const generateImageFromText = async state => {
       var text = exp.phrase.concat("\n\n", exp.translate);
       exp.image = await UImage.generateImageTextCenter(
         "/assets/temp",
-        `${word}_examples_${key}`,
+        `${word}_image_examples_${key}`,
         text
       );
     }
+
+    var covers = await generateCovers(words);
+
+    words.cover_image = covers.image;
+    words.cover_video = covers.video;
+    words.cover_definition = covers.definition;
+    words.cover_examples = covers.example;
   }
 
-  console.log("\n> [ROBOT VIDEO] Save state");
+  console.log("\n> [ROBOT VIDEO] Save state with images");
   await State.setState("state", state);
 
   return state;
@@ -42,13 +49,13 @@ const createVideos = async state => {
 
   for (var words of state) {
     const word = words.word;
-    console.log(`\n> [ROBOT AUDIO] Word: ${word}`);
+    console.log(`\n> [ROBOT VIDEO] Word: ${word}`);
 
     console.log("> [ROBOT VIDEO] Generate video definitions");
     for (var [key, definition] of words.definitions.entries()) {
       definition.video = await UVideo.generateVideo(
         "/assets/temp",
-        `${word}_definitions_${key}`,
+        `${word}_mini_definitions_${key}`,
         definition.image,
         definition.audio
       );
@@ -58,14 +65,14 @@ const createVideos = async state => {
     for (var [key, example] of words.examples.entries()) {
       example.video = await UVideo.generateVideo(
         "/assets/temp",
-        `${word}_examples_${key}`,
+        `${word}_mini_examples_${key}`,
         example.image,
         example.audio
       );
     }
   }
 
-  console.log("> [ROBOT VIDEO] Save state");
+  console.log("> [ROBOT VIDEO] Save state with mini-videos");
   await State.setState("state", state);
 
   return state;
@@ -96,19 +103,20 @@ const imageVideoFromText = async (text, saveImage = false) => {
 };
 
 const coverWord = async text => {
+  var word = text.word.toLowerCase();
   var audioWord = text.audio;
   delete text.audio;
 
   var outputImage = await UImage.coverImageWord(
     "/assets/images",
-    `${text.word}_word_cover`,
+    `${word}_word_cover`,
     text
   );
 
   if (outputImage) {
     var outputVideo = await UVideo.generateVideo(
       "/assets/temp",
-      `${text.word}_word_render`,
+      `${word}_word_render`,
       outputImage,
       audioWord
     );
@@ -126,6 +134,38 @@ const coverWord = async text => {
   };
 };
 
+const generateCovers = async words => {
+  var word = words.word.toLowerCase();
+
+  console.log("> [ROBOT VIDEO] Generate cover word definitions");
+  var cover_definition = await imageVideoFromText(
+    `Definitions of the ${word}`,
+    true
+  );
+  console.log("> [ROBOT VIDEO] Generate cover word examples");
+  var cover_examples = await imageVideoFromText(
+    `Examples of the ${word}`,
+    true
+  );
+
+  var text = {
+    word,
+    transcript: `/${words.transcript}/`,
+    translate: words.word_translate,
+    derivatives: words.derivatives || [],
+    audio: words.word_audio
+  };
+  console.log("> [ROBOT VIDEO] Generate word image,video,definitions, examples");
+  var cover = await coverWord(text);
+
+  return {
+    image: cover.image,
+    video: cover.video,
+    definition: cover_definition,
+    example: cover_examples
+  }
+}
+
 const unionVideosDefinitionsExamples = async state => {
   console.log("> [ROBOT VIDEO] Union definitions and examples in video");
 
@@ -137,27 +177,7 @@ const unionVideosDefinitionsExamples = async state => {
     var definitions = words.definitions.map(d => d.video);
     var examples = words.examples.map(d => d.video);
 
-    var text = {
-      word,
-      transcript: `/${words.transcript}/`,
-      translate: words.word_translate,
-      derivatives: words.derivatives || [],
-      audio: words.word_audio
-    };
-
     words.word_order = EStatic.coverWordStatic[key];
-    var cover = await coverWord(text);
-    words.cover_image = cover.image;
-    words.cover_video = cover.video;
-
-    words.cover_definition = await imageVideoFromText(
-      `Definitions of the ${word}`,
-      true
-    );
-    words.cover_examples = await imageVideoFromText(
-      `Examples of the ${word}`,
-      true
-    );
 
     var temp = _.concat(
       words.word_order,
@@ -172,7 +192,7 @@ const unionVideosDefinitionsExamples = async state => {
     console.log("> [ROBOT VIDEO] Join videos in temp file");
     var output = await UVideo.joinVideos(
       "/assets/temp",
-      `${word}_render`,
+      `${word}_join_render`,
       temp
     );
 
@@ -190,8 +210,6 @@ const unionVideosDefinitionsExamples = async state => {
     "file_render_words.txt",
     arrFiles.join("\n")
   );
-
-  return arrFiles;
 };
 
 const finalRenderVideos = async state => {
@@ -209,6 +227,8 @@ const finalRenderVideos = async state => {
   );
 
   if (output) {
+    arrFilesUnion.map(a => UArchive.deleteArchive('/assets/videos', UArchive.getBaseUrl(a)))
+
     await UArchive.deleteArchive(
       "/assets/videos",
       "file_render_words.txt"
@@ -223,11 +243,11 @@ const RobotVideo = async () => {
 
     //state = await generateImageFromText(state);
 
-    //state = await createVideos(state);
+    // state = await createVideos(state);
 
     await unionVideosDefinitionsExamples(state);
 
-    // await finalRenderVideos(state);
+    await finalRenderVideos(state);
   } catch (error) {
     console.log("Ops...", error);
   }

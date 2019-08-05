@@ -162,9 +162,7 @@ const deleteArchive = (source, nameFile = "") => {
     var localUrl = !nameFile ? source : `${getBaseUrl(source)}/${nameFile}`;
     var exists = existsFile(localUrl);
     if (exists) {
-      fs.unlink(localUrl, err => {
-        if (err) throw err;
-      });
+      fs.unlink(localUrl);
       return exists;
     }
     return "";
@@ -185,5 +183,6 @@ module.exports = {
   renameFile,
   deleteArchive,
   moveFile,
-  existsFile
+  existsFile,
+  getBaseUrl
 };

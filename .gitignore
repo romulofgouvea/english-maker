@@ -9,10 +9,7 @@ src/assets/images/*
 src/assets/state/*
 src/assets/videos/*.mp4
 
-src/assets/temp/**.json
-src/assets/temp/**.mp3
-src/assets/temp/**.mp4
-src/assets/temp/**.txt
+src/assets/temp/
 
 # Logs
 logs

@@ -28,7 +28,7 @@ const generateImageTextCenter = async (source, nameFile, text) => {
       .out("-kerning", "-1")
       .out(`caption:${text}`)
       .write(outputFile, error => {
-        const fileExists = UArchive.fileExists(outputFile);
+        const fileExists = UArchive.existsFile(outputFile);
         if (error || !fileExists) {
           reject(error);
         }
@@ -98,7 +98,7 @@ const coverImageWord = async (source, nameFile, objText) => {
       .draw([`text 200,${drawTranslate} '${objText.translate}'`]);
 
     im.write(outputFile, error => {
-      const fileExists = UArchive.fileExists(outputFile);
+      const fileExists = UArchive.existsFile(outputFile);
       if (error || !fileExists) {
         reject(error);
       }

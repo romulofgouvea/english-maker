@@ -41,7 +41,7 @@ const mountDataOxford = async word => {
 
 const mountDefinitions = async (word, definitions) => {
   var limit = process.env.LIMIT_DEFINITIONS || 5;
-  if (definitions && definitions.length > limit) {
+  if (definitions && definitions.length >= limit) {
     definitions = _.sampleSize(definitions, process.env.LIMIT_DEFINITIONS || 5);
   } else {
     metrics.fraze++;
@@ -69,7 +69,7 @@ const mountDefinitions = async (word, definitions) => {
 
 const mountExamples = async (word, examples) => {
   var limit = process.env.LIMIT_EXAMPLES || 5;
-  if (examples && examples.length > limit) {
+  if (examples && examples.length >= limit) {
     examples = _.sampleSize(examples, process.env.LIMIT_EXAMPLES || 5);
   } else {
     metrics.fraze++;

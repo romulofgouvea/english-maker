@@ -2,18 +2,16 @@ import path from "path";
 import { spawn } from "child_process";
 
 import UArchive from "./uarchives";
-import { constants } from "../../config";
-
-const BASE_URL = constants.BASE_URL;
 
 const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
-  const base = path.join(BASE_URL, source);
-  const image = path.join(BASE_URL, sourceImage);
-  const mp3 = path.join(BASE_URL, sourceMp3);
+  const base = UArchive.getBaseUrl(source);
+  const image = UArchive.getBaseUrl(sourceImage);
+  const mp3 = UArchive.getBaseUrl(sourceMp3);
+
   const outputFile = `${base}\\${nameFile}.mp4`;
 
-  if (!UArchive.fileExists(image)) throw "Images not exists";
-  if (!UArchive.fileExists(mp3)) throw "Audio not exists";
+  if (!UArchive.existsFile(image)) throw "Images not exists";
+  if (!UArchive.existsFile(mp3)) throw "Audio not exists";
 
   var arg = [
     "-y",
@@ -49,7 +47,7 @@ const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      const exists = UArchive.fileExists(outputFile);
+      const exists = UArchive.existsFile(outputFile);
       if (exists) {
         resolve(exists);
       }
@@ -61,8 +59,8 @@ const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
 };
 
 const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
-  const base = path.join(BASE_URL, source);
-  const image = path.join(BASE_URL, sourceImage);
+  const base = UArchive.getBaseUrl(source);
+  const image = UArchive.getBaseUrl(sourceImage);
   const outputFile = `${base}\\${nameFile}.mp4`;
 
   var arg = [
@@ -95,7 +93,7 @@ const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      const exists = UArchive.fileExists(outputFile);
+      const exists = UArchive.existsFile(outputFile);
       if (exists) {
         resolve(exists);
       }
@@ -105,7 +103,7 @@ const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
 };
 
 function transformVideo(source, nameFile, inputFile) {
-  const base = path.join(BASE_URL, source);
+  const base = UArchive.getBaseUrl(source);
   const outputFile = `${base}\\${nameFile}.mp4`;
 
   var arg = [
@@ -138,7 +136,7 @@ function transformVideo(source, nameFile, inputFile) {
     const ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      const exists = UArchive.fileExists(outputFile);
+      const exists = UArchive.existsFile(outputFile);
       if (exists) {
         resolve(exists);
       }
@@ -150,6 +148,9 @@ function transformVideo(source, nameFile, inputFile) {
 
 const generateTempVideo = async (source, nameFile, temp) => {
   // ffmpeg -i input2.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts intermediate2.ts
+  source = UArchive.getBaseUrl(source);
+  temp = temp.map(t => UArchive.getBaseUrl(t))
+
   var arrIntermediate = [];
   for (var [key, file] of temp.entries()) {
     let outputFile = `${source}\\${nameFile}_tmp_${key}.ts`;
@@ -179,7 +180,7 @@ const generateTempVideo = async (source, nameFile, temp) => {
       var ffmpeg = spawn("ffmpeg", arg);
 
       ffmpeg.on("exit", () => {
-        const exists = UArchive.fileExists(outputFile);
+        const exists = UArchive.existsFile(outputFile);
         if (exists) {
           resolve(exists);
         }
@@ -187,13 +188,13 @@ const generateTempVideo = async (source, nameFile, temp) => {
       });
     });
 
-    arrIntermediate.push(out);
+    arrIntermediate.push(UArchive.getBaseUrl(out));
   }
   return arrIntermediate;
 };
 
 const joinVideos = async (source, nameFile, arrFiles) => {
-  const base = path.join(BASE_URL, source);
+  const base = UArchive.getBaseUrl(source);
   let outputFile = `${base}\\${nameFile}.mp4`;
 
   var arr = await generateTempVideo(base, nameFile, arrFiles);
@@ -219,7 +220,7 @@ const joinVideos = async (source, nameFile, arrFiles) => {
     var ffmpeg = spawn("ffmpeg", arg);
 
     ffmpeg.on("exit", () => {
-      const exists = UArchive.fileExists(outputFile);
+      const exists = UArchive.existsFile(outputFile);
       if (exists) {
         removeTmpFiles(arrFiles)
         resolve(exists);
