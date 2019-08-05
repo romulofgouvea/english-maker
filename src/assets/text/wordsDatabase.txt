@@ -322,7 +322,6 @@ bottom
 boundary
 bowl
 box
-boy
 boyfriend
 brain
 branch
@@ -457,7 +456,6 @@ cigarette
 circle
 circumstance
 cite
-citizen
 city
 civil
 civilian
@@ -1032,7 +1030,6 @@ fear
 feature
 federal
 fee
-feed
 feel
 feeling
 fellow
@@ -1578,7 +1575,6 @@ lucky
 lunch
 lung
 machine
-mad
 magazine
 mail
 main
@@ -1632,7 +1628,6 @@ media
 medical
 medication
 medicine
-medium
 meet
 meeting
 member
@@ -1743,7 +1738,6 @@ neither
 nerve
 nervous
 net
-network
 never
 nevertheless
 new
@@ -2096,7 +2090,6 @@ provider
 province
 provision
 psychological
-psychologist
 psychology
 public
 publication
@@ -2608,7 +2601,6 @@ surface
 surgery
 surprise
 surprised
-surprising
 surprisingly
 surround
 survey
@@ -2789,7 +2781,6 @@ truly
 trust
 truth
 try
-tube
 tunnel
 turn
 TV
@@ -2830,7 +2821,6 @@ upon
 upper
 urban
 urge
-us
 use
 used
 useful

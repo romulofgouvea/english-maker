@@ -8,7 +8,7 @@ const getState = async nameFile => {
 };
 
 const setState = async (nameFile, data) => {
-  await UArchive.writeFileJson("/assets/state", `${nameFile}.json`, data);
+  await UArchive.writeFileJson("/assets/state", nameFile, data);
 };
 
 module.exports = { getState, setState };
