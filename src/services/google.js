@@ -123,7 +123,7 @@ const uploadVideo = async state => {
 
   console.log(
     `> [ROBOT YOUTUBE] Video available at: https://youtu.be/${
-      youtubeResponse.data.id
+    youtubeResponse.data.id
     }`
   );
   return youtubeResponse.data;
@@ -151,18 +151,23 @@ const uploadThumbnail = async (source, videoInformation) => {
 };
 
 const getTranslateGoogleAPI = async text => {
-  try {
-    const translations = await axios
-      .get(
-        `${process.env.GOOGLE_T_URL}/v2?q=${text}&target=pt&key=${
+  var translate = ""
+  do {
+    try {
+      const translations = await axios
+        .get(
+          `${process.env.GOOGLE_T_URL}/v2?q=${text}&target=pt&key=${
           process.env.GOOGLE_T_API_KEY
-        }`
-      )
-      .then(d => d.data.data.translations);
-    return await translations[0].translatedText;
-  } catch (error) {
-    return "";
-  }
+          }`
+        )
+        .then(d => d.data.data.translations);
+      translate = translations[0].translatedText;
+    } catch (error) {
+      console.log("Ops..", error);
+    }
+  } while (!translate)
+
+  return translate;
 };
 
 const getAudio = async (source, nameFile, text) => {
@@ -183,9 +188,9 @@ const getAudio = async (source, nameFile, text) => {
     var audioBase64 = await axios
       .post(
         `${
-          process.env.GOOGLE_TTS_URL
+        process.env.GOOGLE_TTS_URL
         }/v1/text:synthesize?fields=audioContent&key=${
-          process.env.GOOGLE_TTS_API_KEY
+        process.env.GOOGLE_TTS_API_KEY
         }`,
         synthesizeParams
       )

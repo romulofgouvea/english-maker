@@ -1,7 +1,7 @@
 import axios from "axios";
 import _ from "lodash";
 
-import { UArchive } from "~/utils";
+import { UArchive, UUtils } from "~/utils";
 
 const getDefinitionsAndExamplesByEntries = lexical => {
   var entries =
@@ -56,18 +56,18 @@ const getEntrieVerb = results => {
       results &&
       _.compact(results.map(r => r.lexicalCategory && r.lexicalCategory.id === "verb" && r))[0];
 
-    if (objTemp) return objTemp;
+    if (objTemp) {
+      return objTemp;
+    };
     return results[_.random(0, results.length)];
   }
   return results[0];
 };
 
-const prettierData = async result => {
+const prettierData = async lexical => {
   var temp = {};
-  const lexical = await getEntrieVerb(result.lexicalEntries);
-
-  temp.word = result.id || result.word || lexical.text;
-  temp.language = result.language || lexical.language;
+  temp.word = lexical.word;
+  temp.language = lexical.language;
   temp.derivatives = temp.derivatives && lexical.derivatives.map(d => d.text);
   temp.lexicalCategory = lexical.lexicalCategory && lexical.lexicalCategory.text;
   temp.pronunciation =
@@ -91,10 +91,10 @@ const prettierData = async result => {
 };
 
 const getFromAPIOxford = async (word, level = 1) => {
-  var result = []
-  do {
-    try {
-      result = await axios
+  var lexical = {};
+  try {
+    do {
+      var result = await axios
         .get(`${process.env.OXFORD_BASE_URL}/api/v2/entries/en-us/${word}`, {
           headers: {
             Accept: "application/json",
@@ -104,21 +104,26 @@ const getFromAPIOxford = async (word, level = 1) => {
         })
         .then(response => response.data.results[0]);
 
-      if (!result) throw "Not get result Oxford";
+      lexical = await getEntrieVerb(result.lexicalEntries);
 
-      switch (level) {
-        case 1:
-          return {
-            status: 200,
-            data: await prettierData(result)
-          };
-        default:
-          return data;
-      }
-    } catch (error) {
-      console.log("Ops..", error);
+    } while (UUtils.isEmpty(lexical))
+
+
+    switch (level) {
+      case 1:
+        lexical.word = result.id || result.word || lexical.text;
+        lexical.language = result.language || lexical.language;
+
+        return {
+          status: 200,
+          data: await prettierData(lexical)
+        };
+      default:
+        return data;
     }
-  } while (result.length === 0)
+  } catch (error) {
+    console.log("Ops..", error);
+  }
 };
 
 const getAudioFromUrl = async (url, source, nameFile) => {

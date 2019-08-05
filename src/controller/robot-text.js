@@ -114,6 +114,24 @@ const generateKeyWords = async () => {
   await State.setState("state", state);
 };
 
+const generateTranslates = async () => {
+  console.log("> [ROBOT TEXT] Generate Translates");
+  const state = await State.getState();
+  for (var words of state) {
+    for (var definition of words.definitions) {
+      metrics.google.lt.req++;
+      metrics.google.lt.char += definition.phrase.length;
+      definition.translate = await Google.getTranslateGoogleAPI(definition.phrase);
+    };
+    for (var example of words.examples) {
+      metrics.google.lt.req++;
+      metrics.google.lt.char += example.phrase.length;
+      example.translate = await Google.getTranslateGoogleAPI(example.phrase);
+    };
+  }
+  await State.setState("state", state);
+};
+
 const mountObjectData = async arrWords => {
   var mountArrayData = [];
 
