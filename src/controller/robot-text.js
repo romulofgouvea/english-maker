@@ -179,16 +179,20 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
 const RobotText = async () => {
   try {
     console.log("> [ROBOT TEXT] Load words");
-    const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
-    const { arrWithoutUsed, arrWords } = await getWords(base);
+    // const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
 
-    const objectMounted = await mountObjectData(arrWords);
+    const t = UArchive.deleteArchive("/assets/images/teste1.txt");
+    console.log("ok: ", t);
 
-    if (objectMounted) {
-      await saveData(arrWithoutUsed, arrWords, objectMounted);
-    } else {
-      console.log("Object not Mounted");
-    }
+    // const { arrWithoutUsed, arrWords } = await getWords(base);
+
+    // const objectMounted = await mountObjectData(arrWords);
+
+    // if (objectMounted) {
+    //   await saveData(arrWithoutUsed, arrWords, objectMounted);
+    // } else {
+    //   console.log("Object not Mounted");
+    // }
   } catch (error) {
     console.log("Ops...", error);
   }

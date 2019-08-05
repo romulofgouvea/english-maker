@@ -79,7 +79,7 @@ const imageVideoFromText = async (text, saveImage = false) => {
     text
   );
 
-  if (UArchive.fileExists(outputImage)) {
+  if (outputImage) {
     var outputVideo = await UVideo.generateVideoTimeFixed(
       "/assets/temp",
       nameFile,
@@ -105,7 +105,7 @@ const coverWord = async text => {
     text
   );
 
-  if (UArchive.fileExists(outputImage)) {
+  if (outputImage) {
     var outputVideo = await UVideo.generateVideo(
       "/assets/temp",
       `${text.word}_word_render`,
@@ -113,10 +113,12 @@ const coverWord = async text => {
       audioWord
     );
 
-    return {
-      image: outputImage,
-      video: UArchive.fileExists(outputVideo)
-    };
+    if (outputVideo) {
+      return {
+        image: outputImage,
+        video: outputVideo
+      };
+    }
   }
   return {
     image: "",
@@ -174,9 +176,8 @@ const unionVideosDefinitionsExamples = async state => {
       temp
     );
 
-    console.log(output, temp);
-
-    arrFiles.push(UArchive.fileExists(output));
+    if (output)
+      arrFiles.push(output);
   }
 
   arrFiles = _.compact(arrFiles);
@@ -201,13 +202,13 @@ const finalRenderVideos = async state => {
     "file_render_words.txt"
   );
 
-  await UVideo.joinVideos(
+  const output = await UVideo.joinVideos(
     "/assets/videos",
     `final_render`,
     arrFilesUnion
   );
 
-  if (UArchive.fileExists("/assets/videos", "final_render.mp4")) {
+  if (output) {
     await UArchive.deleteArchive(
       "/assets/videos",
       "file_render_words.txt"
