@@ -1,11 +1,14 @@
 import fs from "fs";
-import path, { resolve } from "path";
-import { constants } from "../../config";
+import path from "path";
 import _ from "lodash";
+
+import UUtils from "./uutils";
+import { constants } from "../../config";
 
 const BASE_URL = constants.BASE_URL;
 
 const getBaseUrl = source => {
+  if (!source) throw "Source is empty";
   source = source.replace(/.*src/g, "").replace(/\\\\|\\|\/|\/\//g, "/");
   return path.join(BASE_URL, source);
 };
@@ -24,9 +27,11 @@ function existsFile(source, nameFile = "") {
   } else {
     localUrl = `${getBaseUrl(source)}/${nameFile}`;
   }
-  if (fs.existsSync(localUrl)) return `${source}/${nameFile}`;
+  if (!UUtils.isEmpty(fs.existsSync(localUrl))) {
+    return `${source}/${nameFile}`;
+  }
   return "";
-};
+}
 
 const loadFile = (source, nameFile) => {
   try {
@@ -77,9 +82,9 @@ function renameFile(source, newSource) {
     new Promise(async (resolve, reject) => {
       await fs.rename(source, newSource, err => {
         if (err) reject(err);
-      })
-      resolve()
-    })
+      });
+      resolve();
+    });
 
     const existsFile = this.existsFile(newSource);
     if (existsFile) {
@@ -89,10 +94,9 @@ function renameFile(source, newSource) {
   } catch (error) {
     throw error;
   }
-};
+}
 
 function moveFile(source, newSource, callback) {
-
   source = getBaseUrl(source);
   newSource = getBaseUrl(newSource);
   if (!this.existsFile(source)) throw "File not exists";
@@ -103,13 +107,13 @@ function moveFile(source, newSource, callback) {
   readStream.on("error", callback);
   writeStream.on("error", callback);
 
-  readStream.on("close", function () {
+  readStream.on("close", () => {
     fs.unlink(source, callback);
   });
 
   readStream.pipe(writeStream);
   return this.existsFile(newSource);
-};
+}
 
 const writeFileSync = (source, nameFile, data) => {
   try {
@@ -158,20 +162,29 @@ const writeFileStream = async (source, nameFile) => {
 const deleteArchive = (source, nameFile = "") => {
   try {
     source = getBaseUrl(source);
-    if (!existsFile(source, nameFile)) throw "File not exists";
-
-    var localUrl = !nameFile ? source : `${getBaseUrl(source)}/${nameFile}`;
+    var localUrl = !nameFile ? source : `${source}/${nameFile}`;
     var exists = existsFile(localUrl);
-    if (exists) {
-      fs.unlink(localUrl);
-      return exists;
+    if (UUtils.isEmpty(exists)) {
+      throw "File not exists";
     }
-    return "";
+    fs.unlink(localUrl, err => {
+      if (err) throw err
+      console.log("Removed : ", exists);
+    });
+    return exists;
   } catch (error) {
+    console.log(error);
     return "";
   }
 };
 
+const removeGroupFiles = group => {
+
+  for (var gp of group) {
+    const source = getBaseUrl(gp);
+    deleteArchive(source);
+  }
+}
 
 module.exports = {
   loadFile,
@@ -185,5 +198,6 @@ module.exports = {
   deleteArchive,
   moveFile,
   existsFile,
-  getBaseUrl
+  getBaseUrl,
+  removeGroupFiles
 };

@@ -7,4 +7,13 @@ less
 ensure
 infection
 stair
-seat
+seatnine
+analyst
+resource
+wide
+quietly
+arrest
+bottom
+plus
+poverty
+price

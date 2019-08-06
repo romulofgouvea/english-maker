@@ -104,6 +104,7 @@ const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
 
 function transformVideo(source, nameFile, inputFile) {
   const base = UArchive.getBaseUrl(source);
+  inputFile = UArchive.getBaseUrl(inputFile);
   const outputFile = `${base}\\${nameFile}.mp4`;
 
   var arg = [
@@ -149,7 +150,7 @@ function transformVideo(source, nameFile, inputFile) {
 const generateTempVideo = async (source, nameFile, temp) => {
   // ffmpeg -i input2.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts intermediate2.ts
   source = UArchive.getBaseUrl(source);
-  temp = temp.map(t => UArchive.getBaseUrl(t))
+  temp = temp.map(t => UArchive.getBaseUrl(t));
 
   var arrIntermediate = [];
   for (var [key, file] of temp.entries()) {
@@ -187,8 +188,7 @@ const generateTempVideo = async (source, nameFile, temp) => {
         reject("");
       });
     });
-
-    arrIntermediate.push(UArchive.getBaseUrl(out));
+    arrIntermediate.push(out);
   }
   return arrIntermediate;
 };
@@ -197,11 +197,10 @@ const joinVideos = async (source, nameFile, arrFiles) => {
   const base = UArchive.getBaseUrl(source);
   let outputFile = `${base}\\${nameFile}.mp4`;
 
-  var arr = await generateTempVideo(base, nameFile, arrFiles);
+  var arrTemp = await generateTempVideo(base, nameFile, arrFiles);
 
-  console.log(arr);
   return await new Promise((resolve, reject) => {
-    let inputNamesFormatted = "concat:" + arr.join("|");
+    let inputNamesFormatted = "concat:" + arrTemp.join("|");
 
     var arg = [
       "-y",
@@ -223,7 +222,7 @@ const joinVideos = async (source, nameFile, arrFiles) => {
     ffmpeg.on("exit", () => {
       const exists = UArchive.existsFile(outputFile);
       if (exists) {
-        removeTmpFiles(arrFiles)
+        UArchive.removeGroupFiles(arrTemp)
         resolve(exists);
       }
       reject("");
@@ -231,15 +230,10 @@ const joinVideos = async (source, nameFile, arrFiles) => {
   });
 };
 
-const removeTmpFiles = async files => {
-  for (var file of files) {
-    await UArchive.deleteArchive(file);
-  }
-};
-
 module.exports = {
   generateVideo,
   generateVideoTimeFixed,
+  generateTempVideo,
   transformVideo,
   joinVideos
 };

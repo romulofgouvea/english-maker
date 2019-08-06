@@ -113,7 +113,6 @@ American
 among
 amount
 analysis
-analyst
 analyze
 ancient
 and
@@ -165,7 +164,6 @@ army
 around
 arrange
 arrangement
-arrest
 arrival
 arrive
 art
@@ -318,7 +316,6 @@ boss
 both
 bother
 bottle
-bottom
 boundary
 bowl
 box
@@ -1742,7 +1739,6 @@ newspaper
 next
 nice
 night
-nine
 no
 nobody
 nod
@@ -1955,7 +1951,6 @@ please
 pleasure
 plenty
 plot
-plus
 PM
 pocket
 poem
@@ -1995,7 +1990,6 @@ potential
 potentially
 pound
 pour
-poverty
 powder
 power
 powerful
@@ -2025,7 +2019,6 @@ pretty
 prevent
 previous
 previously
-price
 pride
 priest
 primarily
@@ -2104,7 +2097,6 @@ question
 quick
 quickly
 quiet
-quietly
 quit
 quite
 quote
@@ -2219,7 +2211,6 @@ resistance
 resolution
 resolve
 resort
-resource
 respect
 respond
 respondent
@@ -2916,7 +2907,6 @@ whole
 whom
 whose
 why
-wide
 widely
 widespread
 wife

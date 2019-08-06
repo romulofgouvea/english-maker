@@ -8,6 +8,11 @@ src/assets/audios/*
 src/assets/images/*
 src/assets/state/*
 src/assets/videos/*.mp4
+src/assets/videos/*.txt
+
+src/assets/videos/final_render/*.mp4
+src/assets/videos/final_render/*.txt
+src/assets/videos/final_render/*.ts
 
 src/assets/temp/
 
