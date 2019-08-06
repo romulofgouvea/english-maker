@@ -204,46 +204,57 @@ const unionVideosDefinitionsExamples = async state => {
 
   arrFiles = _.compact(arrFiles);
 
+  console.log("> [ROBOT VIDEO] Save files render");
+  await UArchive.writeFileJson("/assets/videos/final_render",
+    "file_render_words",
+    arrFiles
+  );
+
   console.log("> [ROBOT VIDEO] Save state");
   await State.setState("state", state);
-
-  await UArchive.writeFileSync(
-    "/assets/videos/final_render",
-    "file_render_words.txt",
-    arrFiles.join("\n")
-  );
 };
+
+const addInit = async urlFinalrender => {
+  console.log("> [ROBOT VIDEO] Add init in video");
+
+  var arrFinal = ["/assets/videos/static/init_render.mp4", urlFinalrender];
+
+  console.log(arrFinal);
+  var output = await UVideo.joinVideos(
+    "/assets/videos/final_render",
+    `final_render`,
+    arrFinal
+  );
+
+  if (output) {
+    return output;
+  }
+}
 
 const finalRenderVideos = async state => {
   console.log("\n> [ROBOT VIDEO] Final render");
 
-  var arrFilesUnion = await UArchive.loadFile(
-    "/assets/videos/final_render",
-    "file_render_words.txt"
-  );
+  console.log("> [ROBOT VIDEO] Load files temp render");
+  var arrFilesUnion = UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
 
+  console.log("> [ROBOT VIDEO] Join final render");
   var output = await UVideo.joinVideos(
     "/assets/videos/final_render",
-    `final_render`,
-    arrFilesUnion
+    `join_videos`,
+    arrFilesUnion,
+    true
   );
 
-  arrFilesUnion = ["/assets/videos/static/init_render.mp4", output];
+  console.log(output);
+  // if (output) {
+    // console.log("> [ROBOT VIDEO] Delete temp files render");
+    // await UArchive.deleteArchive(
+    //   "/assets/videos/final_render",
+    //   "file_render_words.txt"
+    // );
+    // return output
+  // }
 
-  output = await UVideo.joinVideos(
-    "/assets/videos/final_render",
-    `final_render`,
-    arrFilesUnion
-  );
-
-  if (output) {
-    arrFilesUnion.map(a => UArchive.deleteArchive(a));
-
-    await UArchive.deleteArchive(
-      "/assets/videos/final_render",
-      "file_render_words.txt"
-    );
-  }
 };
 
 const RobotVideo = async () => {
@@ -251,13 +262,16 @@ const RobotVideo = async () => {
     console.log("> [ROBOT VIDEO] Recover state aplication");
     var state = await State.getState();
 
-    state = await generateImageFromText(state);
+    // state = await generateImageFromText(state);
 
-    state = await createVideos(state);
+    // state = await createVideos(state);
 
-    await unionVideosDefinitionsExamples(state);
+    //await unionVideosDefinitionsExamples(state);
 
-    await finalRenderVideos(state);
+    const urlFinal = await finalRenderVideos(state);
+
+    // console.log("> [ROBOT VIDEO] Finish robot video: ", urlFinal);
+    // await addInit(urlFinal)
 
   } catch (error) {
     console.log("Ops...", error);

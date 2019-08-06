@@ -3,7 +3,7 @@ import { UArchive } from "~/utils";
 const getState = async nameFile => {
   return await UArchive.loadFileJson(
     "/assets/state",
-    !nameFile && "state.json"
+    !nameFile && "state"
   );
 };
 

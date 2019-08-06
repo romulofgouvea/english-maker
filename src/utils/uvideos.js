@@ -193,7 +193,7 @@ const generateTempVideo = async (source, nameFile, temp) => {
   return arrIntermediate;
 };
 
-const joinVideos = async (source, nameFile, arrFiles) => {
+const joinVideos = async (source, nameFile, arrFiles, deleteFiles = false) => {
   const base = UArchive.getBaseUrl(source);
   let outputFile = `${base}\\${nameFile}.mp4`;
 
@@ -222,7 +222,8 @@ const joinVideos = async (source, nameFile, arrFiles) => {
     ffmpeg.on("exit", () => {
       const exists = UArchive.existsFile(outputFile);
       if (exists) {
-        UArchive.removeGroupFiles(arrTemp)
+        if (deleteFiles)
+          UArchive.removeGroupFiles(arrTemp)
         resolve(exists);
       }
       reject("");
