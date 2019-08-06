@@ -246,14 +246,15 @@ const finalRenderVideos = async state => {
   );
 
   console.log(output);
-  // if (output) {
-    // console.log("> [ROBOT VIDEO] Delete temp files render");
-    // await UArchive.deleteArchive(
-    //   "/assets/videos/final_render",
-    //   "file_render_words.txt"
-    // );
-    // return output
-  // }
+  if (output) {
+    console.log("> [ROBOT VIDEO] Delete temp files render");
+    await UArchive.deleteArchive(
+      "/assets/videos/final_render",
+      "file_render_words.json"
+    );
+    var urlFinal = await addInit(output)
+    console.log("> [ROBOT VIDEO] Finish robot video: ", urlFinal);
+  }
 
 };
 
@@ -268,10 +269,7 @@ const RobotVideo = async () => {
 
     //await unionVideosDefinitionsExamples(state);
 
-    const urlFinal = await finalRenderVideos(state);
-
-    // console.log("> [ROBOT VIDEO] Finish robot video: ", urlFinal);
-    // await addInit(urlFinal)
+    await finalRenderVideos(state);
 
   } catch (error) {
     console.log("Ops...", error);

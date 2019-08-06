@@ -170,7 +170,7 @@ const deleteArchive = (source, nameFile = "") => {
     }
     fs.unlink(localUrl, err => {
       if (err) throw err
-      console.log("Removed : ", exists);
+      //console.log("Removed : ", exists);
     });
     return exists;
   } catch (error) {
