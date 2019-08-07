@@ -205,7 +205,8 @@ const unionVideosDefinitionsExamples = async state => {
   arrFiles = _.compact(arrFiles);
 
   console.log("> [ROBOT VIDEO] Save files render");
-  await UArchive.writeFileJson("/assets/videos/final_render",
+  await UArchive.writeFileJson(
+    "/assets/videos/final_render",
     "file_render_words",
     arrFiles
   );
@@ -219,7 +220,6 @@ const addInit = async urlFinalrender => {
 
   var arrFinal = ["/assets/videos/static/init_render.mp4", urlFinalrender];
 
-  console.log(arrFinal);
   var output = await UVideo.joinVideos(
     "/assets/videos/final_render",
     `final_render`,
@@ -229,33 +229,33 @@ const addInit = async urlFinalrender => {
   if (output) {
     return output;
   }
-}
+};
 
 const finalRenderVideos = async state => {
   console.log("\n> [ROBOT VIDEO] Final render");
 
   console.log("> [ROBOT VIDEO] Load files temp render");
-  var arrFilesUnion = UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
+  var arrFilesUnion = UArchive.loadFileJson(
+    "/assets/videos/final_render",
+    "file_render_words"
+  );
 
   console.log("> [ROBOT VIDEO] Join final render");
   var output = await UVideo.joinVideos(
     "/assets/videos/final_render",
     `join_videos`,
-    arrFilesUnion,
-    true
+    arrFilesUnion
   );
 
-  console.log(output);
   if (output) {
     console.log("> [ROBOT VIDEO] Delete temp files render");
     await UArchive.deleteArchive(
       "/assets/videos/final_render",
       "file_render_words.json"
     );
-    var urlFinal = await addInit(output)
+    var urlFinal = await addInit(output);
     console.log("> [ROBOT VIDEO] Finish robot video: ", urlFinal);
   }
-
 };
 
 const RobotVideo = async () => {
@@ -263,14 +263,13 @@ const RobotVideo = async () => {
     console.log("> [ROBOT VIDEO] Recover state aplication");
     var state = await State.getState();
 
-    // state = await generateImageFromText(state);
+    state = await generateImageFromText(state);
 
-    // state = await createVideos(state);
+    state = await createVideos(state);
 
-    //await unionVideosDefinitionsExamples(state);
+    await unionVideosDefinitionsExamples(state);
 
     await finalRenderVideos(state);
-
   } catch (error) {
     console.log("Ops...", error);
   }

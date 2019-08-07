@@ -37,8 +37,6 @@ const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
     "slow",
     "-profile:v",
     "main",
-    "-movflags",
-    "+faststart",
     "-shortest",
     outputFile
   ];
@@ -83,8 +81,6 @@ const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
     "slow",
     "-profile:v",
     "main",
-    "-movflags",
-    "+faststart",
     "-shortest",
     outputFile
   ];
@@ -127,8 +123,6 @@ function transformVideo(source, nameFile, inputFile) {
     "slow",
     "-profile:v",
     "main",
-    "-movflags",
-    "+faststart",
     "-shortest",
     outputFile
   ];
@@ -193,11 +187,11 @@ const generateTempVideo = async (source, nameFile, temp) => {
   return arrIntermediate;
 };
 
-const joinVideos = async (source, nameFile, arrFiles, deleteFiles = false) => {
+const joinVideos = async (source, nameFile, arrFiles) => {
   const base = UArchive.getBaseUrl(source);
   let outputFile = `${base}\\${nameFile}.mp4`;
 
-  var arrTemp = [...await generateTempVideo(base, nameFile, arrFiles)];
+  var arrTemp = [...(await generateTempVideo(base, nameFile, arrFiles))];
 
   return await new Promise((resolve, reject) => {
     let inputNamesFormatted = `concat:${arrTemp.join("|")}`;
@@ -219,13 +213,12 @@ const joinVideos = async (source, nameFile, arrFiles, deleteFiles = false) => {
 
     var ffmpeg = spawn("ffmpeg", arg);
 
-    ffmpeg.on("error", (err) => console.log(err));
+    ffmpeg.on("error", err => console.log(err));
 
     ffmpeg.on("exit", () => {
       const exists = UArchive.existsFile(outputFile);
       if (exists) {
-        if (deleteFiles)
-          UArchive.removeGroupFiles(arrTemp)
+        UArchive.removeGroupFiles(arrTemp);
         resolve(exists);
       }
       reject("");
