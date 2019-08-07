@@ -180,7 +180,6 @@ const deleteArchive = (source, nameFile = "") => {
 };
 
 const removeGroupFiles = group => {
-
   for (var gp of group) {
     const source = getBaseUrl(gp);
     deleteArchive(source);

@@ -2,6 +2,7 @@ import path from "path";
 import { spawn } from "child_process";
 
 import UArchive from "./uarchives";
+import UImage from "./uimages";
 
 const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
   const base = UArchive.getBaseUrl(source);
@@ -21,22 +22,17 @@ const generateVideo = async (source, nameFile, sourceImage, sourceMp3) => {
     image,
     "-i",
     mp3,
-    "-vcodec",
-    "libx264",
-    "-acodec",
-    "aac",
-    "-strict",
-    "experimental",
-    "-b:a",
-    "192k",
-    "-s",
-    "hd1080",
-    "-vf",
-    "scale='min(1280,iw)':-2,format=yuv420p",
-    "-preset",
-    "slow",
-    "-profile:v",
-    "main",
+    "-vcodec", "libx264",
+    "-acodec", "aac",
+    "-b:a", "192k",
+    "-s", "hd1080",
+    "-pix_fmt", "yuv420p",
+    "-preset", "veryslow",
+    "-profile:v", "baseline",
+    "-level", "3.0",
+    "-crf", 22,
+    "-movflags",
+    "+faststart",
     "-shortest",
     outputFile
   ];
@@ -69,18 +65,14 @@ const generateVideoTimeFixed = async (source, nameFile, sourceImage) => {
     "00:00:03",
     "-i",
     image,
-    "-vcodec",
-    "libx264",
-    "-strict",
-    "experimental",
-    "-s",
-    "hd1080",
-    "-vf",
-    "scale='min(1280,iw)':-2,format=yuv420p",
-    "-preset",
-    "slow",
-    "-profile:v",
-    "main",
+    "-vcodec", "libx264",
+    "-acodec", "aac",
+    "-b:a", "192k",
+    "-s", "hd1080",
+    "-pix_fmt", "yuv420p",
+    "-preset", "veryslow",
+    "-profile:v", "baseline",
+    "-level", "3.0",
     "-shortest",
     outputFile
   ];
@@ -107,22 +99,14 @@ function transformVideo(source, nameFile, inputFile) {
     "-y",
     "-i",
     inputFile,
-    "-vcodec",
-    "libx264",
-    "-acodec",
-    "aac",
-    "-strict",
-    "experimental",
-    "-b:a",
-    "192k",
-    "-s",
-    "hd1080",
-    "-vf",
-    "scale='min(1280,iw)':-2,format=yuv420p",
-    "-preset",
-    "slow",
-    "-profile:v",
-    "main",
+    "-vcodec", "libx264",
+    "-acodec", "aac",
+    "-b:a", "192k",
+    "-s", "hd1080",
+    "-pix_fmt", "yuv420p",
+    "-preset", "veryslow",
+    "-profile:v", "baseline",
+    "-level", "3.0",
     "-shortest",
     outputFile
   ];
@@ -164,8 +148,6 @@ const generateTempVideo = async (source, nameFile, temp) => {
       48000,
       "-b:a",
       "192k",
-      "-preset",
-      "slow",
       "-f",
       "mpegts",
       outputFile
@@ -173,6 +155,8 @@ const generateTempVideo = async (source, nameFile, temp) => {
 
     var out = await new Promise((resolve, reject) => {
       var ffmpeg = spawn("ffmpeg", arg);
+
+      ffmpeg.on("error", err => console.log(err));
 
       ffmpeg.on("exit", () => {
         const exists = UArchive.existsFile(outputFile);
@@ -187,7 +171,7 @@ const generateTempVideo = async (source, nameFile, temp) => {
   return arrIntermediate;
 };
 
-const joinVideos = async (source, nameFile, arrFiles) => {
+const joinVideos = async (source, nameFile, arrFiles, removeFiles = true) => {
   const base = UArchive.getBaseUrl(source);
   let outputFile = `${base}\\${nameFile}.mp4`;
 
@@ -208,17 +192,23 @@ const joinVideos = async (source, nameFile, arrFiles) => {
       "aac",
       "-b:a",
       "192k",
+
+      "-preset", "veryslow",
+      "-profile:v", "baseline",
+      "-level", "3.0",
+      "-shortest",
       outputFile
     ];
 
     var ffmpeg = spawn("ffmpeg", arg);
 
-    ffmpeg.on("error", err => console.log(err));
+    ffmpeg.on("error", err => console.log("aa", err));
 
     ffmpeg.on("exit", () => {
       const exists = UArchive.existsFile(outputFile);
       if (exists) {
-        UArchive.removeGroupFiles(arrTemp);
+        if (removeFiles)
+          UArchive.removeGroupFiles(arrTemp);
         resolve(exists);
       }
       reject("");
@@ -226,10 +216,63 @@ const joinVideos = async (source, nameFile, arrFiles) => {
   });
 };
 
+const generateVideoFromTextFixed = async (source, nameFile, text, saveImage = false) => {
+  if (nameFile && !text) {
+    text = nameFile;
+    nameFile = nameFile.toLowerCase().replace(/\s/g, "_");
+  }
+  var outputImage = await UImage.generateImageTextCenter(source, nameFile, text);
+
+  if (outputImage) {
+    var outputVideo = await generateVideoTimeFixed(source, nameFile, outputImage);
+
+    if (outputVideo) {
+      if (!saveImage)
+        UArchive.deleteArchive(outputImage)
+      return {
+        image: outputImage,
+        video: outputVideo
+      };
+    }
+  }
+  return {
+    image: "",
+    video: ""
+  };
+};
+
+const generateVideoFromObjText = async (source, text, saveImage = false) => {
+  //objText = { word, translate, transcript, derivatives,audio}
+  const word = text.word.toLowerCase();
+  var audioWord = text.audio;
+  delete text.audio;
+
+  var outputImage = await UImage.coverImageWord(source, `${word}_word_cover`, text);
+
+  if (outputImage) {
+    var outputVideo = await generateVideo(source, `${word}_word_render`, outputImage, audioWord);
+
+    if (outputVideo) {
+      if (!saveImage)
+        UArchive.deleteArchive(outputImage)
+      return {
+        image: outputImage,
+        video: outputVideo
+      };
+    }
+  }
+  return {
+    image: "",
+    video: ""
+  };
+};
+
 module.exports = {
   generateVideo,
   generateVideoTimeFixed,
   generateTempVideo,
   transformVideo,
-  joinVideos
+  joinVideos,
+  generateVideoFromTextFixed,
+  generateVideoFromObjText
 };
