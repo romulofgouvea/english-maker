@@ -11,4 +11,10 @@ const coverWordStatic = [
   "/assets/videos/static/word_ten_render.mp4"
 ];
 
+const levelVideo = [
+  'Basic',
+  'Intermediary',
+  'Avanced'
+]
+
 module.exports = { coverWordStatic };

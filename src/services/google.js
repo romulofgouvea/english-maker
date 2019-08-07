@@ -1,6 +1,9 @@
 import axios from "axios";
 import { google } from "googleapis";
 import fs from "fs";
+import open from 'open';
+import { format } from 'date-fns';
+import _ from 'lodash';
 
 import { UArchive } from "~/utils";
 import { WebServer } from "~/services";
@@ -25,6 +28,7 @@ const requestUserConsent = OAuthClient => {
   });
 
   console.log(`> [ROBOT YOUTUBE] Please give your consent: ${consentUrl}`);
+  open(consentUrl)
 };
 
 const waitForGoogleCallback = async webServer => {
@@ -77,27 +81,26 @@ const authenticateWithOAuth = async () => {
 };
 
 const mountDescription = state => {
-  var arrDesc = [];
+  var textDesc = "";
   for (var words of state) {
-    arrDesc.push(
-      `Word (EN/PT): ${words.word} / ${words.word_translate}
-      Transcript: ${words.transcript}
-      Example:
-      EN: ${words.examples[0].phrase}
-      PT: ${words.examples[0].translate}
-      `
-    );
+    textDesc += `Word: \nEN: ${words.word} - ${words.transcript}\n` +
+      `PT: ${words.word_translate}\n` +
+      `Example:\n` +
+      ` EN: ${words.examples[0].phrase}\n` +
+      ` PT: ${words.examples[0].translate}\n\n`
   }
-  return arrDesc;
+  return textDesc;
 };
 
 const uploadVideo = async state => {
   const videoFilePath = UArchive.getBaseUrl(
     "/assets/videos/final_render/final_render.mp4"
   );
+  const day = format(new Date(), 'DD/MM')
   const videoFileSize = fs.statSync(videoFilePath).size;
-  const videoTitle = `Ten Words every day [06/08]`;
-  const videoTags = "Tags";
+  const videoTitle = `[${day}] Ten Words every day`;
+  var tags = state.map(words => Object.values(words.keywords).slice(0, 3))
+  const videoTags = _.flatten(tags);
   const videoDescription = await mountDescription(state);
 
   const requestParameters = {
@@ -117,6 +120,8 @@ const uploadVideo = async state => {
     }
   };
 
+  console.log(requestParameters);
+
   console.log("> [ROBOT YOUTUBE] Starting to upload the video to YouTube");
   const youtubeResponse = await youtube.videos.insert(requestParameters, {
     onUploadProgress: onUploadProgress
@@ -124,7 +129,7 @@ const uploadVideo = async state => {
 
   console.log(
     `> [ROBOT YOUTUBE] Video available at: https://youtu.be/${
-      youtubeResponse.data.id
+    youtubeResponse.data.id
     }`
   );
   return youtubeResponse.data;
@@ -158,7 +163,7 @@ const getTranslateGoogleAPI = async text => {
       const translations = await axios
         .get(
           `${process.env.GOOGLE_T_URL}/v2?q=${text}&target=pt&key=${
-            process.env.GOOGLE_T_API_KEY
+          process.env.GOOGLE_T_API_KEY
           }`
         )
         .then(d => d.data.data.translations);
@@ -189,9 +194,9 @@ const getAudio = async (source, nameFile, text) => {
     var audioBase64 = await axios
       .post(
         `${
-          process.env.GOOGLE_TTS_URL
+        process.env.GOOGLE_TTS_URL
         }/v1/text:synthesize?fields=audioContent&key=${
-          process.env.GOOGLE_TTS_API_KEY
+        process.env.GOOGLE_TTS_API_KEY
         }`,
         synthesizeParams
       )

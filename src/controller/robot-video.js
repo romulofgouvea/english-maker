@@ -194,11 +194,11 @@ const RobotVideo = async () => {
     console.log("> [ROBOT VIDEO] Recover state aplication");
     var state = await State.getState();
 
-    //state = await createMiniVideos(state);
+    state = await createMiniVideos(state);
 
     await generateJoinMiniVideos(state);
 
-    //await finalRenderVideos(state);
+    await finalRenderVideos(state);
   } catch (error) {
     console.log("Ops...", error);
   }
