@@ -80,11 +80,11 @@ const mountDescription = state => {
   var arrDesc = [];
   for (var words of state) {
     arrDesc.push(
-      `Word (EN/PT): ${words.word} / ${words.translate.word}
+      `Word (EN/PT): ${words.word} / ${words.word_translate}
       Transcript: ${words.transcript}
       Example:
-      EN: ${words.examples[0]}
-      PT: ${words.translate.examples[0]}
+      EN: ${words.examples[0].phrase}
+      PT: ${words.examples[0].translate}
       `
     );
   }
@@ -92,10 +92,11 @@ const mountDescription = state => {
 };
 
 const uploadVideo = async state => {
-  const videoFilePath =
-    "D:/workspace/video-maker/src/assets/videos/render/final/final_render.mp4";
+  const videoFilePath = UArchive.getBaseUrl(
+    "/assets/videos/final_render/final_render.mp4"
+  );
   const videoFileSize = fs.statSync(videoFilePath).size;
-  const videoTitle = `Ten Words every day [02/08]`;
+  const videoTitle = `Ten Words every day [06/08]`;
   const videoTags = "Tags";
   const videoDescription = await mountDescription(state);
 
@@ -123,7 +124,7 @@ const uploadVideo = async state => {
 
   console.log(
     `> [ROBOT YOUTUBE] Video available at: https://youtu.be/${
-    youtubeResponse.data.id
+      youtubeResponse.data.id
     }`
   );
   return youtubeResponse.data;
@@ -151,13 +152,13 @@ const uploadThumbnail = async (source, videoInformation) => {
 };
 
 const getTranslateGoogleAPI = async text => {
-  var translate = ""
+  var translate = "";
   do {
     try {
       const translations = await axios
         .get(
           `${process.env.GOOGLE_T_URL}/v2?q=${text}&target=pt&key=${
-          process.env.GOOGLE_T_API_KEY
+            process.env.GOOGLE_T_API_KEY
           }`
         )
         .then(d => d.data.data.translations);
@@ -165,7 +166,7 @@ const getTranslateGoogleAPI = async text => {
     } catch (error) {
       console.log("Ops..", error);
     }
-  } while (!translate)
+  } while (!translate);
 
   return translate;
 };
@@ -188,9 +189,9 @@ const getAudio = async (source, nameFile, text) => {
     var audioBase64 = await axios
       .post(
         `${
-        process.env.GOOGLE_TTS_URL
+          process.env.GOOGLE_TTS_URL
         }/v1/text:synthesize?fields=audioContent&key=${
-        process.env.GOOGLE_TTS_API_KEY
+          process.env.GOOGLE_TTS_API_KEY
         }`,
         synthesizeParams
       )
