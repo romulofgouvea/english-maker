@@ -195,7 +195,6 @@ const removeGroupFiles = group => {
 }
 
 const listFilesDir = (source, filterExt = "") => {
-  console.log('listFilesDir', source);
   try {
     source = getBaseUrl(source);
     var files = fs.readdirSync(source, err => { if (err) throw err })
@@ -212,6 +211,24 @@ const listFilesDir = (source, filterExt = "") => {
   }
 }
 
+const createFolder = source => {
+  try {
+    var arrSource = removeBase(source).split('/');
+    var t = arrSource.reduce((ac, value) => {
+      var temp = `${ac}\\${value}`;
+      var url = getBaseUrl(temp);
+      if (!fs.existsSync(url)) {
+        fs.mkdirSync(url);
+      }
+      return temp;
+    });
+    return t;
+  } catch (error) {
+    //console.log(error);
+    return "";
+  }
+};
+
 module.exports = {
   loadFile,
   loadFileJson,
@@ -227,5 +244,6 @@ module.exports = {
   getBaseUrl,
   removeGroupFiles,
   listFilesDir,
-  getNameFile
+  getNameFile,
+  createFolder
 };

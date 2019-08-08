@@ -179,11 +179,6 @@ const finalRenderVideos = async state => {
   );
 
   if (output) {
-    console.log("> [ROBOT VIDEO] Delete temp files render");
-    await UArchive.deleteArchive(
-      "/assets/videos/final_render",
-      "file_render_words.json"
-    );
     var urlFinal = await addInit(output);
     console.log("> [ROBOT VIDEO] Finish robot video: ", urlFinal);
   }

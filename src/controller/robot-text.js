@@ -190,7 +190,7 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
     await UArchive.appendFile(
       "/assets/text",
       "wordsUsed.txt",
-      arrWords.join("\n")
+      "\n" + arrWords.join("\n")
     );
   }
 };

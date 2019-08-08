@@ -111,7 +111,15 @@ const uploadVideo = async state => {
   const videoTitle = `[${day}] Ten Words every day`;
   var tags = state.map(words => Object.values(words.keywords).slice(0, 3))
   const videoTags = _.flatten(tags);
-  const videoDescription = await mountDescription(state);
+  var description = await mountDescription(state)
+  const videoDescription = description.length > 5000 ? "" : description;
+
+  console.log("> [ROBOT YOUTUBE] Save description");
+  await UArchive.writeFileSync(
+    "/assets/text",
+    "description.txt",
+    description
+  );
 
   const requestParameters = {
     part: "snippet, status",
@@ -149,8 +157,9 @@ const uploadVideo = async state => {
 };
 
 const uploadThumbnail = async (source, videoInformation) => {
+  if(!source) return;
   const videoId = videoInformation.id;
-  const videoThumbnailFilePath = source;
+  const videoThumbnailFilePath = UArchive.getBaseUrl(source);
 
   const requestParameters = {
     videoId: videoId,
