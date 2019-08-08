@@ -357,7 +357,6 @@ business
 busy
 but
 butter
-button
 buy
 buyer
 by
@@ -395,7 +394,6 @@ case
 cash
 cast
 cat
-catch
 category
 Catholic
 cause
@@ -558,7 +556,6 @@ connect
 connection
 consciousness
 consensus
-consequence
 conservative
 consider
 considerable
@@ -739,7 +736,6 @@ destruction
 detail
 detailed
 detect
-determine
 develop
 developing
 development
@@ -1491,7 +1487,6 @@ later
 Latin
 latter
 laugh
-launch
 law
 lawn
 lawsuit
@@ -1557,7 +1552,6 @@ location
 lock
 long
 long-term
-look
 loose
 lose
 loss
@@ -1714,7 +1708,6 @@ my
 myself
 mystery
 myth
-naked
 name
 narrative
 narrow
@@ -1871,7 +1864,6 @@ pair
 pale
 Palestinian
 palm
-pan
 panel
 pant
 paper
@@ -1908,7 +1900,6 @@ penalty
 people
 pepper
 per
-perceive
 percentage
 perception
 perfect
@@ -2857,7 +2848,6 @@ village
 violate
 violation
 violence
-violent
 virtually
 virtue
 virus
