@@ -16,6 +16,7 @@ src/assets/videos/final_render/*.ts
 src/assets/videos/final_render/*.json
 
 src/assets/temp/
+src/assets/Uploads/
 
 # Logs
 logs

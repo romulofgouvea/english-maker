@@ -7,11 +7,19 @@ import { constants } from "../../config";
 
 const BASE_URL = constants.BASE_URL;
 
-const getBaseUrl = source => {
+const removeBase = source => {
+  return source.replace(/.*src/g, "").replace(/\\\\|\\|\/|\/\//g, "/");
+}
+
+function getBaseUrl(source) {
   if (!source) throw "Source is empty";
-  source = source.replace(/.*src/g, "").replace(/\\\\|\\|\/|\/\//g, "/");
+  source = removeBase(source);
   return path.join(BASE_URL, source);
 };
+
+const getNameFile = source => {
+  return removeBase(source).replace(/.+[/|//|\\|\\\\]/g, "");
+}
 
 function existsFile(source, nameFile = "") {
   var localUrl = "";
@@ -186,6 +194,24 @@ const removeGroupFiles = group => {
   }
 }
 
+const listFilesDir = (source, filterExt = "") => {
+  console.log('listFilesDir', source);
+  try {
+    source = getBaseUrl(source);
+    var files = fs.readdirSync(source, err => { if (err) throw err })
+
+    return files.map(f => {
+      var ext = f.replace(/.+\./g, "");
+      if (ext === filterExt) {
+        return `${source}/${f}`
+      }
+    }).filter(Boolean);
+  } catch (error) {
+    console.log(error);
+    return "";
+  }
+}
+
 module.exports = {
   loadFile,
   loadFileJson,
@@ -199,5 +225,7 @@ module.exports = {
   moveFile,
   existsFile,
   getBaseUrl,
-  removeGroupFiles
+  removeGroupFiles,
+  listFilesDir,
+  getNameFile
 };

@@ -319,6 +319,7 @@ bottle
 boundary
 bowl
 box
+boy
 boyfriend
 brain
 branch
@@ -453,6 +454,7 @@ cigarette
 circle
 circumstance
 cite
+citizen
 city
 civil
 civilian
@@ -901,6 +903,7 @@ enhance
 enjoy
 enormous
 enough
+ensure
 enter
 enterprise
 entertainment
@@ -1026,6 +1029,7 @@ fear
 feature
 federal
 fee
+feed
 feel
 feeling
 fellow
@@ -1069,6 +1073,7 @@ flame
 flat
 flavor
 flee
+flesh
 flight
 float
 floor
@@ -1359,6 +1364,7 @@ individual
 industrial
 industry
 infant
+infection
 inflation
 influence
 inform
@@ -1388,6 +1394,7 @@ intellectual
 intelligence
 intend
 intense
+intensity
 intention
 interaction
 interest
@@ -1512,6 +1519,7 @@ legislation
 legitimate
 lemon
 length
+less
 lesson
 let
 letter
@@ -1567,6 +1575,7 @@ lucky
 lunch
 lung
 machine
+mad
 magazine
 mail
 main
@@ -1620,6 +1629,7 @@ media
 medical
 medication
 medicine
+medium
 meet
 meeting
 member
@@ -1730,6 +1740,7 @@ neither
 nerve
 nervous
 net
+network
 never
 nevertheless
 new
@@ -1812,6 +1823,7 @@ operate
 operating
 operation
 operator
+opinion
 opponent
 opportunity
 oppose
@@ -1851,6 +1863,7 @@ pack
 package
 page
 pain
+painful
 paint
 painter
 painting
@@ -1899,6 +1912,7 @@ perceive
 percentage
 perception
 perfect
+perfectly
 perform
 performance
 perhaps
@@ -2075,6 +2089,7 @@ provider
 province
 provision
 psychological
+psychologist
 psychology
 public
 publication
@@ -2306,6 +2321,7 @@ script
 sea
 search
 season
+seat
 second
 secret
 secretary
@@ -2493,6 +2509,7 @@ stability
 stable
 staff
 stage
+stair
 stake
 stand
 standard
@@ -2582,6 +2599,7 @@ surface
 surgery
 surprise
 surprised
+surprising
 surprisingly
 surround
 survey
@@ -2762,6 +2780,7 @@ truly
 trust
 truth
 try
+tube
 tunnel
 turn
 TV
@@ -2802,6 +2821,7 @@ upon
 upper
 urban
 urge
+us
 use
 used
 useful

@@ -80,19 +80,29 @@ const authenticateWithOAuth = async () => {
   await WebServer.stopWebServer(webServer);
 };
 
+const mountTextByArray = (text, arr) => {
+  var tempText = "";
+  for (var [key, value] of arr.entries()) {
+    tempText += `${text} ${key}:\n` +
+      ` EN: ${value.phrase}\n` +
+      ` PT: ${value.translate}\n`;
+  }
+  return tempText
+}
+
 const mountDescription = state => {
   var textDesc = "";
   for (var words of state) {
-    textDesc += `Word: \nEN: ${words.word} - ${words.transcript}\n` +
+    textDesc += `Word: \nEN: ${words.word} \nTranscript: ${words.transcript}\n` +
       `PT: ${words.word_translate}\n` +
-      `Example:\n` +
-      ` EN: ${words.examples[0].phrase}\n` +
-      ` PT: ${words.examples[0].translate}\n\n`
+      `${mountTextByArray('Definition', words.definitions)}\n` +
+      `${mountTextByArray('Example', words.examples)}\n\n`
   }
   return textDesc;
 };
 
 const uploadVideo = async state => {
+
   const videoFilePath = UArchive.getBaseUrl(
     "/assets/videos/final_render/final_render.mp4"
   );
@@ -119,8 +129,6 @@ const uploadVideo = async state => {
       body: fs.createReadStream(videoFilePath)
     }
   };
-
-  console.log(requestParameters);
 
   console.log("> [ROBOT YOUTUBE] Starting to upload the video to YouTube");
   const youtubeResponse = await youtube.videos.insert(requestParameters, {
