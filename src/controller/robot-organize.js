@@ -18,10 +18,10 @@ const organizeFiles = () => {
 
     console.log("> [ROBOT ORGANIZE] Move files audio");
     copyFolder('/assets/temp', 'mp3', `/${nameFolder}/audios`)
-    
+
     console.log("> [ROBOT ORGANIZE] Move files images");
     copyFolder('/assets/temp', 'png', `/${nameFolder}/images`)
-    
+
     console.log("> [ROBOT ORGANIZE] Move files videos");
     copyFolder('/assets/temp', 'mp4', `/${nameFolder}/videos`)
 
@@ -32,7 +32,14 @@ const organizeFiles = () => {
 
 const RobotOrganize = async () => {
     try {
+        progress = await State.getState('progress');
+        if (!progress.robot_youtube.finish)
+            throw "Not completed robot you tube"
+
         await organizeFiles()
+
+        progress.robot_organize.finish = true;
+        await State.setState("progress", progress);
     } catch (error) {
         console.log("Ops...", error);
     }

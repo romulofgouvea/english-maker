@@ -20,6 +20,13 @@ const metrics = {
   fraze: 0
 };
 
+const progress = {
+  robot_text: {
+    words: [],
+  },
+  mountArrayData: []
+};
+
 const getWords = async arr => {
   console.log("> [ROBOT TEXT] Get words");
 
@@ -121,21 +128,22 @@ const generateTranslates = async () => {
     for (var definition of words.definitions) {
       metrics.google.lt.req++;
       metrics.google.lt.char += definition.phrase.length;
-      definition.translate = await Google.getTranslateGoogleAPI(definition.phrase);
-    };
+      definition.translate = await Google.getTranslateGoogleAPI(
+        definition.phrase
+      );
+    }
     for (var example of words.examples) {
       metrics.google.lt.req++;
       metrics.google.lt.char += example.phrase.length;
       example.translate = await Google.getTranslateGoogleAPI(example.phrase);
-    };
+    }
   }
   await State.setState("state", state);
 };
 
 const mountObjectData = async arrWords => {
-  var mountArrayData = [];
-
   for (var word of arrWords) {
+    if (progress.robot_text.words.includes(word)) continue;
     var temp = {};
     temp.word = UString.captalize(word);
     console.log(`\n> [ROBOT TEXT] Word: ${word}`);
@@ -152,7 +160,9 @@ const mountObjectData = async arrWords => {
     metrics.watson.tts.req++;
     metrics.watson.tts.char += word.length;
     temp.transcript = temp && "";
-    temp.transcript = `/${(await Watson.getTranscription(word))}/` || `/${temp.pronunciation.transcription}/`;
+    temp.transcript =
+      `/${await Watson.getTranscription(word)}/` ||
+      `/${temp.pronunciation.transcription}/`;
 
     console.log("> [ROBOT TEXT] Translate definitions");
     var definitions = await mountDefinitions(word, oxfordData.definitions);
@@ -166,9 +176,11 @@ const mountObjectData = async arrWords => {
     console.log("> [ROBOT TEXT] Get keywords");
     temp.keywords = await mountKeyWords(oxfordData.definitions);
 
-    mountArrayData.push(temp);
+    progress.robot_text.words.push(word);
+    progress.robot_text.mountArrayData.push(temp);
+    State.setState("progress", progress);
   }
-  return mountArrayData;
+  return progress.robot_text.mountArrayData;
 };
 
 const saveData = async (arrWithoutUsed, arrWords, MData) => {
@@ -193,12 +205,16 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
       "\n" + arrWords.join("\n")
     );
   }
+
+  progress.robot_text.finish = true;
 };
 
 const RobotText = async () => {
   try {
     console.log("> [ROBOT TEXT] Load words");
     const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
+    progress = State.getState("progress");
+
     const { arrWithoutUsed, arrWords } = await getWords(base);
 
     const objectMounted = await mountObjectData(arrWords);
@@ -206,9 +222,11 @@ const RobotText = async () => {
     if (objectMounted) {
       await saveData(arrWithoutUsed, arrWords, objectMounted);
     } else {
+      await State.setState("progress", progress);
       console.log("Object not Mounted");
     }
   } catch (error) {
+    await State.setState("progress", progress);
     console.log("Ops...", error);
   }
 };

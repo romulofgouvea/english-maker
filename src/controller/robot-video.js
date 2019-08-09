@@ -3,6 +3,8 @@ import _ from "lodash";
 import { UArchive, UImage, UVideo, EStatic } from "~/utils";
 import { State } from "~/services";
 
+const progress = {}
+
 const generateCovers = async words => {
   var word = words.word.toLowerCase();
 
@@ -78,6 +80,9 @@ const createMiniVideos = async state => {
   console.log("> [ROBOT VIDEO] Save state with mini-videos");
   await State.setState("state", state);
 
+  progress.robot_video.create_mini_videos = true;
+  await State.setState("progress", progress);
+
   return state;
 };
 
@@ -144,6 +149,9 @@ const generateJoinMiniVideos = async state => {
 
   console.log("> [ROBOT VIDEO] Save state");
   await State.setState("state", state);
+
+  progress.robot_video.generate_join_videos = true;
+  await State.setState("progress", progress);
 };
 
 const addInit = async urlFinalrender => {
@@ -182,19 +190,33 @@ const finalRenderVideos = async state => {
     var urlFinal = await addInit(output);
     console.log("> [ROBOT VIDEO] Finish robot video: ", urlFinal);
   }
+
+  progress.robot_video.final_render = true;
+  await State.setState("progress", progress);
 };
 
 const RobotVideo = async () => {
   try {
     console.log("> [ROBOT VIDEO] Recover state aplication");
     var state = await State.getState();
+    progress = await State.getState('progress');
 
-    state = await createMiniVideos(state);
+    if (!progress.robot_audio.finish)
+      throw "Not completed robot audio"
 
-    await generateJoinMiniVideos(state);
+    if (!progress.robot_video.create_mini_videos)
+      state = await createMiniVideos(state);
 
-    await finalRenderVideos(state);
+    if (!progress.robot_video.generate_join_videos)
+      await generateJoinMiniVideos(state);
+
+    if (!progress.robot_video.final_render)
+      await finalRenderVideos(state);
+
+    progress.robot_video.finish = true;
+    await State.setState("progress", progress);
   } catch (error) {
+    await State.setState("progress", progress);
     console.log("Ops...", error);
   }
 };
