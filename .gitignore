@@ -18,6 +18,8 @@ src/assets/videos/final_render/*.json
 src/assets/temp/
 src/assets/Uploads/
 
+.tmp.drivedownload/
+
 # Logs
 logs
 *.log
