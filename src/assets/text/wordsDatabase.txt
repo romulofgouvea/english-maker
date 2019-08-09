@@ -204,7 +204,6 @@ attitude
 attorney
 attract
 attractive
-attribute
 audience
 author
 authority
@@ -348,7 +347,6 @@ budget
 build
 building
 bullet
-bunch
 burden
 burn
 bury
@@ -712,7 +710,6 @@ democratic
 demonstrate
 demonstration
 deny
-department
 depend
 dependent
 depending
@@ -1079,7 +1076,6 @@ fly
 focus
 folk
 follow
-following
 food
 foot
 football
@@ -1302,7 +1298,6 @@ hunter
 hunting
 hurt
 husband
-hypothesis
 I
 ice
 idea
@@ -1563,7 +1558,6 @@ love
 lovely
 lover
 low
-lower
 luck
 lucky
 lunch
@@ -1624,7 +1618,6 @@ medical
 medication
 medicine
 medium
-meet
 meeting
 member
 membership
@@ -1724,7 +1717,6 @@ necessarily
 necessary
 neck
 need
-negative
 negotiate
 negotiation
 neighbor
@@ -1987,7 +1979,6 @@ positive
 possess
 possibility
 possible
-possibly
 post
 pot
 potato
@@ -2890,7 +2881,6 @@ wear
 weather
 wedding
 week
-weekend
 weekly
 weigh
 weight

@@ -28,6 +28,9 @@ const organizeFiles = () => {
     console.log("> [ROBOT ORGANIZE] Move file description");
     var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`)
     UArchive.moveFile("/assets/text/description.txt", `${urlFolder}/description.txt`, arr => console.log(arr))
+
+    console.log("> [ROBOT ORGANIZE] Move files state");
+    copyFolder('/assets/state', 'json', `/${nameFolder}/state`)
 }
 
 const RobotOrganize = async () => {

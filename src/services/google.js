@@ -10,6 +10,7 @@ import { WebServer } from "~/services";
 
 const OAuth2 = google.auth.OAuth2;
 const youtube = google.youtube("v3");
+const drive = google.drive("v3");
 
 const createOAuthClient = async () => {
   const OAuthClient = new OAuth2(
@@ -24,7 +25,7 @@ const createOAuthClient = async () => {
 const requestUserConsent = OAuthClient => {
   const consentUrl = OAuthClient.generateAuthUrl({
     access_type: "offline",
-    scope: ["https://www.googleapis.com/auth/youtube"]
+    scope: ["https://www.googleapis.com/auth/youtube", "https://www.googleapis.com/auth/drive", 'https://www.googleapis.com/auth/drive.file']
   });
 
   console.log(`> [ROBOT YOUTUBE] Please give your consent: ${consentUrl}`);
@@ -157,7 +158,7 @@ const uploadVideo = async state => {
 };
 
 const uploadThumbnail = async (source, videoInformation) => {
-  if(!source) return;
+  if (!source) return;
   const videoId = videoInformation.id;
   const videoThumbnailFilePath = UArchive.getBaseUrl(source);
 
@@ -227,10 +228,27 @@ const getAudio = async (source, nameFile, text) => {
   }
 };
 
+const sendFolderVideo = async source => {
+  source = UArchive.getBaseUrl(source);
+  var pageToken = null;
+
+  const requestParameters = {
+    spaces: 'appDataFolder',
+    fields: 'nextPageToken, files(id, name)',
+    pageSize: 100
+  }
+
+  var files = await drive.files.list(requestParameters);
+
+  console.log(files);
+
+}
+
 module.exports = {
   getTranslateGoogleAPI,
   getAudio,
   authenticateWithOAuth,
   uploadVideo,
-  uploadThumbnail
+  uploadThumbnail,
+  sendFolderVideo
 };
