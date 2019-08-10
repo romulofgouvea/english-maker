@@ -155,7 +155,13 @@ const generateTranslates = async () => {
 
 const mountObjectData = async arrWords => {
   for (var word of arrWords) {
-    if (progress.robot_text && progress.robot_text.words.includes(word)) continue;
+    if (progress.robot_text.words) {
+      progress = State.getState("progress");
+      if (progress.robot_text && progress.robot_text.words.includes(word)) {
+        continue;
+      };
+    }
+
     var temp = {};
     temp.word = UString.captalize(word);
     console.log(`\n> [ROBOT TEXT] Word: ${word}`);
@@ -189,10 +195,10 @@ const mountObjectData = async arrWords => {
     temp.keywords = await mountKeyWords(oxfordData.definitions);
 
     progress.robot_text.words.push(word);
-    progress.robot_text.mountArrayData.push(temp);
+    progress.mountArrayData.push(temp);
     State.setState("progress", progress);
   }
-  return progress.robot_text.mountArrayData;
+  return progress.mountArrayData;
 };
 
 const saveData = async (arrWithoutUsed, arrWords, MData) => {
@@ -217,8 +223,6 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
       "\n" + arrWords.join("\n")
     );
   }
-
-  progress.robot_text.finish = true;
 };
 
 const RobotText = async () => {
@@ -230,7 +234,7 @@ const RobotText = async () => {
 
     var arrWords = [];
     var arrWithoutUsed = [];
-    if (!tempProgres || !!tempProgres.arrWords || !tempProgres.arrWithoutUsed) {
+    if (!tempProgres || !tempProgres.arrWords || !tempProgres.arrWithoutUsed) {
       var arr = await getWords(base);
       arrWords = progress.arrWords = arr.arrWords;
       arrWithoutUsed = progress.arrWithoutUsed = arr.arrWithoutUsed;
@@ -242,15 +246,18 @@ const RobotText = async () => {
 
     const objectMounted = await mountObjectData(arrWords);
 
-    if (objectMounted) {
+    if (objectMounted.length > 0) {
       await saveData(arrWithoutUsed, arrWords, objectMounted);
     } else {
       console.log("Object not Mounted");
     }
 
-    delete progress.mountArrayData;
-    delete progress.arrWords;
-    delete progress.arrWithoutUsed;
+    if (progress.arrWords.length === 10) {
+      delete progress.mountArrayData;
+      delete progress.arrWords;
+      delete progress.arrWithoutUsed;
+      progress.robot_text.finish = true;
+    }
     await State.setState("progress", progress);
   } catch (error) {
     await State.setState("progress", progress);
