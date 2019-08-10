@@ -3,7 +3,7 @@ import _ from "lodash";
 import { UArchive, UImage, UVideo, EStatic } from "~/utils";
 import { State } from "~/services";
 
-const progress = {}
+var progress = {}
 
 const generateCovers = async words => {
   var word = words.word.toLowerCase();

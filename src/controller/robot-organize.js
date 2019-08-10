@@ -1,3 +1,4 @@
+import { State } from "~/services";
 import { UArchive } from '~/utils';
 
 var copyFolder = (source, ext, newSource) => {
@@ -9,7 +10,6 @@ var copyFolder = (source, ext, newSource) => {
 }
 
 const organizeFiles = () => {
-    console.log("> [ROBOT ORGANIZE] Organize files");
     var wordsUsed = UArchive.loadFile(
         "/assets/text",
         "wordsUsed.txt"
@@ -32,7 +32,9 @@ const organizeFiles = () => {
 
 const RobotOrganize = async () => {
     try {
-        progress = await State.getState('progress');
+        console.log("> [ROBOT ORGANIZE] Organize files");
+
+        var progress = await State.getState('progress');
         if (!progress.robot_youtube.finish)
             throw "Not completed robot you tube"
 

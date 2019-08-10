@@ -9,7 +9,7 @@ const metrics = {
   }
 };
 
-const progress = {};
+var progress = {};
 
 const getAudios = async state => {
   for (var [key, value] of state.entries()) {

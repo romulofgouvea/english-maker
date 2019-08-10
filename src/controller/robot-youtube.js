@@ -6,7 +6,7 @@ const RobotYouTube = async () => {
   try {
     console.log("> [ROBOT YOUTUBE] Recover state aplication");
     var state = await State.getState();
-    progress = await State.getState('progress');
+    var progress = await State.getState('progress');
     if (!progress.robot_video.finish)
       throw "Not completed robot video"
 

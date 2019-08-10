@@ -59,12 +59,11 @@ const loadFile = (source, nameFile) => {
 
 const loadFileJson = (source, nameFile) => {
   try {
-    if (!existsFile(source, nameFile)) throw "File not exists";
-
     var localUrl = `${getBaseUrl(source)}/${nameFile}.json`;
+    if (!existsFile(localUrl)) throw "File not exists";
     return JSON.parse(fs.readFileSync(localUrl, "utf8"));
   } catch (error) {
-    console.log(error);
+    // console.log(error);
     return "";
   }
 };

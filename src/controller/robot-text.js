@@ -20,10 +20,22 @@ const metrics = {
   fraze: 0
 };
 
-const progress = {
+var progress = {
   robot_text: {
     words: [],
+    finish: false
   },
+  robot_audio: {
+    finish: false
+  },
+  robot_video: {
+    finish: false
+  },
+  robot_youtube: {
+    finish: false
+  },
+  arrWords: [],
+  arrWithoutUsed: [],
   mountArrayData: []
 };
 
@@ -143,7 +155,7 @@ const generateTranslates = async () => {
 
 const mountObjectData = async arrWords => {
   for (var word of arrWords) {
-    if (progress.robot_text.words.includes(word)) continue;
+    if (progress.robot_text && progress.robot_text.words.includes(word)) continue;
     var temp = {};
     temp.word = UString.captalize(word);
     console.log(`\n> [ROBOT TEXT] Word: ${word}`);
@@ -213,18 +225,33 @@ const RobotText = async () => {
   try {
     console.log("> [ROBOT TEXT] Load words");
     const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
-    progress = State.getState("progress");
 
-    const { arrWithoutUsed, arrWords } = await getWords(base);
+    var tempProgres = State.getState("progress");
+
+    var arrWords = [];
+    var arrWithoutUsed = [];
+    if (!tempProgres || !!tempProgres.arrWords || !tempProgres.arrWithoutUsed) {
+      var arr = await getWords(base);
+      arrWords = progress.arrWords = arr.arrWords;
+      arrWithoutUsed = progress.arrWithoutUsed = arr.arrWithoutUsed;
+      await State.setState("progress", progress);
+    } else {
+      arrWords = tempProgres.arrWords;
+      arrWithoutUsed = tempProgres.arrWithoutUsed;
+    }
 
     const objectMounted = await mountObjectData(arrWords);
 
     if (objectMounted) {
       await saveData(arrWithoutUsed, arrWords, objectMounted);
     } else {
-      await State.setState("progress", progress);
       console.log("Object not Mounted");
     }
+
+    delete progress.mountArrayData;
+    delete progress.arrWords;
+    delete progress.arrWithoutUsed;
+    await State.setState("progress", progress);
   } catch (error) {
     await State.setState("progress", progress);
     console.log("Ops...", error);
