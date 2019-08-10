@@ -1,10 +1,10 @@
 import { RobotText, RobotAudio, RobotVideo, RobotYouTube, RobotOrganize } from "~/controller";
 
 const Index = async () => {
-  //await RobotText.RobotText();
-  //await RobotAudio.RobotAudio();
-  //await RobotVideo.RobotVideo();
-  // await RobotYouTube.RobotYouTube();
+  await RobotText.RobotText();
+  await RobotAudio.RobotAudio();
+  await RobotVideo.RobotVideo();
+  await RobotYouTube.RobotYouTube();
   await RobotOrganize.RobotOrganize();
 };
 
