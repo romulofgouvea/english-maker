@@ -197,12 +197,15 @@ const finalRenderVideos = async state => {
 
 const RobotVideo = async () => {
   try {
-    console.log("> [ROBOT VIDEO] Recover state aplication");
-    var state = await State.getState();
     progress = await State.getState('progress');
-
-    if (!progress.robot_audio.finish)
+    if (progress.robot_audio !== true)
       throw "Not completed robot audio"
+
+    if (progress.robot_video === true)
+      return;
+
+    console.log("\n\n> [ROBOT VIDEO]");
+    var state = await State.getState();
 
     if (!progress.robot_video.create_mini_videos)
       state = await createMiniVideos(state);
@@ -213,8 +216,12 @@ const RobotVideo = async () => {
     if (!progress.robot_video.final_render)
       await finalRenderVideos(state);
 
-    progress.robot_video.finish = true;
-    await State.setState("progress", progress);
+    if (progress.robot_video.create_mini_videos
+      && progress.robot_video.generate_join_videos
+      && progress.robot_video.final_render) {
+      progress.robot_video = true;
+      await State.setState("progress", progress);
+    }
   } catch (error) {
     await State.setState("progress", progress);
     console.log("Ops...", error);

@@ -14,7 +14,12 @@ var progress = {};
 const getAudios = async state => {
   for (var [key, value] of state.entries()) {
     var word = value.word;
-    if (progress.robot_audio.words.includes(word)) continue;
+    if (progress.robot_audio.words) {
+      progress = State.getState("progress");
+      if (progress.robot_audio.words.includes(word)) {
+        continue;
+      };
+    }
 
     console.log(`\n> [ROBOT AUDIO] Word: ${word}`);
     do {
@@ -63,18 +68,22 @@ const getAudios = async state => {
     }
 
     progress.robot_audio.words.push(word);
+    await State.setState("progress", progress);
   }
   return state;
 };
 
 const RobotAudio = async () => {
   try {
-    console.log("> [ROBOT AUDIO] Recover state aplication");
-    var state = await State.getState();
     progress = await State.getState('progress');
-
-    if (!progress.robot_text.finish)
+    if (progress.robot_text !== true)
       throw "Not completed robot text"
+
+    if (progress.robot_audio === true)
+      return;
+
+    console.log("\n\n> [ROBOT AUDIO]");
+    var state = await State.getState();
 
     console.log("> [ROBOT AUDIO] Get audios");
     state = await getAudios(state);
@@ -82,9 +91,11 @@ const RobotAudio = async () => {
     console.log("\n> [ROBOT AUDIO] Save state");
     await State.setState("state", state);
     await State.setState("metrics_audio", metrics);
-    
-    progress.robot_audio.finish = true;
-    await State.setState("progress", progress);
+
+    if (progress.robot_audio.words.length === 10) {
+      progress.robot_audio = true;
+      await State.setState("progress", progress);
+    }
   } catch (error) {
     await State.setState("progress", progress);
     console.log("Ops...", error);

@@ -152,7 +152,6 @@ appropriate
 approval
 approve
 approximately
-Arab
 architect
 area
 argue
@@ -187,7 +186,6 @@ assist
 assistance
 assistant
 associate
-association
 assume
 assumption
 assure
@@ -823,7 +821,6 @@ dust
 duty
 each
 eager
-ear
 early
 earn
 earnings
@@ -1118,7 +1115,6 @@ frustration
 fuel
 full
 fully
-fun
 function
 fund
 fundamental
@@ -1341,7 +1337,6 @@ income
 incorporate
 increase
 increased
-increasing
 increasingly
 incredible
 indeed
@@ -1689,7 +1684,6 @@ Ms
 much
 multiple
 murder
-muscle
 museum
 music
 musical
@@ -2203,7 +2197,6 @@ researcher
 resemble
 reservation
 resident
-resist
 resistance
 resolution
 resolve
@@ -2353,7 +2346,6 @@ shape
 share
 sharp
 she
-sheet
 shelf
 shell
 shelter
@@ -2361,7 +2353,6 @@ shift
 shine
 ship
 shirt
-shit
 shock
 shoe
 shoot
@@ -2480,7 +2471,6 @@ spin
 spirit
 spiritual
 split
-spokesman
 sport
 spot
 spread

@@ -157,7 +157,7 @@ const uploadVideo = async state => {
 };
 
 const uploadThumbnail = async (source, videoInformation) => {
-  if(!source) return;
+  if (!source) return;
   const videoId = videoInformation.id;
   const videoThumbnailFilePath = UArchive.getBaseUrl(source);
 
@@ -174,6 +174,7 @@ const uploadThumbnail = async (source, videoInformation) => {
 };
 
 const getTranslateGoogleAPI = async text => {
+  text = text.replace(/\s{2,}|\\n|\\r|—/g, " ");
   var translate = "";
   do {
     try {

@@ -26,14 +26,18 @@ var progress = {
     finish: false
   },
   robot_audio: {
+    words: [],
     finish: false
   },
   robot_video: {
+    create_mini_videos: false,
+    generate_join_videos: false,
+    final_render: false,
     finish: false
   },
-  robot_youtube: {
-    finish: false
-  },
+  robot_youtube: false,
+  robot_organize: false,
+  robot_drive: false,
   arrWords: [],
   arrWithoutUsed: [],
   mountArrayData: []
@@ -227,10 +231,12 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
 
 const RobotText = async () => {
   try {
-    console.log("> [ROBOT TEXT] Load words");
-    const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
-
     var tempProgres = State.getState("progress");
+    if (tempProgres.robot_text)
+      return;
+
+    console.log("> [ROBOT TEXT]");
+    const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
 
     var arrWords = [];
     var arrWithoutUsed = [];
@@ -256,9 +262,9 @@ const RobotText = async () => {
       delete progress.mountArrayData;
       delete progress.arrWords;
       delete progress.arrWithoutUsed;
-      progress.robot_text.finish = true;
+      progress.robot_text = true;
+      await State.setState("progress", progress);
     }
-    await State.setState("progress", progress);
   } catch (error) {
     await State.setState("progress", progress);
     console.log("Ops...", error);
