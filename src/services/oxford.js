@@ -28,6 +28,10 @@ const getDefinitionsAndExamplesByEntries = lexical => {
           _.flatten(tempExamples)
         );
 
+        //remove extras
+        sense.definitions = sense.definitions.map(str => str.replace(/\s{2,}|\\n|\\r|—/g, " "))
+        sense.examples = sense.examples.map(str => str.replace(/\s{2,}|\\n|\\r|—/g, " "))
+
         return {
           definitions: sense.definitions,
           examples: sense.examples

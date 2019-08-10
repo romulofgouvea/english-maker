@@ -152,7 +152,6 @@ appropriate
 approval
 approve
 approximately
-Arab
 architect
 area
 argue
@@ -187,7 +186,6 @@ assist
 assistance
 assistant
 associate
-association
 assume
 assumption
 assure
@@ -204,7 +202,6 @@ attitude
 attorney
 attract
 attractive
-attribute
 audience
 author
 authority
@@ -348,7 +345,6 @@ budget
 build
 building
 bullet
-bunch
 burden
 burn
 bury
@@ -712,7 +708,6 @@ democratic
 demonstrate
 demonstration
 deny
-department
 depend
 dependent
 depending
@@ -826,7 +821,6 @@ dust
 duty
 each
 eager
-ear
 early
 earn
 earnings
@@ -1079,7 +1073,6 @@ fly
 focus
 folk
 follow
-following
 food
 foot
 football
@@ -1122,7 +1115,6 @@ frustration
 fuel
 full
 fully
-fun
 function
 fund
 fundamental
@@ -1302,7 +1294,6 @@ hunter
 hunting
 hurt
 husband
-hypothesis
 I
 ice
 idea
@@ -1346,7 +1337,6 @@ income
 incorporate
 increase
 increased
-increasing
 increasingly
 incredible
 indeed
@@ -1563,7 +1553,6 @@ love
 lovely
 lover
 low
-lower
 luck
 lucky
 lunch
@@ -1624,7 +1613,6 @@ medical
 medication
 medicine
 medium
-meet
 meeting
 member
 membership
@@ -1696,7 +1684,6 @@ Ms
 much
 multiple
 murder
-muscle
 museum
 music
 musical
@@ -1724,7 +1711,6 @@ necessarily
 necessary
 neck
 need
-negative
 negotiate
 negotiation
 neighbor
@@ -1987,7 +1973,6 @@ positive
 possess
 possibility
 possible
-possibly
 post
 pot
 potato
@@ -2212,7 +2197,6 @@ researcher
 resemble
 reservation
 resident
-resist
 resistance
 resolution
 resolve
@@ -2362,7 +2346,6 @@ shape
 share
 sharp
 she
-sheet
 shelf
 shell
 shelter
@@ -2370,7 +2353,6 @@ shift
 shine
 ship
 shirt
-shit
 shock
 shoe
 shoot
@@ -2489,7 +2471,6 @@ spin
 spirit
 spiritual
 split
-spokesman
 sport
 spot
 spread
@@ -2890,7 +2871,6 @@ wear
 weather
 wedding
 week
-weekend
 weekly
 weigh
 weight

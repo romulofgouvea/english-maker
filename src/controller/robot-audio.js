@@ -1,6 +1,5 @@
 import _ from "lodash";
 
-import { UArchive } from "~/utils";
 import { Oxford, Google, State } from "~/services";
 
 const metrics = {
@@ -10,9 +9,18 @@ const metrics = {
   }
 };
 
+var progress = {};
+
 const getAudios = async state => {
   for (var [key, value] of state.entries()) {
     var word = value.word;
+    if (progress.robot_audio.words) {
+      progress = State.getState("progress");
+      if (progress.robot_audio.words.includes(word)) {
+        continue;
+      };
+    }
+
     console.log(`\n> [ROBOT AUDIO] Word: ${word}`);
     do {
       if (value.pronunciation && value.pronunciation.audio) {
@@ -34,7 +42,6 @@ const getAudios = async state => {
     } while (!value.word_audio);
 
     console.log("> [ROBOT AUDIO] Get transcript definitions");
-
     for (var [key, def] of value.definitions.entries()) {
       do {
         metrics.google.tts.req++;
@@ -59,13 +66,23 @@ const getAudios = async state => {
         );
       } while (!exp.audio);
     }
+
+    progress.robot_audio.words.push(word);
+    await State.setState("progress", progress);
   }
   return state;
 };
 
 const RobotAudio = async () => {
   try {
-    console.log("> [ROBOT AUDIO] Recover state aplication");
+    progress = await State.getState('progress');
+    if (progress.robot_text !== true)
+      throw "Not completed robot text"
+
+    if (progress.robot_audio === true)
+      return;
+
+    console.log("\n\n> [ROBOT AUDIO]");
     var state = await State.getState();
 
     console.log("> [ROBOT AUDIO] Get audios");
@@ -74,7 +91,13 @@ const RobotAudio = async () => {
     console.log("\n> [ROBOT AUDIO] Save state");
     await State.setState("state", state);
     await State.setState("metrics_audio", metrics);
+
+    if (progress.robot_audio.words.length === 10) {
+      progress.robot_audio = true;
+      await State.setState("progress", progress);
+    }
   } catch (error) {
+    await State.setState("progress", progress);
     console.log("Ops...", error);
   }
 };
