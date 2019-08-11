@@ -152,7 +152,6 @@ appropriate
 approval
 approve
 approximately
-Arab
 architect
 area
 argue
@@ -181,13 +180,11 @@ assert
 assess
 assessment
 asset
-assign
 assignment
 assist
 assistance
 assistant
 associate
-association
 assume
 assumption
 assure
@@ -517,7 +514,6 @@ compare
 comparison
 compete
 competition
-competitive
 competitor
 complain
 complaint
@@ -659,7 +655,6 @@ curriculum
 custom
 customer
 cut
-cycle
 dad
 daily
 damage
@@ -823,7 +818,6 @@ dust
 duty
 each
 eager
-ear
 early
 earn
 earnings
@@ -979,7 +973,6 @@ express
 expression
 extend
 extension
-extensive
 extent
 external
 extra
@@ -1118,7 +1111,6 @@ frustration
 fuel
 full
 fully
-fun
 function
 fund
 fundamental
@@ -1341,7 +1333,6 @@ income
 incorporate
 increase
 increased
-increasing
 increasingly
 incredible
 indeed
@@ -1532,7 +1523,6 @@ line
 link
 lip
 list
-listen
 literally
 literary
 literature
@@ -1689,7 +1679,6 @@ Ms
 much
 multiple
 murder
-muscle
 museum
 music
 musical
@@ -2181,7 +2170,6 @@ remain
 remaining
 remarkable
 remember
-remind
 remote
 remove
 repeat
@@ -2203,7 +2191,6 @@ researcher
 resemble
 reservation
 resident
-resist
 resistance
 resolution
 resolve
@@ -2353,7 +2340,6 @@ shape
 share
 sharp
 she
-sheet
 shelf
 shell
 shelter
@@ -2361,7 +2347,6 @@ shift
 shine
 ship
 shirt
-shit
 shock
 shoe
 shoot
@@ -2480,7 +2465,6 @@ spin
 spirit
 spiritual
 split
-spokesman
 sport
 spot
 spread
@@ -2561,7 +2545,6 @@ sue
 suffer
 sufficient
 sugar
-suggest
 suggestion
 suicide
 suit
@@ -2655,7 +2638,6 @@ text
 than
 thank
 thanks
-that
 the
 theater
 their
@@ -2685,7 +2667,6 @@ threat
 threaten
 three
 throat
-through
 throughout
 throw
 thus
@@ -2884,7 +2865,6 @@ week
 weekly
 weigh
 weight
-welcome
 welfare
 well
 west

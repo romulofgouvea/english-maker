@@ -175,6 +175,7 @@ const uploadThumbnail = async (source, videoInformation) => {
 };
 
 const getTranslateGoogleAPI = async text => {
+  text = text.replace(/\s{2,}|\\n|\\r|—/g, " ").replace(/\\/g, "");
   var translate = "";
   do {
     try {

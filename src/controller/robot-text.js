@@ -20,6 +20,29 @@ const metrics = {
   fraze: 0
 };
 
+var progress = {
+  robot_text: {
+    words: [],
+    finish: false
+  },
+  robot_audio: {
+    words: [],
+    finish: false
+  },
+  robot_video: {
+    create_mini_videos: false,
+    generate_join_videos: false,
+    final_render: false,
+    finish: false
+  },
+  robot_youtube: false,
+  robot_organize: false,
+  robot_drive: false,
+  arrWords: [],
+  arrWithoutUsed: [],
+  mountArrayData: []
+};
+
 const getWords = async arr => {
   console.log("> [ROBOT TEXT] Get words");
 
@@ -121,21 +144,28 @@ const generateTranslates = async () => {
     for (var definition of words.definitions) {
       metrics.google.lt.req++;
       metrics.google.lt.char += definition.phrase.length;
-      definition.translate = await Google.getTranslateGoogleAPI(definition.phrase);
-    };
+      definition.translate = await Google.getTranslateGoogleAPI(
+        definition.phrase
+      );
+    }
     for (var example of words.examples) {
       metrics.google.lt.req++;
       metrics.google.lt.char += example.phrase.length;
       example.translate = await Google.getTranslateGoogleAPI(example.phrase);
-    };
+    }
   }
   await State.setState("state", state);
 };
 
 const mountObjectData = async arrWords => {
-  var mountArrayData = [];
-
   for (var word of arrWords) {
+    if (progress.robot_text.words) {
+      progress = State.getState("progress");
+      if (progress.robot_text && progress.robot_text.words.includes(word)) {
+        continue;
+      };
+    }
+
     var temp = {};
     temp.word = UString.captalize(word);
     console.log(`\n> [ROBOT TEXT] Word: ${word}`);
@@ -152,7 +182,9 @@ const mountObjectData = async arrWords => {
     metrics.watson.tts.req++;
     metrics.watson.tts.char += word.length;
     temp.transcript = temp && "";
-    temp.transcript = `/${(await Watson.getTranscription(word))}/` || `/${temp.pronunciation.transcription}/`;
+    temp.transcript =
+      `/${await Watson.getTranscription(word)}/` ||
+      `/${temp.pronunciation.transcription}/`;
 
     console.log("> [ROBOT TEXT] Translate definitions");
     var definitions = await mountDefinitions(word, oxfordData.definitions);
@@ -166,9 +198,11 @@ const mountObjectData = async arrWords => {
     console.log("> [ROBOT TEXT] Get keywords");
     temp.keywords = await mountKeyWords(oxfordData.definitions);
 
-    mountArrayData.push(temp);
+    progress.robot_text.words.push(word);
+    progress.mountArrayData.push(temp);
+    State.setState("progress", progress);
   }
-  return mountArrayData;
+  return progress.mountArrayData;
 };
 
 const saveData = async (arrWithoutUsed, arrWords, MData) => {
@@ -197,18 +231,42 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
 
 const RobotText = async () => {
   try {
-    console.log("> [ROBOT TEXT] Load words");
+    var tempProgres = State.getState("progress");
+    if (tempProgres.robot_text === true)
+      return;
+
+    console.log("> [ROBOT TEXT]");
     const base = UArchive.loadFile("/assets/text", "wordsDatabase.txt");
-    const { arrWithoutUsed, arrWords } = await getWords(base);
+
+    var arrWords = [];
+    var arrWithoutUsed = [];
+    if (!tempProgres || !tempProgres.arrWords || !tempProgres.arrWithoutUsed) {
+      var arr = await getWords(base);
+      arrWords = progress.arrWords = arr.arrWords;
+      arrWithoutUsed = progress.arrWithoutUsed = arr.arrWithoutUsed;
+      await State.setState("progress", progress);
+    } else {
+      arrWords = tempProgres.arrWords;
+      arrWithoutUsed = tempProgres.arrWithoutUsed;
+    }
 
     const objectMounted = await mountObjectData(arrWords);
 
-    if (objectMounted) {
+    if (objectMounted.length > 0) {
       await saveData(arrWithoutUsed, arrWords, objectMounted);
     } else {
       console.log("Object not Mounted");
     }
+
+    if (progress.arrWords.length === 10) {
+      delete progress.mountArrayData;
+      delete progress.arrWords;
+      delete progress.arrWithoutUsed;
+      progress.robot_text = true;
+      await State.setState("progress", progress);
+    }
   } catch (error) {
+    await State.setState("progress", progress);
     console.log("Ops...", error);
   }
 };
