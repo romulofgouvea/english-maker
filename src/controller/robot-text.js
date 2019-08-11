@@ -232,7 +232,7 @@ const saveData = async (arrWithoutUsed, arrWords, MData) => {
 const RobotText = async () => {
   try {
     var tempProgres = State.getState("progress");
-    if (tempProgres.robot_text)
+    if (tempProgres.robot_text === true)
       return;
 
     console.log("> [ROBOT TEXT]");

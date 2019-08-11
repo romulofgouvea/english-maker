@@ -180,7 +180,6 @@ assert
 assess
 assessment
 asset
-assign
 assignment
 assist
 assistance
@@ -515,7 +514,6 @@ compare
 comparison
 compete
 competition
-competitive
 competitor
 complain
 complaint
@@ -657,7 +655,6 @@ curriculum
 custom
 customer
 cut
-cycle
 dad
 daily
 damage
@@ -976,7 +973,6 @@ express
 expression
 extend
 extension
-extensive
 extent
 external
 extra
@@ -1527,7 +1523,6 @@ line
 link
 lip
 list
-listen
 literally
 literary
 literature
@@ -2175,7 +2170,6 @@ remain
 remaining
 remarkable
 remember
-remind
 remote
 remove
 repeat
@@ -2551,7 +2545,6 @@ sue
 suffer
 sufficient
 sugar
-suggest
 suggestion
 suicide
 suit
@@ -2645,7 +2638,6 @@ text
 than
 thank
 thanks
-that
 the
 theater
 their
@@ -2675,7 +2667,6 @@ threat
 threaten
 three
 throat
-through
 throughout
 throw
 thus
@@ -2874,7 +2865,6 @@ week
 weekly
 weigh
 weight
-welcome
 welfare
 well
 west
