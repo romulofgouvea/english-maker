@@ -12,7 +12,7 @@ const RobotYouTube = async () => {
     console.log("\n\n> [ROBOT YOUTUBE]");
     var state = await State.getState();
 
-    await Google.authenticateWithOAuth();
+    await Google.authenticateWithOAuth('youtube');
     const videoInformation = await Google.uploadVideo(state);
     var filePath = "";
     await Google.uploadThumbnail(filePath, videoInformation);

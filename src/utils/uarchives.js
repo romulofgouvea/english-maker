@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import _ from "lodash";
+import archiver from "archiver";
 
 import UUtils from "./uutils";
 import { constants } from "../../config";
@@ -228,6 +229,44 @@ const createFolder = source => {
   }
 };
 
+const zipFolder = (source, newSource) => {
+  //['-rj', '-', SCRIPTS_PATH]
+  return new Promise((resolve, reject) => {
+
+    try {
+      var args = [
+        'a',
+        getBaseUrl(newSource),
+        getBaseUrl(source)
+      ]
+      const zip = spawn('7z', args);
+
+      zip.stdout.on('data', function (data) {
+        console.log(data.toString());
+      });
+
+      zip.on('error', (err) => {
+        console.log('err contains: ' + err);
+        throw err;
+      });
+
+      zip.on('exit', function (code) {
+        if (code !== 0) {
+          res.statusCode = 500;
+          console.log('zip process exited with code ' + code);
+          resolve();
+        } else {
+          resolve();
+        }
+      });
+    } catch (err) {
+      reject(err);
+    }
+
+  });
+}
+
+
 module.exports = {
   loadFile,
   loadFileJson,
@@ -244,5 +283,6 @@ module.exports = {
   removeGroupFiles,
   listFilesDir,
   getNameFile,
-  createFolder
+  createFolder,
+  zipFolder
 };

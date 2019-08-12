@@ -17,4 +17,9 @@ const levelVideo = [
   'Avanced'
 ]
 
-module.exports = { coverWordStatic };
+const scopeGoogle = {
+  'youtube': ["https://www.googleapis.com/auth/youtube"],
+  'drive': ["https://www.googleapis.com/auth/drive", 'https://www.googleapis.com/auth/drive.file']
+}
+
+module.exports = { coverWordStatic,scopeGoogle };

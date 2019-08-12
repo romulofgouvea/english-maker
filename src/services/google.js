@@ -5,8 +5,9 @@ import open from 'open';
 import { format } from 'date-fns';
 import _ from 'lodash';
 
-import { UArchive } from "~/utils";
+import { UArchive, EStatic } from "~/utils";
 import { WebServer } from "~/services";
+import { file } from "googleapis/build/src/apis/file";
 
 const OAuth2 = google.auth.OAuth2;
 const youtube = google.youtube("v3");
@@ -22,10 +23,10 @@ const createOAuthClient = async () => {
   return OAuthClient;
 };
 
-const requestUserConsent = OAuthClient => {
+const requestUserConsent = (OAuthClient, scope) => {
   const consentUrl = OAuthClient.generateAuthUrl({
     access_type: "offline",
-    scope: ["https://www.googleapis.com/auth/youtube", "https://www.googleapis.com/auth/drive", 'https://www.googleapis.com/auth/drive.file']
+    scope: scope
   });
 
   console.log(`> [ROBOT YOUTUBE] Please give your consent: ${consentUrl}`);
@@ -70,10 +71,12 @@ const setGlobalGoogleAuthentication = OAuthClient => {
   });
 };
 
-const authenticateWithOAuth = async () => {
+const authenticateWithOAuth = async (type) => {
   const webServer = await WebServer.startWebServer();
   const OAuthClient = await createOAuthClient();
-  requestUserConsent(OAuthClient);
+
+  requestUserConsent(OAuthClient, EStatic.scopeGoogle[type]);
+
   const authorizationToken = await waitForGoogleCallback(webServer);
   await requestGoogleForAccessTokens(OAuthClient, authorizationToken);
   await setGlobalGoogleAuthentication(OAuthClient);
@@ -229,20 +232,50 @@ const getAudio = async (source, nameFile, text) => {
   }
 };
 
-const sendFolderVideo = async source => {
+const sendZipToDrive = async (source, nameFile) => {
+
+  // {
+  //   "kind": "drive#file",
+  //   "id": "1Hfe4TLhfJhzd__BJBb7QafNQvAQgOeA8",
+  //   "name": "English Every Day",
+  //   "mimeType": "application/vnd.google-apps.folder"
+  //  }
+
   source = UArchive.getBaseUrl(source);
-  var pageToken = null;
+
+  var fileMetadata = {
+    'name': nameFile
+  };
+
+  //application/x-zip-compressed, application/x-7z-compressed
+  var media = {
+    mimeType: 'application/x-zip-compressed',
+    body: fs.createReadStream(source)
+  };
 
   const requestParameters = {
-    spaces: 'appDataFolder',
-    fields: 'nextPageToken, files(id, name)',
-    pageSize: 100
+    resource: fileMetadata,
+    media: media,
+    fields: 'id'
+  }
+
+  var files = await drive.files.create(requestParameters)
+
+  return files.data.id;
+}
+
+const getListByIdDrive = async id => {
+  const requestParameters = {
+    fields: 'files(id, name)'
   }
 
   var files = await drive.files.list(requestParameters);
 
-  console.log(files);
+  console.log(JSON.stringify(files.data));
+}
 
+const sendFolderVideo = async source => {
+  await UArchive.zipFolder('/assets/uploads/Video 4', '/assets/uploads/Video 4.7z')
 }
 
 module.exports = {
