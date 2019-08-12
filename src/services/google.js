@@ -275,7 +275,7 @@ const getListByIdDrive = async id => {
 }
 
 const sendFolderVideo = async source => {
-  await UArchive.zipFolder('/assets/uploads/Video 4', '/assets/uploads/Video 4.7z')
+  await UArchive.zipFolder('/assets/uploads/Video 4', '/assets/uploads/Video 4.zip')
 }
 
 module.exports = {

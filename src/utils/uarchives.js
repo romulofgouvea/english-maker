@@ -229,40 +229,21 @@ const createFolder = source => {
   }
 };
 
-const zipFolder = (source, newSource) => {
-  //['-rj', '-', SCRIPTS_PATH]
+const zipFolder = (source, output) => {
+  source = getBaseUrl(source)
+  output = getBaseUrl(output)
+
+  const archive = archiver('zip', { zlib: { level: 9 } });
+  const stream = fs.createWriteStream(output);
+
   return new Promise((resolve, reject) => {
+    archive
+      .directory(source, false)
+      .on('error', err => reject(err))
+      .pipe(stream);
 
-    try {
-      var args = [
-        'a',
-        getBaseUrl(newSource),
-        getBaseUrl(source)
-      ]
-      const zip = spawn('7z', args);
-
-      zip.stdout.on('data', function (data) {
-        console.log(data.toString());
-      });
-
-      zip.on('error', (err) => {
-        console.log('err contains: ' + err);
-        throw err;
-      });
-
-      zip.on('exit', function (code) {
-        if (code !== 0) {
-          res.statusCode = 500;
-          console.log('zip process exited with code ' + code);
-          resolve();
-        } else {
-          resolve();
-        }
-      });
-    } catch (err) {
-      reject(err);
-    }
-
+    stream.on('close', () => resolve());
+    archive.finalize();
   });
 }
 
