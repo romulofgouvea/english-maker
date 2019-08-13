@@ -3,6 +3,7 @@ import RobotAudio from './robot-audio';
 import RobotVideo from './robot-video';
 import RobotYouTube from './robot-youtube';
 import RobotOrganize from './robot-organize';
+import RobotDrive from './robot-drive';
 
 export {
     RobotText,
@@ -10,4 +11,5 @@ export {
     RobotVideo,
     RobotYouTube,
     RobotOrganize,
+    RobotDrive,
 }

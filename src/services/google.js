@@ -5,11 +5,13 @@ import open from 'open';
 import { format } from 'date-fns';
 import _ from 'lodash';
 
-import { UArchive } from "~/utils";
+import { UArchive, EStatic } from "~/utils";
 import { WebServer } from "~/services";
+import { file } from "googleapis/build/src/apis/file";
 
 const OAuth2 = google.auth.OAuth2;
 const youtube = google.youtube("v3");
+const drive = google.drive("v3");
 
 const createOAuthClient = async () => {
   const OAuthClient = new OAuth2(
@@ -21,10 +23,10 @@ const createOAuthClient = async () => {
   return OAuthClient;
 };
 
-const requestUserConsent = OAuthClient => {
+const requestUserConsent = (OAuthClient, scope) => {
   const consentUrl = OAuthClient.generateAuthUrl({
     access_type: "offline",
-    scope: ["https://www.googleapis.com/auth/youtube"]
+    scope: scope
   });
 
   console.log(`> [ROBOT YOUTUBE] Please give your consent: ${consentUrl}`);
@@ -69,10 +71,12 @@ const setGlobalGoogleAuthentication = OAuthClient => {
   });
 };
 
-const authenticateWithOAuth = async () => {
+const authenticateWithOAuth = async (type) => {
   const webServer = await WebServer.startWebServer();
   const OAuthClient = await createOAuthClient();
-  requestUserConsent(OAuthClient);
+
+  requestUserConsent(OAuthClient, EStatic.scopeGoogle[type]);
+
   const authorizationToken = await waitForGoogleCallback(webServer);
   await requestGoogleForAccessTokens(OAuthClient, authorizationToken);
   await setGlobalGoogleAuthentication(OAuthClient);
@@ -228,10 +232,57 @@ const getAudio = async (source, nameFile, text) => {
   }
 };
 
+const sendZipToDrive = async source => {
+  var nameFile = UArchive.getNameFile(source);
+  source = UArchive.getBaseUrl(source);
+
+  var folderDrive = {
+    "kind": "drive#file",
+    "id": "1Hfe4TLhfJhzd__BJBb7QafNQvAQgOeA8",
+    "name": "English Every Day",
+    "mimeType": "application/vnd.google-apps.folder"
+  }
+
+  var fileMetadata = {
+    'name': nameFile,
+    'parents': [folderDrive.id]
+  };
+
+  //application/x-zip-compressed, application/x-7z-compressed
+  var media = {
+    mimeType: 'application/x-zip-compressed',
+    body: fs.createReadStream(source)
+  };
+
+  const requestParameters = {
+    resource: fileMetadata,
+    media: media,
+    fields: 'id'
+  }
+
+  var files = await drive.files.create(requestParameters)
+
+  console.log('Folder in drive: https://drive.google.com/drive/folders/' + folderDrive.id);
+  return files.data.id;
+}
+
+const getListByIdDrive = async id => {
+  const requestParameters = {
+    fields: 'files(id, name)'
+  }
+
+  var files = await drive.files.list(requestParameters);
+
+  console.log(JSON.stringify(files.data));
+}
+
+
+
 module.exports = {
   getTranslateGoogleAPI,
   getAudio,
   authenticateWithOAuth,
   uploadVideo,
-  uploadThumbnail
+  uploadThumbnail,
+  sendZipToDrive
 };

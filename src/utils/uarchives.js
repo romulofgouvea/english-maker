@@ -1,6 +1,7 @@
 import fs from "fs";
 import path from "path";
 import _ from "lodash";
+import archiver from "archiver";
 
 import UUtils from "./uutils";
 import { constants } from "../../config";
@@ -228,6 +229,25 @@ const createFolder = source => {
   }
 };
 
+const zipFolder = (source, output) => {
+  source = getBaseUrl(source)
+  output = getBaseUrl(output)
+
+  const archive = archiver('zip', { zlib: { level: 9 } });
+  const stream = fs.createWriteStream(output);
+
+  return new Promise((resolve, reject) => {
+    archive
+      .directory(source, false)
+      .on('error', err => reject(err))
+      .pipe(stream);
+
+    stream.on('close', () => resolve(existsFile(output)));
+    archive.finalize();
+  });
+}
+
+
 module.exports = {
   loadFile,
   loadFileJson,
@@ -244,5 +264,6 @@ module.exports = {
   removeGroupFiles,
   listFilesDir,
   getNameFile,
-  createFolder
+  createFolder,
+  zipFolder
 };
