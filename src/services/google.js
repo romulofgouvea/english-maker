@@ -232,7 +232,8 @@ const getAudio = async (source, nameFile, text) => {
   }
 };
 
-const sendZipToDrive = async (source, nameFile) => {
+const sendZipToDrive = async source => {
+  var nameFile = UArchive.getNameFile(source);
   source = UArchive.getBaseUrl(source);
 
   var folderDrive = {
@@ -250,7 +251,7 @@ const sendZipToDrive = async (source, nameFile) => {
   //application/x-zip-compressed, application/x-7z-compressed
   var media = {
     mimeType: 'application/x-zip-compressed',
-    body: fs.createReadStream(`${source}\\${nameFile}`)
+    body: fs.createReadStream(source)
   };
 
   const requestParameters = {
@@ -261,6 +262,7 @@ const sendZipToDrive = async (source, nameFile) => {
 
   var files = await drive.files.create(requestParameters)
 
+  console.log('Folder in drive: https://drive.google.com/drive/folders/' + folderDrive.id);
   return files.data.id;
 }
 
@@ -274,12 +276,7 @@ const getListByIdDrive = async id => {
   console.log(JSON.stringify(files.data));
 }
 
-const sendFolderVideo = async source => {
-  //await UArchive.zipFolder('/assets/uploads/Video 4', '/assets/uploads/Video 4.zip')
 
-  var idFile = await sendZipToDrive('/assets/uploads', 'Video 4.zip')
-  console.log(idFile);
-}
 
 module.exports = {
   getTranslateGoogleAPI,
@@ -287,5 +284,5 @@ module.exports = {
   authenticateWithOAuth,
   uploadVideo,
   uploadThumbnail,
-  sendFolderVideo
+  sendZipToDrive
 };

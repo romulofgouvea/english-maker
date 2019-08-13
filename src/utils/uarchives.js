@@ -242,7 +242,7 @@ const zipFolder = (source, output) => {
       .on('error', err => reject(err))
       .pipe(stream);
 
-    stream.on('close', () => resolve());
+    stream.on('close', () => resolve(existsFile(output)));
     archive.finalize();
   });
 }

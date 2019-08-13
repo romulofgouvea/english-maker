@@ -617,7 +617,6 @@ couple
 courage
 course
 court
-cousin
 cover
 coverage
 cow
@@ -904,7 +903,6 @@ episode
 equal
 equally
 equipment
-era
 error
 escape
 especially
@@ -913,11 +911,9 @@ essential
 essentially
 establish
 establishment
-estate
 estimate
 etc
 ethics
-ethnic
 European
 evaluate
 evaluation
@@ -953,7 +949,6 @@ exhibition
 exist
 existence
 existing
-expand
 expansion
 expect
 expectation
@@ -1266,7 +1261,6 @@ home
 homeless
 honest
 honey
-honor
 hope
 horizon
 horror
@@ -1655,7 +1649,6 @@ monitor
 month
 mood
 moon
-moral
 more
 moreover
 morning
@@ -1943,7 +1936,6 @@ poem
 poet
 poetry
 point
-pole
 police
 policy
 political
@@ -2710,7 +2702,6 @@ town
 toy
 trace
 track
-trade
 tradition
 traditional
 traffic
@@ -2885,7 +2876,6 @@ white
 who
 whole
 whom
-whose
 why
 widely
 widespread
