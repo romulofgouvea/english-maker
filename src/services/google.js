@@ -134,7 +134,7 @@ const uploadVideo = async state => {
         tags: videoTags
       },
       status: {
-        privacyStatus: "unlisted"
+        privacyStatus: "public"
       }
     },
     media: {
