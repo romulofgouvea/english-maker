@@ -58,7 +58,6 @@ advanced
 advantage
 adventure
 advertising
-advice
 advise
 adviser
 advocate
@@ -119,7 +118,6 @@ and
 anger
 angle
 angry
-animal
 anniversary
 announce
 annual
@@ -179,7 +177,6 @@ assault
 assert
 assess
 assessment
-asset
 assignment
 assist
 assistance
@@ -250,7 +247,6 @@ because
 become
 bed
 bedroom
-beer
 before
 begin
 beginning
@@ -588,7 +584,6 @@ conversation
 convert
 conviction
 convince
-cook
 cookie
 cooking
 cool
@@ -821,7 +816,6 @@ early
 earn
 earnings
 earth
-ease
 easily
 east
 eastern
@@ -1776,7 +1770,6 @@ ok
 okay
 old
 Olympic
-on
 once
 one
 ongoing
@@ -2225,7 +2218,6 @@ romantic
 roof
 room
 root
-rope
 rose
 rough
 roughly
@@ -2575,7 +2567,6 @@ symbol
 symptom
 system
 table
-tablespoon
 tactic
 tail
 take
@@ -2924,7 +2915,6 @@ writing
 wrong
 yard
 yeah
-year
 yell
 yellow
 yes

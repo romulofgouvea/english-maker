@@ -58,3 +58,14 @@ ethnic
 trade
 expand
 whose
+
+animal
+asset
+year
+beer
+cook
+on
+tablespoon
+advice
+ease
+rope
