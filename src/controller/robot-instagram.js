@@ -15,7 +15,7 @@ const RobotInstagram = async () => {
         await sendVideoStories();
 
         console.log("> [ROBOT INSTAGRAM] Delete files json");
-        UArchive.copyFolder('/assets/state', 'json', `/assets/uploads/${nameFolder}/state`, true)
+        UArchive.copyOrDeleteFolder('/assets/state', 'json', `/assets/uploads/${nameFolder}/state`, true)
     } catch (error) {
         console.log("Ops...", error);
     }

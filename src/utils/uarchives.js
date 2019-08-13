@@ -247,7 +247,7 @@ const zipFolder = (source, output) => {
   });
 }
 
-const copyFolderByExt = (source, ext, newSource, deleteFiles = false) => {
+const copyOrDeleteFolderByExt = (source, ext, newSource, deleteFiles = false) => {
   listFilesDir(source, ext).map(a => {
     var nameFile = getNameFile(a);
     var urlFolder = createFolder(newSource);
@@ -287,6 +287,6 @@ module.exports = {
   getNameFile,
   createFolder,
   zipFolder,
-  copyFolderByExt,
+  copyOrDeleteFolderByExt,
   copyFilesbyArr
 };
