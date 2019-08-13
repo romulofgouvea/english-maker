@@ -1,12 +1,26 @@
 import { State } from "~/services";
 import { UArchive } from '~/utils';
 
-var copyFolder = (source, ext, newSource) => {
+const copyFolderByExt = (source, ext, newSource, deleteFiles = false) => {
     UArchive.listFilesDir(source, ext).map(a => {
         var nameFile = UArchive.getNameFile(a);
-        var urlFolder = UArchive.createFolder(`/assets/uploads${newSource}`)
-        UArchive.moveFile(a, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr))
+        var urlFolder = UArchive.createFolder(newSource)
+        if (deleteFiles)
+            UArchive.deleteArchive(`${urlFolder}/${nameFile}`)
+        else
+            UArchive.moveFile(a, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr))
     });
+}
+
+const copyFilesbyArr = (source, arrData, deleteFiles = false) => {
+    arrData.map(data => {
+        var nameFile = UArchive.getNameFile(data);
+        var urlFolder = UArchive.createFolder(source)
+        if (deleteFiles)
+            UArchive.deleteArchive(`${urlFolder}/${nameFile}`)
+        else
+            UArchive.moveFile(a, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr))
+    })
 }
 
 const organizeFiles = () => {
@@ -17,22 +31,23 @@ const organizeFiles = () => {
     var nameFolder = `Video ${wordsUsed.length / 10}`;
 
     console.log("> [ROBOT ORGANIZE] Move files audio");
-    copyFolder('/assets/temp', 'mp3', `/${nameFolder}/audios`)
+    copyFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`)
 
     console.log("> [ROBOT ORGANIZE] Move files images");
-    copyFolder('/assets/temp', 'png', `/${nameFolder}/images`)
+    copyFolderByExt('/assets/temp', 'png', `/assets/uploads/${nameFolder}/images`, true)
+
+    console.log("> [ROBOT ORGANIZE] Move file to instagram folder");
+    var arrFilesInsta = UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
+    copyFilesbyArr('/assets/uploads/instagram' + nameFolder, arrFilesInsta)
+    UArchive.deleteArchive('/assets/videos/final_render/file_render_words.json')
 
     console.log("> [ROBOT ORGANIZE] Move files videos");
-    copyFolder('/assets/temp', 'mp4', `/${nameFolder}/videos`)
-
-    copyFolder('/assets/videos/final_render', 'mp4', `/${nameFolder}/final_render`)
+    copyFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
+    copyFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/final_render`)
 
     console.log("> [ROBOT ORGANIZE] Move file description");
     var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`)
     UArchive.moveFile("/assets/text/description.txt", `${urlFolder}/description.txt`, arr => console.log(arr))
-
-    console.log("> [ROBOT ORGANIZE] Move files json");
-    copyFolder('/assets/state', 'json', `/${nameFolder}/state`)
 }
 
 const RobotOrganize = async () => {
