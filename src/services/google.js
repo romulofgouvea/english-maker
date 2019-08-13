@@ -233,24 +233,24 @@ const getAudio = async (source, nameFile, text) => {
 };
 
 const sendZipToDrive = async (source, nameFile) => {
-
-  // {
-  //   "kind": "drive#file",
-  //   "id": "1Hfe4TLhfJhzd__BJBb7QafNQvAQgOeA8",
-  //   "name": "English Every Day",
-  //   "mimeType": "application/vnd.google-apps.folder"
-  //  }
-
   source = UArchive.getBaseUrl(source);
 
+  var folderDrive = {
+    "kind": "drive#file",
+    "id": "1Hfe4TLhfJhzd__BJBb7QafNQvAQgOeA8",
+    "name": "English Every Day",
+    "mimeType": "application/vnd.google-apps.folder"
+  }
+
   var fileMetadata = {
-    'name': nameFile
+    'name': nameFile,
+    'parents': [folderDrive.id]
   };
 
   //application/x-zip-compressed, application/x-7z-compressed
   var media = {
     mimeType: 'application/x-zip-compressed',
-    body: fs.createReadStream(source)
+    body: fs.createReadStream(`${source}\\${nameFile}`)
   };
 
   const requestParameters = {
@@ -275,7 +275,10 @@ const getListByIdDrive = async id => {
 }
 
 const sendFolderVideo = async source => {
-  await UArchive.zipFolder('/assets/uploads/Video 4', '/assets/uploads/Video 4.zip')
+  //await UArchive.zipFolder('/assets/uploads/Video 4', '/assets/uploads/Video 4.zip')
+
+  var idFile = await sendZipToDrive('/assets/uploads', 'Video 4.zip')
+  console.log(idFile);
 }
 
 module.exports = {

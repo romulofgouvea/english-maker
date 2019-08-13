@@ -5,7 +5,7 @@ const RobotDrive = async () => {
     console.log("\n\n> [ROBOT DRIVE]");
     try {
         // console.log("> [ROBOT DRIVE] Authenticate");
-        // await Google.authenticateWithOAuth('drive');
+        await Google.authenticateWithOAuth('drive');
 
         // var wordsUsed = UArchive.loadFile(
         //     "/assets/text",
