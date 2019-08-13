@@ -1,6 +1,8 @@
 import { Google } from "~/services";
 import { UArchive } from "~/utils";
 
+const updateDescriptionVideo = async () => {}
+
 const sendFolderVideo = async () => {
 
     var wordsUsed = UArchive.loadFile(
@@ -19,6 +21,8 @@ const sendFolderVideo = async () => {
 
         console.log("> [ROBOT DRIVE] Delete zip");
         UArchive.deleteArchive(urlZipFolder)
+
+        await updateDescriptionVideo();
     }
 }
 

@@ -10,7 +10,7 @@ const requestInstagramForAccessTokens = (OAuthClient, authorizationToken) => { }
 
 const setGlobalInstagramAuthentication = OAuthClient => { }
 
-const authenticateWithOAuth = async (type) => {
+const authenticateWithOAuth = async () => {
   const webServer = await WebServer.startWebServer();
   const OAuthClient = await createOAuthClient();
 

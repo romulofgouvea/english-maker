@@ -1,9 +1,21 @@
 import { Instagram } from "~/services";
 
+const sendVideoTimeLine = () => { }
+
+const sendVideoStories = () => { }
+
 const RobotInstagram = async () => {
     console.log("\n\n> [ROBOT INSTAGRAM]");
     try {
-        Instagram.auth()
+        console.log("\n\n> [ROBOT INSTAGRAM] Instagram OAuth");
+        await Instagram.authenticateWithOAuth();
+
+        await sendVideoTimeLine();
+
+        await sendVideoStories();
+
+        console.log("> [ROBOT INSTAGRAM] Delete files json");
+        UArchive.copyFolder('/assets/state', 'json', `/assets/uploads/${nameFolder}/state`, true)
     } catch (error) {
         console.log("Ops...", error);
     }

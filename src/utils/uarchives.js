@@ -247,6 +247,27 @@ const zipFolder = (source, output) => {
   });
 }
 
+const copyFolderByExt = (source, ext, newSource, deleteFiles = false) => {
+  listFilesDir(source, ext).map(a => {
+    var nameFile = getNameFile(a);
+    var urlFolder = createFolder(newSource);
+    if (deleteFiles)
+      deleteArchive(`${urlFolder}/${nameFile}`);
+    else
+      moveFile(a, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
+  });
+}
+
+const copyFilesbyArr = (source, arrData, deleteFiles = false) => {
+  arrData.map(data => {
+    var nameFile = getNameFile(data);
+    var urlFolder = createFolder(source);
+    if (deleteFiles)
+      deleteArchive(`${urlFolder}/${nameFile}`);
+    else
+      moveFile(a, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
+  })
+}
 
 module.exports = {
   loadFile,
@@ -265,5 +286,7 @@ module.exports = {
   listFilesDir,
   getNameFile,
   createFolder,
-  zipFolder
+  zipFolder,
+  copyFolderByExt,
+  copyFilesbyArr
 };
