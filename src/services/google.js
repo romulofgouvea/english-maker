@@ -97,9 +97,11 @@ const mountTextByArray = (text, arr) => {
 const mountDescription = state => {
   var textDesc = "";
   for (var words of state) {
+    var tempD = [words.definitions[0]]
+
     textDesc += `Word: \nEN: ${words.word} \nTranscript: ${words.transcript}\n` +
       `PT: ${words.word_translate}\n` +
-      `${mountTextByArray('Definition', words.definitions)}\n` +
+      `${mountTextByArray('Definition', tempD)}\n` +
       `${mountTextByArray('Example', words.examples)}\n\n`
   }
   return textDesc;
@@ -275,8 +277,6 @@ const getListByIdDrive = async id => {
 
   console.log(JSON.stringify(files.data));
 }
-
-
 
 module.exports = {
   getTranslateGoogleAPI,

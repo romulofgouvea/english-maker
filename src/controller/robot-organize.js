@@ -2,13 +2,13 @@ import { State } from "~/services";
 import { UArchive } from '~/utils';
 
 const copyFolderByExt = (source, ext, newSource, deleteFiles = false) => {
-    UArchive.listFilesDir(source, ext).map(a => {
-        var nameFile = UArchive.getNameFile(a);
+    UArchive.listFilesDir(source, ext).map(data => {
+        var nameFile = UArchive.getNameFile(data);
         var urlFolder = UArchive.createFolder(newSource);
         if (deleteFiles)
             UArchive.deleteArchive(`${urlFolder}/${nameFile}`);
         else
-            UArchive.moveFile(a, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
+            UArchive.moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
     });
 }
 
@@ -19,7 +19,7 @@ const copyFilesbyArr = (source, arrData, deleteFiles = false) => {
         if (deleteFiles)
             UArchive.deleteArchive(`${urlFolder}/${nameFile}`);
         else
-            UArchive.moveFile(a, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
+            UArchive.moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
     })
 }
 

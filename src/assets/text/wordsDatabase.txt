@@ -130,7 +130,6 @@ anybody
 anymore
 anyone
 anything
-anyway
 anywhere
 apart
 apartment
@@ -524,7 +523,6 @@ comprehensive
 computer
 concentrate
 concentration
-concept
 concern
 concerned
 concert
@@ -799,7 +797,6 @@ dramatically
 draw
 drawing
 dream
-dress
 drink
 drive
 driver
@@ -910,7 +907,6 @@ etc
 ethics
 European
 evaluate
-evaluation
 even
 evening
 event
@@ -1505,7 +1501,6 @@ light
 like
 likely
 limit
-limitation
 limited
 line
 link
@@ -1982,7 +1977,6 @@ presentation
 preserve
 president
 presidential
-press
 pressure
 pretend
 pretty
@@ -2438,7 +2432,6 @@ speak
 speaker
 special
 specialist
-species
 specific
 specifically
 speech
@@ -2493,7 +2486,6 @@ strange
 stranger
 strategic
 strategy
-stream
 street
 strength
 strengthen
@@ -2547,7 +2539,6 @@ surely
 surface
 surgery
 surprise
-surprised
 surprising
 surprisingly
 surround
@@ -2670,7 +2661,6 @@ toe
 together
 tomato
 tomorrow
-tone
 tongue
 tonight
 too

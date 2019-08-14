@@ -14,8 +14,9 @@ const RobotYouTube = async () => {
 
     await Google.authenticateWithOAuth('youtube');
     const videoInformation = await Google.uploadVideo(state);
-    var filePath = "";
-    await Google.uploadThumbnail(filePath, videoInformation);
+    
+    // var filePath = "";
+    // await Google.uploadThumbnail(filePath, videoInformation);
 
     progress.robot_youtube = true;
     await State.setState("progress", progress);

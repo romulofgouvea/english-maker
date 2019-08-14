@@ -1,4 +1,4 @@
-import { Google } from "~/services";
+import { Google, State } from "~/services";
 import { UArchive } from "~/utils";
 
 const sendFolderVideo = async () => {
@@ -23,6 +23,12 @@ const sendFolderVideo = async () => {
 }
 
 const RobotDrive = async () => {
+    var progress = await State.getState('progress');
+    if (progress.robot_organize !== true)
+        throw "Not completed robot audio"
+    if (progress.robot_drive === true)
+        return;
+
     console.log("\n\n> [ROBOT DRIVE]");
     try {
         console.log("> [ROBOT DRIVE] Authenticate");

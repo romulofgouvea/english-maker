@@ -22,4 +22,4 @@ const scopeGoogle = {
   'drive': ["https://www.googleapis.com/auth/drive", 'https://www.googleapis.com/auth/drive.file']
 }
 
-module.exports = { coverWordStatic,scopeGoogle };
+module.exports = { coverWordStatic, scopeGoogle };
