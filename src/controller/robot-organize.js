@@ -1,23 +1,14 @@
+import { format } from 'date-fns';
+
 import { State } from "~/services";
 import { UArchive } from '~/utils';
 
-const copyFolderByExt = (source, ext, newSource, deleteFiles = false) => {
-    UArchive.listFilesDir(source, ext).map(data => {
-        var nameFile = UArchive.getNameFile(data);
-        var urlFolder = UArchive.createFolder(newSource);
-        if (deleteFiles)
-            UArchive.deleteArchive(`${urlFolder}/${nameFile}`);
-        else
-            UArchive.moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
-    });
-}
-
-const copyFilesbyArr = (source, arrData, deleteFiles = false) => {
+const copyOrDeleteFilesbyArr = (source, arrData, deleteFiles = false) => {
     arrData.map(data => {
         var nameFile = UArchive.getNameFile(data);
         var urlFolder = UArchive.createFolder(source);
         if (deleteFiles)
-            UArchive.deleteArchive(`${urlFolder}/${nameFile}`);
+            UArchive.deleteArchive(data);
         else
             UArchive.moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
     })
@@ -28,22 +19,23 @@ const organizeFiles = () => {
         "/assets/text",
         "wordsUsed.txt"
     );
-    var nameFolder = `Video ${wordsUsed.length / 10}`;
+    const day = format(new Date(), 'DD/MM')
+    var nameFolder = `[${day}] Video ${wordsUsed.length / 10}`;
 
-    console.log("> [ROBOT ORGANIZE] Move files audio");
-    copyFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`);
-
-    console.log("> [ROBOT ORGANIZE] Move files images");
-    copyFolderByExt('/assets/temp', 'png', `/assets/uploads/${nameFolder}/images`, true);
+    console.log("> [ROBOT ORGANIZE] Delete files images");
+    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'png', `/assets/uploads/${nameFolder}/images`, true);
 
     console.log("> [ROBOT ORGANIZE] Move file to instagram folder");
     var arrFilesInsta = UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
-    copyFilesbyArr('/assets/uploads/instagram' + nameFolder, arrFilesInsta);
+    copyOrDeleteFilesbyArr('/assets/uploads/instagram/' + nameFolder, arrFilesInsta);
     UArchive.deleteArchive('/assets/videos/final_render/file_render_words.json');
 
     console.log("> [ROBOT ORGANIZE] Move files videos");
-    copyFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
-    copyFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/final_render`);
+    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
+    UArchive.copyOrDeleteFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/youtube`);
+
+    console.log("> [ROBOT ORGANIZE] Move files audio");
+    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`);
 
     console.log("> [ROBOT ORGANIZE] Move file description");
     var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
