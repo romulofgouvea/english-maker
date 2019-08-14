@@ -25,15 +25,22 @@ const mountDescription = state => {
   return textDesc;
 };
 
-const mountObjUpload = nameFolder => {
+const mountObjUpload = async state => {
+
+  var wordsUsed = UArchive.loadFile(
+    "/assets/text",
+    "wordsUsed.txt"
+  );
+  const day = format(new Date(), 'DD/MM')
+  var nameFolder = `[${day}] Video ${wordsUsed.length / 10}`;
+
   var tempObj = {
-    url_video: `/assets/uploads/${nameFodler}/youtube/.mp4`,
+    url_video: `/assets/uploads/${nameFolder}/youtube/youtube.mp4`,
     title: "",
     description: "",
     tags: ""
   }
 
-  const day = format(new Date(), 'DD/MM')
   tempObj.title = `[${day}] Ten Words every day`;
 
   var description = await mountDescription(state)
@@ -60,8 +67,8 @@ const mountObjUpload = nameFolder => {
 const RobotYouTube = async () => {
   try {
     var progress = await State.getState('progress');
-    if (progress.robot_video !== true)
-      throw "Not completed robot video"
+    if (progress.robot_organize !== true)
+      throw "Not completed robot organize"
 
     if (progress.robot_youtube === true)
       return;

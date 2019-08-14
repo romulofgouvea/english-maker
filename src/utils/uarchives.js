@@ -248,13 +248,13 @@ const zipFolder = (source, output) => {
 }
 
 const copyOrDeleteFolderByExt = (source, ext, newSource, deleteFiles = false) => {
-  UArchive.listFilesDir(source, ext).map(data => {
-    var nameFile = UArchive.getNameFile(data);
-    var urlFolder = UArchive.createFolder(newSource);
+  listFilesDir(source, ext).map(data => {
+    var nameFile = getNameFile(data);
+    var urlFolder = createFolder(newSource);
     if (deleteFiles)
-      UArchive.deleteArchive(data);
+      deleteArchive(data);
     else
-      UArchive.moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
+      moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
   })
 }
 

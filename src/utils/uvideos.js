@@ -128,7 +128,6 @@ function transformVideo(source, nameFile, inputFile) {
 const generateTempVideo = async (source, nameFile, temp) => {
   // ffmpeg -i input2.mp4 -c copy -bsf:v h264_mp4toannexb -f mpegts intermediate2.ts
   source = UArchive.getBaseUrl(source);
-  temp = temp.map(t => UArchive.getBaseUrl(t));
 
   var arrIntermediate = [];
   for (var [key, file] of temp.entries()) {
@@ -175,7 +174,8 @@ const joinVideos = async (source, nameFile, arrFiles, removeFiles = true) => {
   const base = UArchive.getBaseUrl(source);
   let outputFile = `${base}\\${nameFile}.mp4`;
 
-  var arrTemp = [...(await generateTempVideo(base, nameFile, arrFiles))];
+  arrFiles = arrFiles.map(t => UArchive.getBaseUrl(t));
+  var arrTemp = await generateTempVideo(base, nameFile, arrFiles);
 
   return await new Promise((resolve, reject) => {
     let inputNamesFormatted = `concat:${arrTemp.join("|")}`;

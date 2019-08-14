@@ -1,7 +1,7 @@
 import { format } from 'date-fns';
 
 import { State } from "~/services";
-import { UArchive } from '~/utils';
+import { UArchive } from "~/utils";
 
 const copyOrDeleteFilesbyArr = (source, arrData, deleteFiles = false) => {
     arrData.map(data => {
@@ -14,12 +14,30 @@ const copyOrDeleteFilesbyArr = (source, arrData, deleteFiles = false) => {
     })
 }
 
+const removeLinkOfState = state => {
+    state.map(words => {
+        delete words.definitions.map(d => {
+            delete d.video;
+            delete d.image;
+        });
+        delete words.examples.map(d => {
+            delete d.video;
+            delete d.image;
+        });
+
+        delete words.cover_image;
+        delete words.cover_video;
+        delete words.cover_definition;
+        delete words.cover_examples;
+    })
+}
+
 const organizeFiles = () => {
     var wordsUsed = UArchive.loadFile(
         "/assets/text",
         "wordsUsed.txt"
     );
-    const day = format(new Date(), 'DD/MM')
+    const day = format(new Date(), 'DD/MM');
     var nameFolder = `[${day}] Video ${wordsUsed.length / 10}`;
 
     console.log("> [ROBOT ORGANIZE] Delete files images");
@@ -31,8 +49,8 @@ const organizeFiles = () => {
     UArchive.deleteArchive('/assets/videos/final_render/file_render_words.json');
 
     console.log("> [ROBOT ORGANIZE] Move files videos");
-    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
     UArchive.copyOrDeleteFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/youtube`);
+    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
 
     console.log("> [ROBOT ORGANIZE] Move files audio");
     UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`);
@@ -40,13 +58,15 @@ const organizeFiles = () => {
     console.log("> [ROBOT ORGANIZE] Move file description");
     var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
     UArchive.moveFile("/assets/text/description.txt", `${urlFolder}/description.txt`, arr => console.log(arr));
+
+    removeLinkOfState(State.getState())
 }
 
 const RobotOrganize = async () => {
     try {
         var progress = await State.getState('progress');
-        if (progress.robot_youtube !== true)
-            throw "Not completed robot youtube";
+        if (progress.robot_video !== true)
+            throw "Not completed robot video";
         if (progress.robot_organize === true)
             return;
 
