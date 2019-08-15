@@ -2,7 +2,6 @@ import axios from "axios";
 import { google } from "googleapis";
 import fs from "fs";
 import open from 'open';
-import { format } from 'date-fns';
 import _ from 'lodash';
 
 import { UArchive, EStatic } from "~/utils";
@@ -84,59 +83,20 @@ const authenticateWithOAuth = async (type) => {
   await WebServer.stopWebServer(webServer);
 };
 
-const mountTextByArray = (text, arr) => {
-  var tempText = "";
-  for (var [key, value] of arr.entries()) {
-    tempText += `${text} ${key}:\n` +
-      ` EN: ${value.phrase}\n` +
-      ` PT: ${value.translate}\n`;
-  }
-  return tempText
-}
-
-const mountDescription = state => {
-  var textDesc = "";
-  for (var words of state) {
-    var tempD = [words.definitions[0]]
-
-    textDesc += `Word: \nEN: ${words.word} \nTranscript: ${words.transcript}\n` +
-      `PT: ${words.word_translate}\n` +
-      `${mountTextByArray('Definition', tempD)}\n` +
-      `${mountTextByArray('Example', words.examples)}\n\n`
-  }
-  return textDesc;
-};
-
-const uploadVideo = async state => {
-
-  const videoFilePath = UArchive.getBaseUrl(
-    "/assets/videos/final_render/final_render.mp4"
-  );
-  const day = format(new Date(), 'DD/MM')
+const uploadVideo = async objUpload => {
+  const videoFilePath = UArchive.getBaseUrl(objUpload.url_video);
   const videoFileSize = fs.statSync(videoFilePath).size;
-  const videoTitle = `[${day}] Ten Words every day`;
-  var tags = state.map(words => Object.values(words.keywords).slice(0, 3))
-  const videoTags = _.flatten(tags);
-  var description = await mountDescription(state)
-  const videoDescription = description.length > 5000 ? "" : description;
-
-  console.log("> [ROBOT YOUTUBE] Save description");
-  await UArchive.writeFileSync(
-    "/assets/text",
-    "description.txt",
-    description
-  );
 
   const requestParameters = {
     part: "snippet, status",
     requestBody: {
       snippet: {
-        title: videoTitle,
-        description: videoDescription,
-        tags: videoTags
+        title: objUpload.title,
+        description: objUpload.description,
+        tags: objUpload.tags
       },
       status: {
-        privacyStatus: "public"
+        privacyStatus: "unlisted"
       }
     },
     media: {
