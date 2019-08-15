@@ -140,6 +140,8 @@ const generateJoinMiniVideos = async state => {
 
   arrFiles = _.compact(arrFiles);
 
+  arrFiles = ["/assets/videos/static/init_render.mp4", ...arrFiles];
+
   console.log("> [ROBOT VIDEO] Save files render");
   await UArchive.writeFileJson(
     "/assets/videos/final_render",
@@ -154,22 +156,6 @@ const generateJoinMiniVideos = async state => {
   await State.setState("progress", progress);
 };
 
-const addInit = async urlFinalrender => {
-  console.log("> [ROBOT VIDEO] Add init in video");
-
-  var arrFinal = ["/assets/videos/static/init_render.mp4", urlFinalrender];
-
-  var output = await UVideo.joinVideos(
-    "/assets/videos/final_render",
-    `final_render`,
-    arrFinal
-  );
-
-  if (output) {
-    return output;
-  }
-};
-
 const finalRenderVideos = async state => {
   console.log("\n> [ROBOT VIDEO] Final render");
 
@@ -182,13 +168,12 @@ const finalRenderVideos = async state => {
   console.log("> [ROBOT VIDEO] Join final render");
   var output = await UVideo.joinVideos(
     "/assets/videos/final_render",
-    `join_videos`,
+    `youtube`,
     arrFilesUnion
   );
 
   if (output) {
-    var urlFinal = await addInit(output);
-    console.log("> [ROBOT VIDEO] Finish robot video: ", urlFinal);
+    console.log("> [ROBOT VIDEO] Finish robot video: ", output);
   }
 
   progress.robot_video.final_render = true;
@@ -210,10 +195,10 @@ const RobotVideo = async () => {
     if (!progress.robot_video.create_mini_videos)
       state = await createMiniVideos(state);
 
-    if (!progress.robot_video.generate_join_videos)
+    if (!progress.robot_video.generate_join_videos && progress.robot_video.create_mini_videos)
       await generateJoinMiniVideos(state);
 
-    if (!progress.robot_video.final_render)
+    if (!progress.robot_video.final_render && progress.robot_video.generate_join_videos)
       await finalRenderVideos(state);
 
     if (progress.robot_video.create_mini_videos

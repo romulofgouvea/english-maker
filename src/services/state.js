@@ -11,16 +11,7 @@ const setState = async (nameFile, data) => {
   await UArchive.writeFileJson("/assets/state", nameFile, data);
 };
 
-const setProcessState = async (nameFile, data) => {
-
-  var data = {
-    text: {},
-    audio: {},
-    video: {},
-    youtube: {}
-  }
-
-  await UArchive.writeFileJson("/assets/state", nameFile, data);
-}
+const getEtapa = () => {}
+const setEtapa = (etapa) => {}
 
 module.exports = { getState, setState };
