@@ -24,6 +24,9 @@ const mountDescription = state => {
       `${mountTextByArray('Definition', tempD)}\n` +
       `${mountTextByArray('Example', words.examples)}\n\n`
   }
+
+  textDesc.concat("Folder in drive: https://drive.google.com/drive/folders/1Hfe4TLhfJhzd__BJBb7QafNQvAQgOeA8")
+
   return textDesc;
 };
 
@@ -78,7 +81,6 @@ const RobotYouTube = async () => {
     const objMounted = await mountObjUpload(state)
     const videoInformation = await Google.uploadVideo(objMounted);
 
-    console.log(videoInformation);
     // var filePath = "";
     // await Google.uploadThumbnail(filePath, videoInformation);
 

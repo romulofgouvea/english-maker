@@ -96,7 +96,7 @@ const uploadVideo = async objUpload => {
         tags: objUpload.tags
       },
       status: {
-        privacyStatus: "unlisted"
+        privacyStatus: "public"
       }
     },
     media: {
@@ -140,7 +140,7 @@ const uploadThumbnail = async (source, videoInformation) => {
 };
 
 const getTranslateGoogleAPI = async text => {
-  text = text.replace(/\s{2,}|\\n|\\r|—/g, " ").replace(/\\/g, "");
+  text = text.replace(/\s{2,}|\\n|\\r|—|-/g, " ").replace(/\\/g, "");
   var translate = "";
   do {
     try {

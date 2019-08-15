@@ -1,4 +1,4 @@
-import { RobotText, RobotAudio, RobotVideo, RobotYouTube, RobotOrganize, RobotDrive } from "~/controller";
+import { RobotText, RobotAudio, RobotVideo, RobotYouTube, RobotOrganize, RobotDrive, RobotFinish } from "~/controller";
 
 const Index = async () => {
   await RobotText.RobotText();
@@ -7,6 +7,7 @@ const Index = async () => {
   await RobotOrganize.RobotOrganize();
   await RobotYouTube.RobotYouTube();
   await RobotDrive.RobotDrive();
+  await RobotFinish.RobotFinish();
 };
 
 Index();

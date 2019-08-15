@@ -33,7 +33,6 @@ active
 activist
 activity
 actor
-actress
 actual
 actually
 ad
@@ -421,7 +420,6 @@ chase
 cheap
 check
 cheek
-cheese
 chef
 chemical
 chest
@@ -1029,7 +1027,6 @@ find
 finding
 fine
 finger
-finish
 fire
 firm
 first
@@ -1788,7 +1785,6 @@ option
 or
 orange
 order
-ordinary
 organic
 organization
 organize
@@ -1895,11 +1891,9 @@ physician
 piano
 pick
 picture
-pie
 piece
 pile
 pilot
-pine
 pink
 pipe
 pitch
@@ -2034,7 +2028,6 @@ protein
 protest
 proud
 prove
-provide
 provider
 province
 provision
@@ -2055,7 +2048,6 @@ pursue
 push
 put
 qualify
-quality
 quarter
 quarterback
 question
@@ -2098,7 +2090,6 @@ reason
 reasonable
 recall
 receive
-recent
 recently
 recipe
 recognition
@@ -2222,7 +2213,6 @@ row
 rub
 rule
 run
-running
 rural
 rush
 Russian
