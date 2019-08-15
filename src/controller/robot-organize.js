@@ -3,18 +3,8 @@ import { format } from 'date-fns';
 import { State } from "~/services";
 import { UArchive } from "~/utils";
 
-const copyOrDeleteFilesbyArr = (source, arrData, deleteFiles = false) => {
-    arrData.map(data => {
-        var nameFile = UArchive.getNameFile(data);
-        var urlFolder = UArchive.createFolder(source);
-        if (deleteFiles)
-            UArchive.deleteArchive(data);
-        else
-            UArchive.moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
-    })
-}
-
-const removeLinkOfState = state => {
+const removeLinkOfState = async () => {
+    var state = await State.getState();
     state.map(words => {
         delete words.definitions.map(d => {
             delete d.video;
@@ -30,36 +20,45 @@ const removeLinkOfState = state => {
         delete words.cover_definition;
         delete words.cover_examples;
     })
+    await State.setState("state", state);
 }
 
-const organizeFiles = () => {
-    var wordsUsed = UArchive.loadFile(
-        "/assets/text",
-        "wordsUsed.txt"
-    );
-    const day = format(new Date(), 'DD/MM');
-    var nameFolder = `[${day}] Video ${wordsUsed.length / 10}`;
+const organizeFiles = async () => {
+    try {
+        var nameFolder = UArchive.getNameFolder();
 
-    console.log("> [ROBOT ORGANIZE] Delete files images");
-    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'png', `/assets/uploads/${nameFolder}/images`, true);
+        console.log("> [ROBOT ORGANIZE] Move file to instagram folder");
+        var arrFilesInsta = await UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
+        if (arrFilesInsta) {
+            arrFilesInsta.shift();
+            await UArchive.copyOrDeleteFilesbyArr('/assets/uploads/instagram/' + nameFolder, arrFilesInsta);
+            await UArchive.deleteArchive('/assets/videos/final_render/file_render_words.json');
+        }
 
-    console.log("> [ROBOT ORGANIZE] Move file to instagram folder");
-    var arrFilesInsta = UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
-    copyOrDeleteFilesbyArr('/assets/uploads/instagram/' + nameFolder, arrFilesInsta);
-    UArchive.deleteArchive('/assets/videos/final_render/file_render_words.json');
+        console.log("> [ROBOT ORGANIZE] Delete files images");
+        await UArchive.copyOrDeleteFolderByExt('/assets/temp', 'png', `/assets/uploads/${nameFolder}/images`, true);
 
-    console.log("> [ROBOT ORGANIZE] Move files videos");
-    UArchive.copyOrDeleteFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/youtube`);
-    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
+        console.log("> [ROBOT ORGANIZE] Organize files to youtube folder");
+        await UArchive.copyOrDeleteFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/youtube`);
 
-    console.log("> [ROBOT ORGANIZE] Move files audio");
-    UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`);
+        console.log("> [ROBOT ORGANIZE] Remove videos");
+        await UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
 
-    console.log("> [ROBOT ORGANIZE] Move file description");
-    var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
-    UArchive.moveFile("/assets/text/description.txt", `${urlFolder}/description.txt`, arr => console.log(arr));
+        console.log("> [ROBOT ORGANIZE] Move files audio");
+        await UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`);
 
-    removeLinkOfState(State.getState())
+        var existDesc = await UArchive.existsFile("/assets/text/description.txt");
+        if (existDesc) {
+            console.log("> [ROBOT ORGANIZE] Move file description");
+            var urlFolder = await UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
+            await UArchive.moveFile(existDesc, `${urlFolder}/description.txt`, arr => console.log(arr));
+        }
+
+        console.log("> [ROBOT ORGANIZE] Update State");
+        removeLinkOfState()
+    } catch (error) {
+        console.log('organizeFiles: ', error);
+    }
 }
 
 const RobotOrganize = async () => {
@@ -73,8 +72,8 @@ const RobotOrganize = async () => {
         console.log("\n\n> [ROBOT ORGANIZE] Organize files");
         await organizeFiles();
 
-        progress.robot_organize = true;
-        await State.setState("progress", progress);
+        // progress.robot_organize = true;
+        // await State.setState("progress", progress);
     } catch (error) {
         console.log("Ops...", error);
     }

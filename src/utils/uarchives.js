@@ -1,8 +1,9 @@
 import fs from "fs";
 import path from "path";
 import _ from "lodash";
-import archiver from "archiver";
+import { format } from 'date-fns';
 
+import archiver from "archiver";
 import UUtils from "./uutils";
 import { constants } from "../../config";
 
@@ -22,24 +23,27 @@ const getNameFile = source => {
   return removeBase(source).replace(/.+[/|//|\\|\\\\]/g, "");
 }
 
+const getMidNamePath = source => {
+  source = removeBase(source);
+  return source.replace(/.[^/|//|\\|\\\\]+(?=\/$|$)/g, "");
+}
+
+const getNameFolder = () => {
+  var wordsUsed = loadFile("/assets/text", "wordsUsed.txt");
+  const day = format(new Date(), 'DD-MM');
+  return `[${day}] Video ${wordsUsed.length / 10}`;
+}
+
 function existsFile(source, nameFile = "") {
   var localUrl = "";
   if (!nameFile) {
     localUrl = getBaseUrl(source);
-    var tmpSource = source
-      .replace(/.*src/g, "")
-      .replace(/\\\\|\\|\/|\/\//g, "/");
-    source = tmpSource
-      .replace(/.*src/g, "")
-      .replace(/.[^/|//|\\|\\\\]+(?=\/$|$)/g, "");
-    nameFile = tmpSource.replace(/.+[/|//|\\|\\\\]/g, "");
+    source = getMidNamePath(source);
+    nameFile = getNameFile(localUrl);
   } else {
     localUrl = `${getBaseUrl(source)}/${nameFile}`;
   }
-  if (!UUtils.isEmpty(fs.existsSync(localUrl))) {
-    return `${source}/${nameFile}`;
-  }
-  return "";
+  return fs.existsSync(localUrl) ? `${source}/${nameFile}` : "";
 }
 
 const loadFile = (source, nameFile) => {
@@ -108,7 +112,7 @@ function renameFile(source, newSource) {
 function moveFile(source, newSource, callback) {
   source = getBaseUrl(source);
   newSource = getBaseUrl(newSource);
-  if (!this.existsFile(source)) throw "File not exists";
+  if (!existsFile(source)) throw "File not exists";
 
   var readStream = fs.createReadStream(source);
   var writeStream = fs.createWriteStream(newSource);
@@ -121,7 +125,7 @@ function moveFile(source, newSource, callback) {
   });
 
   readStream.pipe(writeStream);
-  return this.existsFile(newSource);
+  return existsFile(newSource);
 }
 
 const writeFileSync = (source, nameFile, data) => {
@@ -173,16 +177,16 @@ const deleteArchive = (source, nameFile = "") => {
     source = getBaseUrl(source);
     var localUrl = !nameFile ? source : `${source}/${nameFile}`;
     var exists = existsFile(localUrl);
-    if (UUtils.isEmpty(exists)) {
+    if (!exists) {
       throw "File not exists";
     }
     fs.unlink(localUrl, err => {
-      if (err) throw err
+      if (err) console.log("deleteArchive: ", err);
       //console.log("Removed : ", exists);
     });
     return exists;
   } catch (error) {
-    console.log(error);
+    console.log("deleteArchive: ", error);
     return "";
   }
 };
@@ -206,7 +210,7 @@ const listFilesDir = (source, filterExt = "") => {
       }
     }).filter(Boolean);
   } catch (error) {
-    console.log(error);
+    console.log("listFilesDir: ", error);
     return "";
   }
 }
@@ -249,13 +253,28 @@ const zipFolder = (source, output) => {
 
 const copyOrDeleteFolderByExt = (source, ext, newSource, deleteFiles = false) => {
   listFilesDir(source, ext).map(data => {
-    var nameFile = getNameFile(data);
-    var urlFolder = createFolder(newSource);
     if (deleteFiles)
       deleteArchive(data);
-    else
-      moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log(arr));
+    else {
+      var nameFile = getNameFile(data);
+      var urlFolder = createFolder(newSource);
+      moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log("copyOrDeleteFolderByExt: ", arr));
+    }
   })
+}
+
+const copyOrDeleteFilesbyArr = (source, arrData, deleteFiles = false) => {
+  if (deleteFiles) {
+    removeGroupFiles(arrData)
+  } else {
+    arrData.map(data => {
+      if (existsFile(data)) {
+        var nameFile = getNameFile(data);
+        var urlFolder = createFolder(source);
+        moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log("copyOrDeleteFilesbyArr: ", arr));
+      }
+    })
+  }
 }
 
 module.exports = {
@@ -276,5 +295,7 @@ module.exports = {
   getNameFile,
   createFolder,
   zipFolder,
-  copyOrDeleteFolderByExt
+  copyOrDeleteFolderByExt,
+  getNameFolder,
+  copyOrDeleteFilesbyArr
 };
