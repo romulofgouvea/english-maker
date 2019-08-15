@@ -27,31 +27,31 @@ const organizeFiles = async () => {
     try {
         var nameFolder = UArchive.getNameFolder();
 
+        console.log("> [ROBOT ORGANIZE] Move files audio");
+        UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`);
+        
         console.log("> [ROBOT ORGANIZE] Move file to instagram folder");
-        var arrFilesInsta = await UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
+        var arrFilesInsta = UArchive.loadFileJson("/assets/videos/final_render", "file_render_words");
         if (arrFilesInsta) {
             arrFilesInsta.shift();
-            await UArchive.copyOrDeleteFilesbyArr('/assets/uploads/instagram/' + nameFolder, arrFilesInsta);
-            await UArchive.deleteArchive('/assets/videos/final_render/file_render_words.json');
+            UArchive.copyOrDeleteFilesbyArr('/assets/uploads/instagram/' + nameFolder, arrFilesInsta);
+            UArchive.deleteArchive('/assets/videos/final_render/file_render_words.json');
         }
 
         console.log("> [ROBOT ORGANIZE] Delete files images");
-        await UArchive.copyOrDeleteFolderByExt('/assets/temp', 'png', `/assets/uploads/${nameFolder}/images`, true);
+        UArchive.copyOrDeleteFolderByExt('/assets/temp', 'png', `/assets/uploads/${nameFolder}/images`, true);
 
         console.log("> [ROBOT ORGANIZE] Organize files to youtube folder");
-        await UArchive.copyOrDeleteFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/youtube`);
+        UArchive.copyOrDeleteFolderByExt('/assets/videos/final_render', 'mp4', `/assets/uploads/${nameFolder}/youtube`);
 
         console.log("> [ROBOT ORGANIZE] Remove videos");
-        await UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
+        UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
 
-        console.log("> [ROBOT ORGANIZE] Move files audio");
-        await UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp3', `/assets/uploads/${nameFolder}/audios`);
-
-        var existDesc = await UArchive.existsFile("/assets/text/description.txt");
+        var existDesc = UArchive.existsFile("/assets/text/description.txt");
         if (existDesc) {
             console.log("> [ROBOT ORGANIZE] Move file description");
-            var urlFolder = await UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
-            await UArchive.moveFile(existDesc, `${urlFolder}/description.txt`, arr => console.log(arr));
+            var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
+            UArchive.moveFile(existDesc, `${urlFolder}/description.txt`, arr => console.log(arr));
         }
 
         console.log("> [ROBOT ORGANIZE] Update State");
@@ -72,8 +72,8 @@ const RobotOrganize = async () => {
         console.log("\n\n> [ROBOT ORGANIZE] Organize files");
         await organizeFiles();
 
-        // progress.robot_organize = true;
-        // await State.setState("progress", progress);
+        progress.robot_organize = true;
+        await State.setState("progress", progress);
     } catch (error) {
         console.log("Ops...", error);
     }

@@ -271,7 +271,7 @@ const copyOrDeleteFilesbyArr = (source, arrData, deleteFiles = false) => {
       if (existsFile(data)) {
         var nameFile = getNameFile(data);
         var urlFolder = createFolder(source);
-        moveFile(data, `${urlFolder}/${nameFile}`, arr => arr !== null && console.log("copyOrDeleteFilesbyArr: ", arr));
+        moveFile(data, `${urlFolder}/${nameFile}`, arr => arr);
       }
     })
   }
