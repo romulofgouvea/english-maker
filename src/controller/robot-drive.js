@@ -32,6 +32,8 @@ const RobotDrive = async () => {
         console.log("> [ROBOT DRIVE] Send folder");
         await sendFolderVideo();
 
+        progress.robot_drive = true;
+        await State.setState("progress", progress);
     } catch (error) {
         console.log("Ops...", error);
     }

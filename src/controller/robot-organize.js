@@ -47,13 +47,6 @@ const organizeFiles = async () => {
         console.log("> [ROBOT ORGANIZE] Remove videos");
         UArchive.copyOrDeleteFolderByExt('/assets/temp', 'mp4', `/assets/uploads/${nameFolder}/videos`, true)
 
-        var existDesc = UArchive.existsFile("/assets/text/description.txt");
-        if (existDesc) {
-            console.log("> [ROBOT ORGANIZE] Move file description");
-            var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
-            UArchive.moveFile(existDesc, `${urlFolder}/description.txt`, arr => console.log(arr));
-        }
-
         console.log("> [ROBOT ORGANIZE] Update State");
         removeLinkOfState()
     } catch (error) {

@@ -1,6 +1,8 @@
 import { format } from 'date-fns';
+import _ from 'lodash';
 
 import { Google, State } from "~/services";
+import { UArchive } from "~/utils";
 
 const mountTextByArray = (text, arr) => {
   var tempText = "";
@@ -26,13 +28,7 @@ const mountDescription = state => {
 };
 
 const mountObjUpload = async state => {
-
-  var wordsUsed = UArchive.loadFile(
-    "/assets/text",
-    "wordsUsed.txt"
-  );
-  const day = format(new Date(), 'DD/MM')
-  var nameFolder = `[${day}] Video ${wordsUsed.length / 10}`;
+  var nameFolder = UArchive.getNameFolder();
 
   var tempObj = {
     url_video: `/assets/uploads/${nameFolder}/youtube/youtube.mp4`,
@@ -40,7 +36,7 @@ const mountObjUpload = async state => {
     description: "",
     tags: ""
   }
-
+  const day = format(new Date(), 'DD/MM');
   tempObj.title = `[${day}] Ten Words every day`;
 
   var description = await mountDescription(state)
@@ -55,8 +51,9 @@ const mountObjUpload = async state => {
   tempObj.tags = _.flatten(tags);
 
   console.log("> [ROBOT YOUTUBE] Save description");
+  var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
   await UArchive.writeFileSync(
-    "/assets/text",
+    urlFolder,
     "description.txt",
     description
   );

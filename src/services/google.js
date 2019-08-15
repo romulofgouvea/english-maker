@@ -86,7 +86,7 @@ const authenticateWithOAuth = async (type) => {
 const uploadVideo = async objUpload => {
   const videoFilePath = UArchive.getBaseUrl(objUpload.url_video);
   const videoFileSize = fs.statSync(videoFilePath).size;
-  
+
   const requestParameters = {
     part: "snippet, status",
     requestBody: {
@@ -96,7 +96,7 @@ const uploadVideo = async objUpload => {
         tags: objUpload.tags
       },
       status: {
-        privacyStatus: "public"
+        privacyStatus: "unlisted"
       }
     },
     media: {
