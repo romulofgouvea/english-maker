@@ -29,8 +29,8 @@ const getDefinitionsAndExamplesByEntries = lexical => {
         );
 
         //remove extras
-        sense.definitions = sense.definitions.map(str => str && str.replace(/\s{2,}|\\n|\\r|—/g, " ").replace(/\\/g, ""))
-        sense.examples = sense.examples.map(str => str && str.replace(/\s{2,}|\\n|\\r|—/g, " ").replace(/\\/g, ""))
+        sense.definitions = sense.definitions.map(str => str && str.replace(/\s{2,}|\\n|\\r|—/g, " ").replace(/\\|"|”|“|\[|\]/g, ""))
+        sense.examples = sense.examples.map(str => str && str.replace(/\s{2,}|\\n|\\r|—/g, " ").replace(/\\|"|”|“|\[|\]/g, ""))
 
         return {
           definitions: sense.definitions,
