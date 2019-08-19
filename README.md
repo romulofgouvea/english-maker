@@ -88,7 +88,7 @@ API's:
  - Google Cloud Api
     - GOOGLE_T_URL 
     - GOOGLE_T_API_KEY 
-    - 
+    
     - GOOGLE_TTS_URL 
     - GOOGLE_TTS_API_KEY 
     
