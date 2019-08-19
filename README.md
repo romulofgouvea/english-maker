@@ -55,13 +55,9 @@ API's:
 ```
 
 
-## Contributing
-https://github.com/romulofgouvea
 
-## License
-[MIT](https://choosealicense.com/licenses/mit/)
+#  Obs:
 
-Obs:
  - Instalar o Ffmpeg e Image magic no windows.
  - Colocar o .env das APIs na raiz do projeto
  
@@ -118,3 +114,9 @@ ainda está em uma branch separada, nao usado na master ainda:
     - FACEBOOK_REDIRECT_URI
     - FACEBOOK_URL
 
+
+## Contributing
+https://github.com/romulofgouvea
+
+## License
+[MIT](https://choosealicense.com/licenses/mit/)
