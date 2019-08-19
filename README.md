@@ -9,6 +9,9 @@
  - Criar um vídeo
  - Postar no canal do YouTube
 
+Obs:
+ - Instalar o Ffmpeg e Image magic no windows.
+
 # 1 Robô de texto
 
 ```
