@@ -118,3 +118,13 @@ championship
 guide
 announce
 fine
+tour
+point
+zone
+nod
+deck
+thin
+shopping
+brick
+judgment
+world

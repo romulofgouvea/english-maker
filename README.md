@@ -114,6 +114,11 @@ ainda está em uma branch separada, nao usado na master ainda:
     - FACEBOOK_REDIRECT_URI
     - FACEBOOK_URL
 
+Criar as folders:
+ - assets/temp
+ - assets/state
+ - assets/videos/final_render
+
 
 ## Contributing
 <table>

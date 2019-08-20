@@ -314,7 +314,6 @@ breakfast
 breast
 breath
 breathe
-brick
 bridge
 brief
 briefly
@@ -657,7 +656,6 @@ debt
 decade
 decide
 decision
-deck
 declare
 decline
 decrease
@@ -1393,7 +1391,6 @@ journalist
 journey
 joy
 judge
-judgment
 juice
 jump
 junior
@@ -1686,7 +1683,6 @@ nice
 night
 no
 nobody
-nod
 noise
 nomination
 none
@@ -1895,7 +1891,6 @@ pocket
 poem
 poet
 poetry
-point
 police
 policy
 political
@@ -2297,7 +2292,6 @@ shoe
 shoot
 shooting
 shop
-shopping
 shore
 short
 shortly
@@ -2589,7 +2583,6 @@ therefore
 these
 they
 thick
-thin
 thing
 think
 thinking
@@ -2635,7 +2628,6 @@ total
 totally
 touch
 tough
-tour
 tourist
 tournament
 toward
@@ -2852,7 +2844,6 @@ worker
 working
 works
 workshop
-world
 worried
 worry
 worth
@@ -2877,4 +2868,3 @@ your
 yours
 yourself
 youth
-zone
