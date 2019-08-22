@@ -96,7 +96,6 @@ all
 alliance
 allow
 ally
-almost
 alone
 along
 already
@@ -228,7 +227,6 @@ base
 baseball
 basic
 basically
-basis
 basket
 basketball
 bathroom
@@ -244,7 +242,6 @@ beauty
 because
 become
 bed
-bedroom
 before
 begin
 beginning
@@ -284,7 +281,6 @@ black
 blade
 blame
 blanket
-blind
 block
 blood
 blow
@@ -610,7 +606,6 @@ course
 court
 cover
 coverage
-cow
 crack
 craft
 crash
@@ -816,7 +811,6 @@ east
 eastern
 easy
 eat
-economic
 economics
 economist
 economy
@@ -824,7 +818,6 @@ edge
 edition
 editor
 educate
-education
 educational
 educator
 effect
@@ -925,7 +918,6 @@ examination
 examine
 example
 exceed
-excellent
 except
 exception
 exchange
@@ -1459,7 +1451,6 @@ lawn
 lawsuit
 lawyer
 lay
-layer
 lead
 leader
 leadership
@@ -1478,7 +1469,6 @@ legacy
 legal
 legend
 legislation
-legitimate
 lemon
 length
 less
@@ -1494,7 +1484,6 @@ life
 lifestyle
 lifetime
 lift
-light
 like
 likely
 limit
@@ -1514,7 +1503,6 @@ loan
 local
 locate
 location
-lock
 long
 long-term
 loose
@@ -1530,7 +1518,6 @@ lover
 low
 luck
 lucky
-lunch
 lung
 machine
 mad
@@ -1592,7 +1579,6 @@ meeting
 member
 membership
 memory
-mental
 mention
 menu
 mere
@@ -1681,7 +1667,6 @@ nature
 near
 nearby
 nearly
-necessarily
 necessary
 neck
 need
@@ -1947,7 +1932,6 @@ pot
 potato
 potential
 potentially
-pound
 pour
 powder
 power
@@ -2054,7 +2038,6 @@ question
 quick
 quickly
 quiet
-quit
 quite
 quote
 race
@@ -2420,7 +2403,6 @@ space
 Spanish
 speak
 speaker
-special
 specialist
 specific
 specifically
@@ -2622,7 +2604,6 @@ think
 thinking
 third
 thirty
-this
 those
 though
 thought
@@ -2756,7 +2737,6 @@ usually
 utility
 vacation
 valley
-valuable
 value
 variable
 variation
