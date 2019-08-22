@@ -37,7 +37,6 @@ actual
 actually
 ad
 adapt
-add
 addition
 additional
 address
@@ -117,7 +116,6 @@ anger
 angle
 angry
 anniversary
-announce
 annual
 another
 answer
@@ -160,7 +158,6 @@ arrange
 arrangement
 arrival
 arrive
-art
 article
 artist
 artistic
@@ -186,7 +183,6 @@ at
 athlete
 athletic
 atmosphere
-attach
 attack
 attempt
 attend
@@ -245,7 +241,6 @@ bed
 before
 begin
 beginning
-behavior
 behind
 being
 belief
@@ -274,7 +269,6 @@ bind
 biological
 bird
 birth
-birthday
 bit
 bite
 black
@@ -316,7 +310,6 @@ breakfast
 breast
 breath
 breathe
-brick
 bridge
 brief
 briefly
@@ -400,7 +393,6 @@ chairman
 challenge
 chamber
 champion
-championship
 chance
 change
 changing
@@ -412,7 +404,6 @@ characterize
 charge
 charity
 chart
-chase
 cheap
 check
 cheek
@@ -430,7 +421,6 @@ choice
 cholesterol
 choose
 Christian
-Christmas
 church
 cigarette
 circle
@@ -480,7 +470,6 @@ college
 colonial
 color
 column
-combination
 combine
 come
 comedy
@@ -526,7 +515,6 @@ concrete
 condition
 conduct
 conference
-confidence
 confident
 confirm
 conflict
@@ -663,7 +651,6 @@ debt
 decade
 decide
 decision
-deck
 declare
 decline
 decrease
@@ -713,12 +700,10 @@ destruction
 detail
 detailed
 detect
-develop
 developing
 development
 device
 devote
-dialogue
 die
 diet
 differ
@@ -795,7 +780,6 @@ drive
 driver
 drop
 drug
-dry
 due
 during
 dust
@@ -836,7 +820,6 @@ electric
 electricity
 electronic
 element
-elementary
 eliminate
 elite
 else
@@ -1017,7 +1000,6 @@ finance
 financial
 find
 finding
-fine
 finger
 fire
 firm
@@ -1168,7 +1150,6 @@ guarantee
 guard
 guess
 guest
-guide
 guideline
 guilty
 gun
@@ -1248,7 +1229,6 @@ hospital
 host
 hot
 hotel
-hour
 house
 household
 housing
@@ -1403,7 +1383,6 @@ journalist
 journey
 joy
 judge
-judgment
 juice
 jump
 junior
@@ -1675,7 +1654,6 @@ negotiation
 neighbor
 neighborhood
 neither
-nerve
 nervous
 net
 network
@@ -1690,7 +1668,6 @@ nice
 night
 no
 nobody
-nod
 noise
 nomination
 none
@@ -1698,14 +1675,12 @@ nonetheless
 nor
 normal
 normally
-north
 northern
 nose
 not
 note
 nothing
 notice
-notion
 novel
 now
 nowhere
@@ -1864,7 +1839,6 @@ persuade
 pet
 phase
 phenomenon
-philosophy
 phone
 photo
 photograph
@@ -1902,7 +1876,6 @@ pocket
 poem
 poet
 poetry
-point
 police
 policy
 political
@@ -2082,7 +2055,6 @@ recommendation
 record
 recording
 recover
-recovery
 recruit
 red
 reduce
@@ -2303,7 +2275,6 @@ shoe
 shoot
 shooting
 shop
-shopping
 shore
 short
 shortly
@@ -2395,12 +2366,10 @@ sort
 soul
 sound
 soup
-source
 south
 southern
 Soviet
 space
-Spanish
 speak
 speaker
 specialist
@@ -2479,7 +2448,6 @@ stupid
 style
 subject
 submit
-subsequent
 substance
 substantial
 succeed
@@ -2592,13 +2560,11 @@ theme
 themselves
 then
 theory
-therapy
 there
 therefore
 these
 they
 thick
-thin
 thing
 think
 thinking
@@ -2627,7 +2593,6 @@ tissue
 title
 to
 tobacco
-today
 toe
 together
 tomato
@@ -2644,7 +2609,6 @@ total
 totally
 touch
 tough
-tour
 tourist
 tournament
 toward
@@ -2695,7 +2659,6 @@ twenty
 twice
 twin
 two
-type
 typical
 typically
 ugly
@@ -2731,7 +2694,6 @@ us
 use
 used
 useful
-user
 usual
 usually
 utility
@@ -2862,7 +2824,6 @@ worker
 working
 works
 workshop
-world
 worried
 worry
 worth
@@ -2887,4 +2848,3 @@ your
 yours
 yourself
 youth
-zone

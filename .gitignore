@@ -20,6 +20,8 @@ src/assets/Uploads/
 
 .tmp.drivedownload/
 
+package-lock.json
+
 # Logs
 logs
 *.log
