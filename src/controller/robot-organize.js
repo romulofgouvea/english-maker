@@ -57,8 +57,8 @@ const organizeFiles = async () => {
 const RobotOrganize = async () => {
     try {
         var progress = await State.getState('progress');
-        if (progress.robot_drive !== true)
-            throw "Not completed robot drive";
+        if (progress.robot_video !== true)
+            throw "Not completed robot video";
         if (progress.robot_organize === true)
             return;
 

@@ -1254,7 +1254,6 @@ ie
 if
 ignore
 ill
-illegal
 illness
 illustrate
 image
@@ -1270,7 +1269,6 @@ implication
 imply
 importance
 important
-impose
 impossible
 impress
 impression
@@ -1678,7 +1676,6 @@ normally
 northern
 nose
 not
-note
 nothing
 notice
 novel
@@ -1765,7 +1762,6 @@ oven
 over
 overall
 overcome
-overlook
 owe
 own
 owner
@@ -1778,7 +1774,6 @@ painful
 paint
 painter
 painting
-pair
 pale
 Palestinian
 palm
@@ -2092,7 +2087,6 @@ religion
 religious
 rely
 remain
-remaining
 remarkable
 remember
 remote
@@ -2621,7 +2615,6 @@ track
 tradition
 traditional
 traffic
-tragedy
 trail
 train
 training
@@ -2652,7 +2645,6 @@ truth
 try
 tube
 tunnel
-turn
 TV
 twelve
 twenty
@@ -2673,7 +2665,6 @@ understanding
 unfortunately
 uniform
 union
-unique
 unit
 United
 universal
@@ -2806,7 +2797,6 @@ winter
 wipe
 wire
 wisdom
-wise
 wish
 with
 withdraw

@@ -56,13 +56,27 @@ API's:
 
 
 
-#  Obs:
+#  Instruções
 
- - Instalar o Ffmpeg e Image magic no windows.
- - Colocar o .env das APIs na raiz do projeto
+## Iniciando o projeto
+
+```bash
+git clone git@github.com:romulofgouvea/english-maker.git
+
+cd english-maker && npm i
+```
+ - Instalar [Ffmpeg](https://ffmpeg.org/download.html)
+ - Instalar [Graphics magic](http://www.graphicsmagick.org/download.html#download-sites) e/ou [Image magic](https://imagemagick.org/script/download.php).
+ - Colocar o *.env* das APIs na raiz do projeto
  
- 
- Lista de ENV:
+
+## Com o terminal ja pasta principal e digite: 
+
+```bash
+touch .env
+```
+
+ Lista de ENV utilizadas:
  
  - Utilizadas no sistema
     - WORDS_FOR_DAY 
@@ -114,11 +128,21 @@ ainda está em uma branch separada, nao usado na master ainda:
     - FACEBOOK_REDIRECT_URI
     - FACEBOOK_URL
 
-Criar as folders:
+
+## Criar as pastas necessárias:
  - assets/temp
  - assets/state
+ - assets/uploads
  - assets/videos/final_render
 
+Com o terminal ainda na pasta principal:
+
+```bash
+   mkdir src/assets/temp
+   mkdir src/assets/state
+   mkdir src/assets/uploads
+   mkdir src/assets/videos/final_render
+```
 
 ## Contributing
 <table>

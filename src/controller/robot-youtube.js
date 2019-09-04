@@ -31,37 +31,47 @@ const mountDescription = state => {
 };
 
 const mountObjUpload = async state => {
-  var nameFolder = UArchive.getNameFolder();
+  try {
+    var nameFolder = UArchive.getNameFolder();
 
-  var tempObj = {
-    url_video: `/assets/uploads/${nameFolder}/youtube/youtube.mp4`,
-    title: "",
-    description: "",
-    tags: ""
+    var tempObj = {
+      url_video: `/assets/uploads/${nameFolder}/youtube/youtube.mp4`,
+      title: "",
+      description: "",
+      tags: ""
+    }
+    const day = format(new Date(), 'DD/MM');
+    tempObj.title = `[${day}] Ten Words every day`;
+
+    var description = await mountDescription(state)
+    tempObj.description = description.length > 5000 ? "" : description;
+
+    var tags = state.map(words => {
+      if (words.keywords.length > 3) {
+        return Object.values(words.keywords).slice(0, 3)
+      } else
+        return words.keywords;
+    })
+    
+    tags = ['inglês', 'palavras', 'todo dia', 'estudo', 'inglês diario',
+      'diario', 'palavras em igles', 'frases em inglês', 'frases inglês', 'inglês palavras',
+      'novas palavras em inglês', 'video em inglês', 'conteudo em inglês'].concat(tempObj.tags);
+
+    tempObj.tags = _.flatten(tags);
+
+
+    console.log("> [ROBOT YOUTUBE] Save description");
+    var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
+    await UArchive.writeFileSync(
+      urlFolder,
+      "description.txt",
+      description
+    );
+
+    return tempObj;
+  } catch (error) {
+    console.log("Ops...", error);
   }
-  const day = format(new Date(), 'DD/MM');
-  tempObj.title = `[${day}] Ten Words every day`;
-
-  var description = await mountDescription(state)
-  tempObj.description = description.length > 5000 ? "" : description;
-
-  var tags = state.map(words => {
-    if (words.keywords.length > 3) {
-      return Object.values(words.keywords).slice(0, 3)
-    } else
-      return words.keywords;
-  })
-  tempObj.tags = _.flatten(tags);
-
-  console.log("> [ROBOT YOUTUBE] Save description");
-  var urlFolder = UArchive.createFolder(`/assets/uploads/${nameFolder}/text`);
-  await UArchive.writeFileSync(
-    urlFolder,
-    "description.txt",
-    description
-  );
-
-  return tempObj;
 }
 
 const RobotYouTube = async () => {
