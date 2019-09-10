@@ -44,7 +44,6 @@ adequate
 adjust
 adjustment
 administration
-administrator
 admire
 admission
 admit
@@ -56,7 +55,6 @@ advanced
 advantage
 adventure
 advertising
-advise
 adviser
 advocate
 affair
@@ -156,8 +154,6 @@ army
 around
 arrange
 arrangement
-arrival
-arrive
 article
 artist
 artistic
@@ -172,7 +168,6 @@ assert
 assess
 assessment
 assignment
-assist
 assistance
 assistant
 associate
@@ -194,7 +189,6 @@ attractive
 audience
 author
 authority
-auto
 available
 average
 avoid
@@ -250,7 +244,6 @@ belong
 below
 belt
 bench
-bend
 beneath
 benefit
 beside
@@ -317,7 +310,6 @@ bright
 brilliant
 bring
 British
-broad
 broken
 brother
 brown
@@ -348,7 +340,6 @@ camera
 camp
 campaign
 campus
-can
 Canadian
 cancer
 candidate
@@ -383,10 +374,8 @@ cell
 center
 central
 century
-CEO
 ceremony
 certain
-certainly
 chain
 chair
 chairman
@@ -452,9 +441,7 @@ cloud
 club
 clue
 cluster
-coach
 coal
-coalition
 coast
 coat
 code
@@ -537,7 +524,6 @@ constantly
 constitute
 constitutional
 construct
-construction
 consultant
 consume
 consumer
@@ -560,9 +546,6 @@ controversial
 controversy
 convention
 conventional
-conversation
-convert
-conviction
 convince
 cookie
 cooking
@@ -591,10 +574,8 @@ county
 couple
 courage
 course
-court
 cover
 coverage
-crack
 craft
 crash
 crazy
@@ -603,7 +584,6 @@ create
 creation
 creative
 creature
-credit
 crew
 crime
 criminal
@@ -611,7 +591,6 @@ crisis
 criteria
 critic
 critical
-criticism
 criticize
 crop
 cross
@@ -668,7 +647,6 @@ definitely
 definition
 degree
 delay
-deliver
 delivery
 demand
 democracy
@@ -691,7 +669,6 @@ desert
 deserve
 design
 designer
-desire
 desk
 desperate
 despite
@@ -842,7 +819,6 @@ enable
 encounter
 encourage
 end
-enemy
 energy
 enforcement
 engage
@@ -901,7 +877,6 @@ examination
 examine
 example
 exceed
-except
 exception
 exchange
 exciting
@@ -955,7 +930,6 @@ fall
 false
 familiar
 family
-famous
 fan
 fantasy
 far
@@ -1016,7 +990,6 @@ flat
 flavor
 flee
 flesh
-flight
 float
 floor
 flow
@@ -1029,7 +1002,6 @@ food
 foot
 football
 for
-force
 foreign
 forest
 forever
@@ -1103,7 +1075,6 @@ gently
 German
 gesture
 get
-ghost
 giant
 gift
 gifted
@@ -1180,7 +1151,6 @@ hear
 hearing
 heart
 heat
-heaven
 heavily
 heavy
 heel
@@ -1238,7 +1208,6 @@ huge
 human
 humor
 hundred
-hungry
 hunter
 hunting
 hurt
@@ -1249,7 +1218,6 @@ idea
 ideal
 identification
 identify
-identity
 ie
 if
 ignore
@@ -1269,7 +1237,6 @@ implication
 imply
 importance
 important
-impossible
 impress
 impression
 impressive
@@ -1305,7 +1272,6 @@ information
 ingredient
 initial
 initially
-initiative
 injury
 inner
 innocent
@@ -1366,7 +1332,6 @@ Italian
 item
 its
 itself
-jacket
 jail
 Japanese
 jet
@@ -1486,8 +1451,6 @@ loose
 lose
 loss
 lost
-lot
-lots
 loud
 love
 lovely
@@ -1534,7 +1497,6 @@ master
 match
 material
 math
-matter
 may
 maybe
 mayor
@@ -1611,14 +1573,12 @@ motor
 mount
 mountain
 mouse
-mouth
 move
 movement
 movie
 Mr
 Mrs
 Ms
-much
 multiple
 murder
 museum
@@ -1682,7 +1642,6 @@ novel
 now
 nowhere
 n't
-nuclear
 number
 numerous
 nurse
@@ -1725,7 +1684,6 @@ ongoing
 onion
 online
 only
-onto
 open
 opening
 operate
@@ -1743,7 +1701,6 @@ or
 orange
 order
 organic
-organization
 organize
 orientation
 origin
@@ -1795,10 +1752,8 @@ partnership
 party
 pass
 passage
-passenger
 passion
 past
-patch
 path
 patient
 pattern
@@ -1812,7 +1767,6 @@ peer
 penalty
 people
 pepper
-per
 percentage
 perception
 perfect
@@ -1847,7 +1801,6 @@ pick
 picture
 piece
 pile
-pilot
 pink
 pipe
 pitch
@@ -1885,7 +1838,6 @@ pop
 popular
 population
 porch
-port
 portion
 portrait
 portray
@@ -1894,7 +1846,6 @@ position
 positive
 possess
 possibility
-possible
 post
 pot
 potato
@@ -1907,7 +1858,6 @@ powerful
 practical
 practice
 pray
-prayer
 precisely
 predict
 prefer
@@ -2068,7 +2018,6 @@ regime
 region
 regional
 register
-regular
 regularly
 regulate
 regulation
@@ -2107,13 +2056,11 @@ require
 requirement
 research
 researcher
-resemble
 reservation
 resident
 resistance
 resolution
 resolve
-resort
 respect
 respond
 respondent
@@ -2179,7 +2126,6 @@ same
 sample
 sanction
 sand
-satellite
 satisfaction
 satisfy
 sauce
@@ -2298,20 +2244,16 @@ simple
 simply
 sin
 since
-sing
 singer
 single
 sink
 sir
 sister
-sit
 site
 situation
 six
-size
 ski
 skill
-skin
 sky
 slave
 sleep
@@ -2325,7 +2267,6 @@ slowly
 small
 smart
 smell
-smile
 smoke
 smooth
 snap
@@ -2339,7 +2280,6 @@ soft
 software
 soil
 solar
-soldier
 solid
 solution
 solve
@@ -2392,7 +2332,6 @@ stake
 stand
 standard
 standing
-star
 stare
 start
 state
@@ -2403,11 +2342,9 @@ status
 stay
 steady
 steal
-steel
 step
 stick
 still
-stir
 stock
 stomach
 stone
@@ -2513,7 +2450,6 @@ teacher
 teaching
 team
 tear
-teaspoon
 technical
 technique
 technology
@@ -2558,7 +2494,6 @@ there
 therefore
 these
 they
-thick
 thing
 think
 thinking
@@ -2600,7 +2535,6 @@ top
 topic
 toss
 total
-totally
 touch
 tough
 tourist
@@ -2622,7 +2556,6 @@ transfer
 transform
 transformation
 transition
-translate
 transportation
 travel
 treat
@@ -2653,7 +2586,6 @@ twin
 two
 typical
 typically
-ugly
 ultimate
 ultimately
 unable
@@ -2665,7 +2597,6 @@ understanding
 unfortunately
 uniform
 union
-unit
 United
 universal
 universe
@@ -2675,7 +2606,6 @@ unless
 unlike
 unlikely
 until
-unusual
 up
 upon
 upper
@@ -2719,7 +2649,6 @@ virtually
 virtue
 virus
 visible
-vision
 visit
 visitor
 visual

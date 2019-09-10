@@ -40,8 +40,8 @@ const mountObjUpload = async state => {
       description: "",
       tags: ""
     }
-    const day = format(new Date(), 'DD/MM');
-    tempObj.title = `[${day}] Ten Words every day`;
+    var nameFolder = UArchive.getNameFolder();
+    tempObj.title = `${nameFolder} - Ten Words every day`;
 
     var description = await mountDescription(state)
     tempObj.description = description.length > 5000 ? "" : description;
